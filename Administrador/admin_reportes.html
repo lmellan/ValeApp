@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Reportes - ValeApp</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#14467d",
+            secondary: "#71ba65",
+            tertiary: "#d97706",
+            danger: "#dc2626",
+            "background-light": "#f4f5f7",
+            "surface-light": "#ffffff",
+            "text-light": "#334155",
+            "on-surface-variant": "#64748b"
+          },
+          fontFamily: {
+            manrope: ["Manrope", "sans-serif"]
+          },
+          boxShadow: {
+            card: "0 8px 24px rgba(15, 23, 42, 0.08)",
+            strong: "0 12px 28px rgba(15, 23, 42, 0.14)"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+      font-family: 'Manrope', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-background-light text-text-light min-h-screen antialiased">
+  <div class="min-h-screen flex flex-col">
+    <header class="w-full bg-surface-light border-b border-slate-200 shadow-sm">
+      <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <img alt="Logo ValeApp" class="h-14 w-auto object-contain" src="logo_valeapp.png"/>
+        </div>
+
+        <div class="flex items-center gap-6">
+          <div class="text-right leading-tight">
+            <p class="text-sm text-slate-500 font-medium">24 Oct</p>
+            <p class="text-xl font-bold text-primary tabular-nums">08:15</p>
+          </div>
+
+          <button onclick="window.location.href='../inicio_sesion.html'" class="h-14 px-6 rounded-2xl border border-slate-200 bg-white text-slate-600 text-lg font-bold hover:bg-slate-50 transition">
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 w-full">
+      <div class="max-w-7xl mx-auto px-8 py-10">
+
+        <section class="mb-8">
+          <button
+            onclick="window.location.href='vista_principal.html'"
+            class="inline-flex items-center gap-3 rounded-2xl border border-slate-200 bg-surface-light px-5 py-3 text-base font-extrabold text-primary shadow-sm hover:bg-slate-50 transition"
+          >
+            <span class="material-symbols-outlined text-[22px]">arrow_back</span>
+            Volver al panel
+          </button>
+        </section>
+
+        <section class="mb-8">
+          <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-8">
+            <div class="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-6">
+              <div>
+                <h1 class="text-4xl font-extrabold text-primary mb-2">Reportes y auditoría</h1>
+                <p class="text-lg text-slate-600 max-w-3xl">
+                  Consulta la emisión, uso y control de vales según el período seleccionado.
+                </p>
+              </div>
+
+              <div class="flex flex-col sm:flex-row gap-4">
+                <button class="h-14 px-6 rounded-2xl border border-slate-200 bg-white text-slate-700 text-base font-bold hover:bg-slate-50 transition flex items-center justify-center gap-2">
+                  <span class="material-symbols-outlined">download</span>
+                  Exportar Excel
+                </button>
+
+                <button class="h-14 px-6 rounded-2xl bg-primary hover:bg-blue-800 text-white text-base font-extrabold transition flex items-center justify-center gap-2">
+                  <span class="material-symbols-outlined">picture_as_pdf</span>
+                  Exportar PDF
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="mb-8">
+          <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-8">
+            <div class="mb-6">
+              <h2 class="text-2xl font-extrabold text-primary mb-2">Filtros</h2>
+              <p class="text-base text-slate-600">Selecciona el tipo de reporte y la fecha de corte.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                  Tipo de reporte
+                </label>
+                <select
+                  id="tipoReporte"
+                  onchange="actualizarVistaReporte()"
+                  class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-base text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                >
+                  <option value="diario">Diario</option>
+                  <option value="semanal">Semanal a la fecha</option>
+                  <option value="mensual" selected>Mensual a la fecha</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                  Fecha de corte
+                </label>
+                <input
+                  id="fechaCorte"
+                  type="date"
+                  onchange="actualizarVistaReporte()"
+                  class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-base text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                  value="2026-10-24"
+                />
+              </div>
+            </div>
+
+            <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
+              <p class="text-sm text-slate-600">
+                <span class="font-bold text-slate-700">Período considerado:</span>
+                <span id="textoPeriodo">01/10/2026 al 24/10/2026 (mensual a la fecha)</span>
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="mb-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-7">
+              <p class="text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">Vales emitidos</p>
+              <p id="kpiEmitidos" class="text-4xl font-extrabold text-primary">3.482</p>
+              <p id="subEmitidos" class="text-sm text-slate-500 mt-2">Total emitido en el mes a la fecha</p>
+              <p id="montoEmitidos" class="text-sm font-semibold text-slate-700 mt-1">Equivalente: $12.988.000</p>
+            </div>
+
+            <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-7">
+              <p class="text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">Vales utilizados</p>
+              <p id="kpiUtilizados" class="text-4xl font-extrabold text-secondary">3.106</p>
+              <p id="subUtilizados" class="text-sm text-slate-500 mt-2">Registrados como usados en el mes a la fecha</p>
+              <p id="montoUtilizados" class="text-sm font-semibold text-slate-700 mt-1">Equivalente: $11.142.000</p>
+            </div>
+
+            <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-7">
+              <p class="text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">No utilizados</p>
+              <p id="kpiNoUtilizados" class="text-4xl font-extrabold text-tertiary">376</p>
+              <p id="subNoUtilizados" class="text-sm text-slate-500 mt-2">No usados acumulados en el mes a la fecha</p>
+              <p id="montoNoUtilizados" class="text-sm font-semibold text-slate-700 mt-1">Equivalente: $1.846.000</p>
+            </div>
+
+            <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-7">
+              <p class="text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">Vales adicionales</p>
+              <p id="kpiAdicionales" class="text-4xl font-extrabold text-primary">127</p>
+              <p id="subAdicionales" class="text-sm text-slate-500 mt-2">Generados manualmente en el mes a la fecha</p>
+              <p id="montoAdicionales" class="text-sm font-semibold text-slate-700 mt-1">Equivalente: $483.000</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="mb-8">
+          <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+            <div class="xl:col-span-7">
+              <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card overflow-hidden">
+                <div class="px-6 py-5 border-b border-slate-200 bg-slate-50">
+                  <h2 id="tituloServicios" class="text-2xl font-extrabold text-primary">Emisión exacta por servicio mensual a la fecha</h2>
+                  <p class="text-sm text-slate-500 mt-1">Cantidad de vales emitidos y usados por cada servicio.</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                  <table class="min-w-full border-collapse">
+                    <thead class="bg-slate-50">
+                      <tr class="border-b border-slate-200">
+                        <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Servicio</th>
+                        <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Emitidos</th>
+                        <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Usados</th>
+                        <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">No usados</th>
+                        <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Monto total</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tablaServicios" class="divide-y divide-slate-200"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="xl:col-span-5">
+              <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-8">
+                <h2 id="tituloSucursales" class="text-2xl font-extrabold text-primary mb-4">Resumen por sucursal mensual a la fecha</h2>
+                <div id="resumenSucursales" class="space-y-4"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="mb-8">
+          <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+            <div class="xl:col-span-7">
+              <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card overflow-hidden">
+                <div class="px-6 py-5 border-b border-slate-200 bg-slate-50">
+                  <h2 id="tituloAuditoria" class="text-2xl font-extrabold text-primary">Auditoría de vales no utilizados mensual a la fecha</h2>
+                  <p class="text-sm text-slate-500 mt-1">Funcionarios con vales emitidos que no registran uso.</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                  <table class="min-w-full border-collapse">
+                    <thead class="bg-slate-50">
+                      <tr class="border-b border-slate-200">
+                        <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Funcionario</th>
+                        <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Comensal</th>
+                        <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Sucursal</th>
+                        <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Vales no usados</th>
+                        <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Último uso</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tablaAuditoria" class="divide-y divide-slate-200"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="xl:col-span-5">
+              <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card overflow-hidden">
+                <div class="px-6 py-5 border-b border-slate-200 bg-slate-50">
+                  <h2 id="tituloProductos" class="text-2xl font-extrabold text-primary">Productos consumidos mensual a la fecha</h2>
+                  <p class="text-sm text-slate-500 mt-1">Productos registrados por caja en ventas asociadas a vales.</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                  <table class="min-w-full border-collapse">
+                    <thead class="bg-slate-50">
+                      <tr class="border-b border-slate-200">
+                        <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Producto</th>
+                        <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Cantidad</th>
+                        <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Monto</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tablaProductos" class="divide-y divide-slate-200"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card overflow-hidden">
+            <div class="px-6 py-5 border-b border-slate-200 bg-slate-50">
+              <h2 id="tituloAdicionalesTabla" class="text-2xl font-extrabold text-primary">Detalle de vales adicionales mensual a la fecha</h2>
+              <p class="text-sm text-slate-500 mt-1">Seguimiento de vales adicionales emitidos por administración.</p>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="min-w-full border-collapse">
+                <thead class="bg-slate-50">
+                  <tr class="border-b border-slate-200">
+                    <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Fecha asignación</th>
+                    <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Funcionario</th>
+                    <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Comensal</th>
+                    <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Servicio</th>
+                    <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Cantidad</th>
+                    <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Estado</th>
+                    <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Motivo</th>
+                  </tr>
+                </thead>
+                <tbody id="tablaAdicionales" class="divide-y divide-slate-200"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    var datosReporte = {
+      diario: {
+        kpis: {
+          emitidos: "148",
+          utilizados: "129",
+          noUtilizados: "19",
+          adicionales: "6",
+          montoEmitidos: "$459.000",
+          montoUtilizados: "$401.500",
+          montoNoUtilizados: "$57.500",
+          montoAdicionales: "$24.000"
+        },
+        servicios: [
+          ["Desayuno", "32", "29", "3", "$80.000"],
+          ["Almuerzo", "41", "36", "5", "$170.000"],
+          ["Once", "24", "20", "4", "$66.000"],
+          ["Cena 1", "19", "17", "2", "$76.000"],
+          ["Cena 2", "17", "14", "3", "$68.000"],
+          ["Box lunch", "15", "13", "2", "$45.000"]
+        ],
+        sucursales: [
+          ["Casa Matriz", "86", "Casino central"],
+          ["Sucursal Norte", "39", "Casino sucursal"],
+          ["Sucursal Sur", "4", "Casino sucursal"]
+        ],
+        auditoria: [
+          ["Lorna Mella", "Obrero", "Casa Matriz", "1", "23/10/2026"],
+          ["Gerardo Muñoz", "Gerente", "Sucursal Norte", "1", "22/10/2026"]
+        ],
+        productos: [
+          ["Menú almuerzo", "36", "$144.000"],
+          ["Box lunch", "13", "$39.000"],
+          ["Bebida individual", "7", "$10.500"],
+          ["Galletas", "5", "$4.000"]
+        ],
+        adicionales: [
+          ["24/10/2026", "Tito Titon", "Secretaria gerencia", "Box lunch", "2", "Usado", "Atención de visitas"],
+          ["24/10/2026", "Rock Dabre", "Jefe", "Coffee break", "1", "Pendiente", "Reunión interna"],
+          ["24/10/2026", "Lorna Mella", "Obrero", "Box lunch", "1", "No usado", "Capacitación"]
+        ]
+      },
+      semanal: {
+        kpis: {
+          emitidos: "926",
+          utilizados: "814",
+          noUtilizados: "112",
+          adicionales: "34",
+          montoEmitidos: "$3.170.000",
+          montoUtilizados: "$2.781.000",
+          montoNoUtilizados: "$389.000",
+          montoAdicionales: "$128.000"
+        },
+        servicios: [
+          ["Desayuno", "194", "176", "18", "$485.000"],
+          ["Almuerzo", "256", "231", "25", "$1.062.000"],
+          ["Once", "141", "121", "20", "$387.000"],
+          ["Cena 1", "123", "109", "14", "$492.000"],
+          ["Cena 2", "108", "95", "13", "$432.000"],
+          ["Box lunch", "104", "82", "22", "$312.000"]
+        ],
+        sucursales: [
+          ["Casa Matriz", "512", "Casino central"],
+          ["Sucursal Norte", "208", "Casino sucursal"],
+          ["Sucursal Sur", "94", "Casino sucursal"]
+        ],
+        auditoria: [
+          ["Lorna Mella", "Obrero", "Casa Matriz", "2", "18/10/2026"],
+          ["Rock Dabre", "Jefe", "Casa Matriz", "2", "20/10/2026"],
+          ["Gerardo Muñoz", "Gerente", "Sucursal Norte", "1", "21/10/2026"]
+        ],
+        productos: [
+          ["Menú almuerzo", "231", "$924.000"],
+          ["Box lunch", "82", "$246.000"],
+          ["Bebida individual", "41", "$61.500"],
+          ["Galletas", "26", "$20.800"]
+        ],
+        adicionales: [
+          ["23/10/2026", "Tito Titon", "Secretaria gerencia", "Box lunch", "3", "Usado", "Atención de visitas gerenciales"],
+          ["24/10/2026", "Lorna Mella", "Obrero", "Box lunch", "1", "Pendiente", "Capacitación interna"],
+          ["24/10/2026", "Rock Dabre", "Jefe", "Coffee break", "1", "No usado", "Reunión semanal"]
+        ]
+      },
+      mensual: {
+        kpis: {
+          emitidos: "3.482",
+          utilizados: "3.106",
+          noUtilizados: "376",
+          adicionales: "127",
+          montoEmitidos: "$12.988.000",
+          montoUtilizados: "$11.142.000",
+          montoNoUtilizados: "$1.846.000",
+          montoAdicionales: "$483.000"
+        },
+        servicios: [
+          ["Desayuno", "712", "645", "67", "$1.780.000"],
+          ["Almuerzo", "954", "881", "73", "$3.960.000"],
+          ["Once", "533", "471", "62", "$1.465.000"],
+          ["Cena 1", "488", "432", "56", "$1.952.000"],
+          ["Cena 2", "446", "399", "47", "$1.784.000"],
+          ["Box lunch", "349", "278", "71", "$1.047.000"]
+        ],
+        sucursales: [
+          ["Casa Matriz", "1.964", "Casino central"],
+          ["Sucursal Norte", "712", "Casino sucursal"],
+          ["Sucursal Sur", "430", "Casino sucursal"]
+        ],
+        auditoria: [
+          ["Lorna Mella", "Obrero", "Casa Matriz", "4", "18/10/2026"],
+          ["Rock Dabre", "Jefe", "Casa Matriz", "3", "20/10/2026"],
+          ["Gerardo Muñoz", "Gerente", "Sucursal Norte", "2", "21/10/2026"]
+        ],
+        productos: [
+          ["Menú almuerzo", "881", "$3.524.000"],
+          ["Box lunch", "278", "$834.000"],
+          ["Bebida individual", "143", "$214.500"],
+          ["Galletas", "92", "$73.600"]
+        ],
+        adicionales: [
+          ["23/10/2026", "Tito Titon", "Secretaria gerencia", "Box lunch", "3", "Usado", "Atención de visitas gerenciales"],
+          ["25/10/2026", "Lorna Mella", "Obrero", "Box lunch", "1", "Pendiente", "Capacitación interna"],
+          ["24/10/2026", "Rock Dabre", "Jefe", "Coffee break", "1", "No usado", "Reunión de coordinación mensual"]
+        ]
+      }
+    };
+
+    function formatearFechaLocal(textoFecha) {
+      var partes = textoFecha.split("-");
+      return partes[2] + "/" + partes[1] + "/" + partes[0];
+    }
+
+    function obtenerInicioSemana(fecha) {
+      var copia = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
+      var dia = copia.getDay();
+      var ajuste = dia === 0 ? 6 : dia - 1;
+      copia.setDate(copia.getDate() - ajuste);
+      return copia;
+    }
+
+    function obtenerInicioMes(fecha) {
+      return new Date(fecha.getFullYear(), fecha.getMonth(), 1);
+    }
+
+    function aTextoInput(fecha) {
+      var anio = fecha.getFullYear();
+      var mes = String(fecha.getMonth() + 1).padStart(2, "0");
+      var dia = String(fecha.getDate()).padStart(2, "0");
+      return anio + "-" + mes + "-" + dia;
+    }
+
+    function actualizarPeriodoSeleccionado() {
+      var tipo = document.getElementById("tipoReporte").value;
+      var fechaTexto = document.getElementById("fechaCorte").value;
+      var textoPeriodo = document.getElementById("textoPeriodo");
+      var partes = fechaTexto.split("-");
+      var fecha = new Date(Number(partes[0]), Number(partes[1]) - 1, Number(partes[2]));
+      var desde = fecha;
+
+      if (tipo === "semanal") {
+        desde = obtenerInicioSemana(fecha);
+        textoPeriodo.textContent = formatearFechaLocal(aTextoInput(desde)) + " al " + formatearFechaLocal(fechaTexto) + " (semanal a la fecha)";
+      } else if (tipo === "mensual") {
+        desde = obtenerInicioMes(fecha);
+        textoPeriodo.textContent = formatearFechaLocal(aTextoInput(desde)) + " al " + formatearFechaLocal(fechaTexto) + " (mensual a la fecha)";
+      } else {
+        textoPeriodo.textContent = formatearFechaLocal(fechaTexto) + " (diario)";
+      }
+    }
+
+    function renderTablaServicios(datos) {
+      var cuerpo = document.getElementById("tablaServicios");
+      var html = "";
+      for (var i = 0; i < datos.length; i++) {
+        html += '<tr class="bg-white">' +
+          '<td class="px-6 py-5 text-sm font-semibold text-slate-700">' + datos[i][0] + '</td>' +
+          '<td class="px-6 py-5 text-sm text-slate-600">' + datos[i][1] + '</td>' +
+          '<td class="px-6 py-5 text-sm text-slate-600">' + datos[i][2] + '</td>' +
+          '<td class="px-6 py-5 text-sm text-slate-600">' + datos[i][3] + '</td>' +
+          '<td class="px-6 py-5 text-sm text-slate-600">' + datos[i][4] + '</td>' +
+        '</tr>';
+      }
+      cuerpo.innerHTML = html;
+    }
+
+    function renderResumenSucursales(datos) {
+      var contenedor = document.getElementById("resumenSucursales");
+      var html = "";
+      for (var i = 0; i < datos.length; i++) {
+        html += '<div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">' +
+          '<div class="flex items-center justify-between gap-4">' +
+            '<div>' +
+              '<p class="text-lg font-extrabold text-primary">' + datos[i][0] + '</p>' +
+              '<p class="text-sm text-slate-500 mt-1">' + datos[i][2] + '</p>' +
+            '</div>' +
+            '<p class="text-2xl font-extrabold text-primary">' + datos[i][1] + '</p>' +
+          '</div>' +
+          '<p class="text-sm text-slate-600 mt-3">Vales utilizados en el período</p>' +
+        '</div>';
+      }
+      contenedor.innerHTML = html;
+    }
+
+    function renderTablaAuditoria(datos) {
+      var cuerpo = document.getElementById("tablaAuditoria");
+      var html = "";
+      for (var i = 0; i < datos.length; i++) {
+        html += '<tr class="bg-white">' +
+          '<td class="px-6 py-5 text-sm font-semibold text-slate-700">' + datos[i][0] + '</td>' +
+          '<td class="px-6 py-5 text-sm text-slate-600">' + datos[i][1] + '</td>' +
+          '<td class="px-6 py-5 text-sm text-slate-600">' + datos[i][2] + '</td>' +
+          '<td class="px-6 py-5 text-sm text-danger font-bold">' + datos[i][3] + '</td>' +
+          '<td class="px-6 py-5 text-sm text-slate-600">' + datos[i][4] + '</td>' +
+        '</tr>';
+      }
+      cuerpo.innerHTML = html;
+    }
+
+    function renderTablaProductos(datos) {
+      var cuerpo = document.getElementById("tablaProductos");
+      var html = "";
+      for (var i = 0; i < datos.length; i++) {
+        html += '<tr class="bg-white">' +
+          '<td class="px-6 py-5 text-sm font-semibold text-slate-700">' + datos[i][0] + '</td>' +
+          '<td class="px-6 py-5 text-sm text-slate-600">' + datos[i][1] + '</td>' +
+          '<td class="px-6 py-5 text-sm text-slate-600">' + datos[i][2] + '</td>' +
+        '</tr>';
+      }
+      cuerpo.innerHTML = html;
+    }
+
+    function renderEstadoAdicional(estado) {
+      if (estado === "Usado") {
+        return '<span class="inline-flex px-3 py-1 rounded-full bg-secondary/15 text-secondary text-sm font-bold">Usado</span>';
+      }
+      if (estado === "Pendiente") {
+        return '<span class="inline-flex px-3 py-1 rounded-full bg-tertiary/15 text-tertiary text-sm font-bold">Pendiente</span>';
+      }
+      return '<span class="inline-flex px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-sm font-bold">No usado</span>';
+    }
+
+    function renderTablaAdicionales(datos) {
+      var cuerpo = document.getElementById("tablaAdicionales");
+      var html = "";
+      for (var i = 0; i < datos.length; i++) {
+        html += '<tr class="bg-white">' +
+          '<td class="px-6 py-5 text-sm text-slate-600">' + datos[i][0] + '</td>' +
+          '<td class="px-6 py-5 text-sm font-semibold text-slate-700">' + datos[i][1] + '</td>' +
+          '<td class="px-6 py-5 text-sm text-slate-600">' + datos[i][2] + '</td>' +
+          '<td class="px-6 py-5 text-sm text-slate-600">' + datos[i][3] + '</td>' +
+          '<td class="px-6 py-5 text-sm text-slate-600">' + datos[i][4] + '</td>' +
+          '<td class="px-6 py-5">' + renderEstadoAdicional(datos[i][5]) + '</td>' +
+          '<td class="px-6 py-5 text-sm text-slate-600">' + datos[i][6] + '</td>' +
+        '</tr>';
+      }
+      cuerpo.innerHTML = html;
+    }
+
+    function actualizarTitulos(tipo) {
+      var sufijo = "";
+      if (tipo === "diario") {
+        sufijo = " del día";
+      } else if (tipo === "semanal") {
+        sufijo = " semanal a la fecha";
+      } else {
+        sufijo = " mensual a la fecha";
+      }
+
+      document.getElementById("tituloServicios").textContent = "Emisión exacta por servicio" + sufijo;
+      document.getElementById("tituloSucursales").textContent = "Resumen por sucursal" + sufijo;
+      document.getElementById("tituloAuditoria").textContent = "Auditoría de vales no utilizados" + sufijo;
+      document.getElementById("tituloProductos").textContent = "Productos consumidos" + sufijo;
+      document.getElementById("tituloAdicionalesTabla").textContent = "Detalle de vales adicionales" + sufijo;
+    }
+
+    function actualizarKpis(tipo, kpis) {
+      document.getElementById("kpiEmitidos").textContent = kpis.emitidos;
+      document.getElementById("kpiUtilizados").textContent = kpis.utilizados;
+      document.getElementById("kpiNoUtilizados").textContent = kpis.noUtilizados;
+      document.getElementById("kpiAdicionales").textContent = kpis.adicionales;
+
+      document.getElementById("montoEmitidos").textContent = "Equivalente: " + kpis.montoEmitidos;
+      document.getElementById("montoUtilizados").textContent = "Equivalente: " + kpis.montoUtilizados;
+      document.getElementById("montoNoUtilizados").textContent = "Equivalente: " + kpis.montoNoUtilizados;
+      document.getElementById("montoAdicionales").textContent = "Equivalente: " + kpis.montoAdicionales;
+
+      if (tipo === "diario") {
+        document.getElementById("subEmitidos").textContent = "Total emitido en el día seleccionado";
+        document.getElementById("subUtilizados").textContent = "Registrados como usados durante el día";
+        document.getElementById("subNoUtilizados").textContent = "No usados o pendientes del día";
+        document.getElementById("subAdicionales").textContent = "Generados manualmente durante el día";
+      } else if (tipo === "semanal") {
+        document.getElementById("subEmitidos").textContent = "Total emitido en la semana a la fecha";
+        document.getElementById("subUtilizados").textContent = "Registrados como usados en la semana a la fecha";
+        document.getElementById("subNoUtilizados").textContent = "No usados acumulados en la semana a la fecha";
+        document.getElementById("subAdicionales").textContent = "Generados manualmente en la semana a la fecha";
+      } else {
+        document.getElementById("subEmitidos").textContent = "Total emitido en el mes a la fecha";
+        document.getElementById("subUtilizados").textContent = "Registrados como usados en el mes a la fecha";
+        document.getElementById("subNoUtilizados").textContent = "No usados acumulados en el mes a la fecha";
+        document.getElementById("subAdicionales").textContent = "Generados manualmente en el mes a la fecha";
+      }
+    }
+
+    function actualizarVistaReporte() {
+      var tipo = document.getElementById("tipoReporte").value;
+      var datos = datosReporte[tipo];
+
+      actualizarPeriodoSeleccionado();
+      actualizarTitulos(tipo);
+      actualizarKpis(tipo, datos.kpis);
+      renderTablaServicios(datos.servicios);
+      renderResumenSucursales(datos.sucursales);
+      renderTablaAuditoria(datos.auditoria);
+      renderTablaProductos(datos.productos);
+      renderTablaAdicionales(datos.adicionales);
+    }
+
+    actualizarVistaReporte();
+  </script>
+</body>
+</html>

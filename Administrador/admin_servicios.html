@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Servicios - ValeApp</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#14467d",
+            secondary: "#71ba65",
+            tertiary: "#d97706",
+            "background-light": "#f4f5f7",
+            "surface-light": "#ffffff",
+            "text-light": "#334155",
+            "on-surface-variant": "#64748b"
+          },
+          fontFamily: {
+            manrope: ["Manrope", "sans-serif"]
+          },
+          boxShadow: {
+            card: "0 8px 24px rgba(15, 23, 42, 0.08)",
+            strong: "0 12px 28px rgba(15, 23, 42, 0.14)"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-background-light text-text-light min-h-screen antialiased">
+  <div class="min-h-screen flex flex-col">
+
+    <header class="w-full bg-surface-light border-b border-slate-200 shadow-sm">
+      <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <img
+            alt="Logo ValeApp"
+            class="h-14 w-auto object-contain"
+            src="logo_valeapp.png"
+          />
+        </div>
+
+        <div class="flex items-center gap-6">
+          <div class="text-right leading-tight">
+            <p class="text-sm text-slate-500 font-medium">24 Oct</p>
+            <p class="text-xl font-bold text-primary tabular-nums">08:15</p>
+          </div>
+
+          <button onclick="window.location.href='../inicio_sesion.html'" class="h-14 px-6 rounded-2xl border border-slate-200 bg-white text-slate-600 text-lg font-bold hover:bg-slate-50 transition">
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 w-full">
+      <div class="max-w-7xl mx-auto px-8 py-10">
+
+        <section class="mb-8">
+          <button
+            onclick="window.location.href='vista_principal.html'"
+            class="inline-flex items-center gap-3 self-start rounded-2xl border border-slate-200 bg-surface-light px-5 py-3 text-base font-extrabold text-primary shadow-sm hover:bg-slate-50 transition"
+          >
+            <span class="material-symbols-outlined text-[22px]">arrow_back</span>
+            Volver al panel
+          </button>
+        </section>
+
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+
+          <div class="xl:col-span-8 space-y-8">
+
+            <section>
+              <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-8">
+                <div class="mb-6">
+                  <h1 class="text-4xl font-extrabold text-primary mb-2">Servicios</h1>
+                  <p class="text-lg text-slate-600">
+                    Administra los servicios de alimentación disponibles en el sistema, incluyendo servicios base y servicios adicionales.
+                  </p>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                    Buscar servicio
+                  </label>
+                  <div class="relative">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                    <input
+                      class="w-full rounded-2xl border border-slate-300 bg-white pl-14 pr-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                      placeholder="Ej: Desayuno, Box lunch, Colación..."
+                      type="text"
+                    />
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card overflow-hidden">
+                <div class="grid grid-cols-12 bg-slate-50 px-6 py-4 border-b border-slate-200">
+                  <div class="col-span-3 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Servicio</div>
+                  <div class="col-span-2 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Sucursal</div>
+                  <div class="col-span-2 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Tipo</div>
+                  <div class="col-span-3 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Horario</div>
+                  <div class="col-span-2 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant text-right">Acción</div>
+                </div>
+
+                <div class="divide-y divide-slate-200">
+
+                  <div class="grid grid-cols-12 items-center px-6 py-5 bg-white gap-4">
+                    <div class="col-span-3">
+                      <p class="text-lg font-bold text-primary">Desayuno</p>
+                    </div>
+                    <div class="col-span-2">
+                      <p class="text-sm text-slate-600">Casa Matriz</p>
+                    </div>
+                    <div class="col-span-2">
+                      <span class="inline-flex px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-sm font-bold">Base</span>
+                    </div>
+                    <div class="col-span-3">
+                      <p class="text-sm text-slate-600">06:00 a 09:00</p>
+                    </div>
+                    <div class="col-span-2 flex justify-end">
+                      <button
+                        onclick="abrirModalEdicionServicio('Desayuno', 'Casa Matriz', 'Base', '06:00', '09:00')"
+                        class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition"
+                      >
+                        Editar
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-12 items-center px-6 py-5 bg-white gap-4">
+                    <div class="col-span-3">
+                      <p class="text-lg font-bold text-primary">Almuerzo</p>
+                    </div>
+                    <div class="col-span-2">
+                      <p class="text-sm text-slate-600">Casa Matriz</p>
+                    </div>
+                    <div class="col-span-2">
+                      <span class="inline-flex px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-sm font-bold">Base</span>
+                    </div>
+                    <div class="col-span-3">
+                      <p class="text-sm text-slate-600">12:00 a 15:00</p>
+                    </div>
+                    <div class="col-span-2 flex justify-end">
+                      <button
+                        onclick="abrirModalEdicionServicio('Almuerzo', 'Casa Matriz', 'Base', '12:00', '15:00')"
+                        class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition"
+                      >
+                        Editar
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-12 items-center px-6 py-5 bg-white gap-4">
+                    <div class="col-span-3">
+                      <p class="text-lg font-bold text-primary">Once</p>
+                    </div>
+                    <div class="col-span-2">
+                      <p class="text-sm text-slate-600">Sucursal Norte</p>
+                    </div>
+                    <div class="col-span-2">
+                      <span class="inline-flex px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-sm font-bold">Base</span>
+                    </div>
+                    <div class="col-span-3">
+                      <p class="text-sm text-slate-600">17:00 a 19:00</p>
+                    </div>
+                    <div class="col-span-2 flex justify-end">
+                      <button
+                        onclick="abrirModalEdicionServicio('Once', 'Sucursal Norte', 'Base', '17:00', '19:00')"
+                        class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition"
+                      >
+                        Editar
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-12 items-center px-6 py-5 bg-white gap-4">
+                    <div class="col-span-3">
+                      <p class="text-lg font-bold text-primary">Cena 1</p>
+                    </div>
+                    <div class="col-span-2">
+                      <p class="text-sm text-slate-600">Sucursal Sur</p>
+                    </div>
+                    <div class="col-span-2">
+                      <span class="inline-flex px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-sm font-bold">Base</span>
+                    </div>
+                    <div class="col-span-3">
+                      <p class="text-sm text-slate-600">20:00 a 23:00</p>
+                    </div>
+                    <div class="col-span-2 flex justify-end">
+                      <button
+                        onclick="abrirModalEdicionServicio('Cena 1', 'Sucursal Sur', 'Base', '20:00', '23:00')"
+                        class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition"
+                      >
+                        Editar
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-12 items-center px-6 py-5 bg-white gap-4">
+                    <div class="col-span-3">
+                      <p class="text-lg font-bold text-primary">Cena 2</p>
+                    </div>
+                    <div class="col-span-2">
+                      <p class="text-sm text-slate-600">Sucursal Sur</p>
+                    </div>
+                    <div class="col-span-2">
+                      <span class="inline-flex px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-sm font-bold">Base</span>
+                    </div>
+                    <div class="col-span-3">
+                      <p class="text-sm text-slate-600">00:00 a 03:00</p>
+                    </div>
+                    <div class="col-span-2 flex justify-end">
+                      <button
+                        onclick="abrirModalEdicionServicio('Cena 2', 'Sucursal Sur', 'Base', '00:00', '03:00')"
+                        class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition"
+                      >
+                        Editar
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-12 items-center px-6 py-5 bg-white gap-4">
+                    <div class="col-span-3">
+                      <p class="text-lg font-bold text-primary">Box lunch</p>
+                    </div>
+                    <div class="col-span-2">
+                      <p class="text-sm text-slate-600">Sucursal Norte</p>
+                    </div>
+                    <div class="col-span-2">
+                      <span class="inline-flex px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-bold">Adicional</span>
+                    </div>
+                    <div class="col-span-3">
+                      <p class="text-sm text-slate-600">09:00 a 18:00</p>
+                    </div>
+                    <div class="col-span-2 flex justify-end">
+                      <button
+                        onclick="abrirModalEdicionServicio('Box lunch', 'Sucursal Norte', 'Adicional', '09:00', '18:00')"
+                        class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition"
+                      >
+                        Editar
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+          <aside class="xl:col-span-4">
+            <section>
+              <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-strong overflow-hidden">
+                <div class="p-8 border-b border-slate-200">
+                  <h2 class="text-3xl font-extrabold text-primary mb-2">Crear servicio</h2>
+                  <p class="text-lg text-slate-600">
+                    Registra un nuevo servicio, define su sucursal, tipo y horario de vigencia.
+                  </p>
+                </div>
+
+                <div class="p-8 space-y-6">
+                  <div>
+                    <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                      Nombre del servicio
+                    </label>
+                    <input
+                      id="nombreServicioCrear"
+                      class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                      placeholder="Ej: Colación fría"
+                      type="text"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                      Sucursal
+                    </label>
+                    <select
+                      id="sucursalServicioCrear"
+                      class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                    >
+                      <option selected disabled>Selecciona una sucursal</option>
+                      <option>Casa Matriz</option>
+                      <option>Sucursal Norte</option>
+                      <option>Sucursal Sur</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-3">
+                      Tipo de servicio
+                    </label>
+
+                    <div class="grid grid-cols-1 gap-4">
+                      <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
+                        <input checked class="border-slate-300 text-primary focus:ring-primary" name="tipoServicioCrear" type="radio" value="Base"/>
+                        <span class="text-base font-semibold text-slate-700">Base</span>
+                      </label>
+
+                      <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
+                        <input class="border-slate-300 text-primary focus:ring-primary" name="tipoServicioCrear" type="radio" value="Adicional"/>
+                        <span class="text-base font-semibold text-slate-700">Adicional</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                        Hora inicio
+                      </label>
+                      <input
+                        id="horaInicioCrear"
+                        class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                        type="time"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                        Hora término
+                      </label>
+                      <input
+                        id="horaFinCrear"
+                        class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                        type="time"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                    <button class="flex-1 h-16 rounded-2xl bg-primary hover:bg-blue-800 text-white text-lg font-extrabold transition flex items-center justify-center gap-3">
+                      <span class="material-symbols-outlined">add</span>
+                      Crear
+                    </button>
+
+                    <button onclick="limpiarFormularioCrearServicio()" class="sm:w-[160px] h-16 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-lg font-bold transition" type="button">
+                      Limpiar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </aside>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="modalEdicionServicio" class="hidden fixed inset-0 z-50">
+    <div class="absolute inset-0 bg-slate-900/40" onclick="cerrarModalEdicionServicio()"></div>
+
+    <div class="relative min-h-screen flex items-center justify-center p-4 sm:p-6">
+      <div class="w-full max-w-2xl max-h-[90vh] bg-surface-light rounded-3xl border border-slate-200 shadow-strong overflow-hidden flex flex-col">
+        <div class="p-8 border-b border-slate-200 flex items-start justify-between gap-4 shrink-0">
+          <div>
+            <h2 class="text-3xl font-extrabold text-primary mb-2">Editar servicio</h2>
+            <p class="text-lg text-slate-600">
+              Modifica la sucursal y el horario en que rige el servicio seleccionado.
+            </p>
+          </div>
+
+          <button
+            onclick="cerrarModalEdicionServicio()"
+            class="w-11 h-11 rounded-2xl border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 transition flex items-center justify-center shrink-0"
+            type="button"
+          >
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <div class="p-8 space-y-6 overflow-y-auto">
+          <div>
+            <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+              Nombre del servicio
+            </label>
+            <input
+              id="editarNombreServicio"
+              class="w-full rounded-2xl border border-slate-300 bg-slate-50 px-5 py-4 text-lg text-slate-500 outline-none"
+              type="text"
+              readonly
+            />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                Sucursal
+              </label>
+              <select
+                id="editarSucursalServicio"
+                class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+              >
+                <option>Casa Matriz</option>
+                <option>Sucursal Norte</option>
+                <option>Sucursal Sur</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                Tipo de servicio
+              </label>
+              <input
+                id="editarTipoServicio"
+                class="w-full rounded-2xl border border-slate-300 bg-slate-50 px-5 py-4 text-lg text-slate-500 outline-none"
+                type="text"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                Hora inicio
+              </label>
+              <input
+                id="editarHoraInicio"
+                class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                type="time"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                Hora término
+              </label>
+              <input
+                id="editarHoraFin"
+                class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                type="time"
+              />
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-4 pt-2">
+            <button onclick="window.location.href='admin_servicios.html'" class="flex-1 h-16 rounded-2xl bg-primary hover:bg-blue-800 text-white text-lg font-extrabold transition flex items-center justify-center gap-3">
+              <span class="material-symbols-outlined">save</span>
+              Guardar cambios
+            </button>
+
+            <button onclick="cerrarModalEdicionServicio()" class="sm:w-[160px] h-16 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-lg font-bold transition" type="button">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function abrirModalEdicionServicio(nombre, sucursal, tipo, inicio, fin) {
+      document.getElementById("editarNombreServicio").value = nombre;
+      document.getElementById("editarSucursalServicio").value = sucursal;
+      document.getElementById("editarTipoServicio").value = tipo;
+      document.getElementById("editarHoraInicio").value = inicio;
+      document.getElementById("editarHoraFin").value = fin;
+
+      document.getElementById("modalEdicionServicio").classList.remove("hidden");
+    }
+
+    function cerrarModalEdicionServicio() {
+      document.getElementById("modalEdicionServicio").classList.add("hidden");
+    }
+
+    function limpiarFormularioCrearServicio() {
+      document.getElementById("nombreServicioCrear").value = "";
+      document.getElementById("sucursalServicioCrear").selectedIndex = 0;
+      document.getElementById("horaInicioCrear").value = "";
+      document.getElementById("horaFinCrear").value = "";
+
+      var radiosTipo = document.getElementsByName("tipoServicioCrear");
+      for (var i = 0; i < radiosTipo.length; i++) {
+        if (radiosTipo[i].value === "Base") {
+          radiosTipo[i].checked = true;
+        } else {
+          radiosTipo[i].checked = false;
+        }
+      }
+    }
+  </script>
+</body>
+</html>

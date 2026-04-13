@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Inicio de sesión - ValeApp</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#14467d",
+            secondary: "#71ba65",
+            tertiary: "#d97706",
+            "background-light": "#f4f5f7",
+            "surface-light": "#ffffff",
+            "text-light": "#334155",
+            "on-surface-variant": "#64748b"
+          },
+          fontFamily: {
+            manrope: ["Manrope", "sans-serif"]
+          },
+          boxShadow: {
+            card: "0 8px 24px rgba(15, 23, 42, 0.08)",
+            strong: "0 12px 28px rgba(15, 23, 42, 0.14)"
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+
+    body {
+      font-family: "Manrope", sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-background-light text-text-light min-h-screen antialiased">
+  <div class="min-h-screen flex items-center justify-center px-6 py-10">
+    <div class="w-full max-w-md">
+      <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-strong overflow-hidden">
+        <div class="px-8 pt-8 pb-6 text-center border-b border-slate-200">
+          <div class="flex justify-center mb-5">
+            <img
+              alt="Logo ValeApp"
+              class="h-16 w-auto object-contain"
+              src="logo_valeapp.png"
+            />
+          </div>
+          <h1 class="text-3xl font-extrabold text-primary mb-2">Inicio de sesión</h1>
+          <p class="text-base text-slate-600">
+            Ingresa con tu código de usuario y contraseña.
+          </p>
+        </div>
+
+        <div class="p-8 space-y-6">
+          <div>
+            <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+              Código usuario
+            </label>
+            <select
+              id="codigoUsuario"
+              class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+            >
+              <option selected disabled>Selecciona un código</option>
+              <option value="ADM1203">ADM1203</option>
+              <option value="FUN1203">FUN1203</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+              Contraseña
+            </label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+              <input
+                id="contrasena"
+                class="w-full rounded-2xl border border-slate-300 bg-white pl-14 pr-14 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                type="password"
+                value="123456"
+              />
+              <button
+                type="button"
+                onclick="alternarContrasena()"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+              >
+                <span id="iconoContrasena" class="material-symbols-outlined">visibility</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
+            <p class="text-sm text-slate-600">
+              Prueba con <span class="font-bold text-slate-700">ADM1203</span> para administrador o
+              <span class="font-bold text-slate-700">FUN1203</span> para funcionario.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onclick="iniciarSesion()"
+            class="w-full h-16 rounded-2xl bg-primary hover:bg-blue-800 text-white text-lg font-extrabold transition flex items-center justify-center gap-3"
+          >
+            <span class="material-symbols-outlined">login</span>
+            Ingresar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function alternarContrasena() {
+      var input = document.getElementById("contrasena");
+      var icono = document.getElementById("iconoContrasena");
+
+      if (input.type === "password") {
+        input.type = "text";
+        icono.textContent = "visibility_off";
+      } else {
+        input.type = "password";
+        icono.textContent = "visibility";
+      }
+    }
+
+    function iniciarSesion() {
+      var codigo = document.getElementById("codigoUsuario").value;
+
+      if (codigo === "ADM1203") {
+        window.location.href = "Administrador/vista_principal.html";
+        return;
+      }
+
+      if (codigo === "FUN1203") {
+        window.location.href = "Funcionario/vista_principal.html";
+        return;
+      }
+
+      alert("Selecciona un código de usuario para continuar.");
+    }
+  </script>
+</body>
+</html>

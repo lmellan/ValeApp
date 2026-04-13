@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Panel Administrativo - ValeApp</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#14467d",
+            secondary: "#71ba65",
+            tertiary: "#d97706",
+            "background-light": "#f4f5f7",
+            "surface-light": "#ffffff",
+            "text-light": "#334155",
+            "on-surface-variant": "#64748b"
+          },
+          fontFamily: {
+            manrope: ["Manrope", "sans-serif"]
+          },
+          boxShadow: {
+            card: "0 8px 24px rgba(15, 23, 42, 0.08)",
+            strong: "0 12px 28px rgba(15, 23, 42, 0.14)"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-background-light text-text-light min-h-screen antialiased">
+  <div class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="w-full bg-surface-light border-b border-slate-200 shadow-sm">
+      <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+
+        <div class="flex items-center gap-4">
+          <img
+            alt="Logo ValeApp"
+            class="h-14 w-auto object-contain"
+            src="logo_valeapp.png"
+          />
+        </div>
+
+        <div class="flex items-center gap-6">
+          <div class="text-right leading-tight">
+            <p class="text-sm text-slate-500 font-medium">24 Oct</p>
+            <p class="text-xl font-bold text-primary tabular-nums">08:15</p>
+          </div>
+
+          <button onclick="window.location.href='../inicio_sesion.html'" class="h-14 px-6 rounded-2xl border border-slate-200 bg-white text-slate-600 text-lg font-bold hover:bg-slate-50 transition">
+            Cerrar sesión
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <main class="flex-1 w-full">
+      <div class="max-w-7xl mx-auto px-8 py-10">
+
+        <!-- Encabezado principal -->
+        <section class="mb-8 text-center">
+          <p class="text-sm font-bold uppercase tracking-[0.18em] text-secondary mb-3">
+            Panel administrativo
+          </p>
+          <h1 class="text-5xl font-extrabold text-primary tracking-tight">
+            Hola, Benjamin Vilches
+          </h1>
+ 
+        </section>
+
+ 
+        <!-- Accesos principales -->
+        <section class="mb-6">
+          <h2 class="text-3xl font-extrabold text-slate-600 mb-2">Módulos de administración</h2>
+          <p class="text-lg text-slate-500">Accede rápidamente a las configuraciones principales del sistema.</p>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mb-12">
+
+          <article onclick="window.location.href='admin_usuarios.html'" class="group cursor-pointer bg-surface-light shadow-card rounded-3xl overflow-hidden border border-slate-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(20,70,125,0.14)]">
+            <div class="p-8">
+              <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-5">
+                <span class="material-symbols-outlined text-primary text-4xl">manage_accounts</span>
+              </div>
+              <h3 class="text-3xl font-extrabold text-primary mb-3">Usuarios</h3>
+              <p class="text-lg text-slate-600 leading-relaxed">
+                Crea usuarios del sistema, edita sus datos y asignales un perfil.
+              </p>
+            </div>
+            <div class="h-2 w-full flex opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <div class="h-full w-2/3 bg-primary"></div>
+              <div class="h-full w-1/3 bg-secondary"></div>
+            </div>
+          </article>
+
+          <article onclick="window.location.href='admin_tipos_comensal.html'" class="group cursor-pointer bg-surface-light shadow-card rounded-3xl overflow-hidden border border-slate-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(20,70,125,0.14)]">
+            <div class="p-8">
+              <div class="w-16 h-16 rounded-2xl bg-secondary/15 flex items-center justify-center mb-5">
+                <span class="material-symbols-outlined text-secondary text-4xl">group</span>
+              </div>
+              <h3 class="text-3xl font-extrabold text-primary mb-3">Tipos de comensal</h3>
+              <p class="text-lg text-slate-600 leading-relaxed">
+                Define categorías como obrero, jefe o secretaria de gerencia y cuántos vales pueden emitir por turno.
+              </p>
+            </div>
+            <div class="h-2 w-full flex opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <div class="h-full w-2/3 bg-primary"></div>
+              <div class="h-full w-1/3 bg-secondary"></div>
+            </div>
+          </article>
+
+          <article onclick="window.location.href='admin_servicios.html'" class="group cursor-pointer bg-surface-light shadow-card rounded-3xl overflow-hidden border border-slate-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(20,70,125,0.14)]">
+            <div class="p-8">
+              <div class="w-16 h-16 rounded-2xl bg-tertiary/15 flex items-center justify-center mb-5">
+                <span class="material-symbols-outlined text-tertiary text-4xl">restaurant_menu</span>
+              </div>
+              <h3 class="text-3xl font-extrabold text-primary mb-3">Servicios</h3>
+              <p class="text-lg text-slate-600 leading-relaxed">
+                Mantén los servicios de alimentación, sus horarios y su disponibilidad en el sistema.
+              </p>
+            </div>
+            <div class="h-2 w-full flex opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <div class="h-full w-2/3 bg-primary"></div>
+              <div class="h-full w-1/3 bg-secondary"></div>
+            </div>
+          </article>
+
+          <article onclick="window.location.href='admin_reglas_vales.html'" class="group cursor-pointer bg-surface-light shadow-card rounded-3xl overflow-hidden border border-slate-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(20,70,125,0.14)]">
+            <div class="p-8">
+              <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-5">
+                <span class="material-symbols-outlined text-primary text-4xl">tune</span>
+              </div>
+              <h3 class="text-3xl font-extrabold text-primary mb-3">Reglas de vales</h3>
+              <p class="text-lg text-slate-600 leading-relaxed">
+                Configura el valor del vale según servicio y tipo de comensal, además de sus reglas de emisión.
+              </p>
+            </div>
+            <div class="h-2 w-full flex opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <div class="h-full w-2/3 bg-primary"></div>
+              <div class="h-full w-1/3 bg-secondary"></div>
+            </div>
+          </article>
+
+          <article onclick="window.location.href='admin_vales_adicionales.html'" class="group cursor-pointer bg-surface-light shadow-card rounded-3xl overflow-hidden border border-slate-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(20,70,125,0.14)]">
+            <div class="p-8">
+              <div class="w-16 h-16 rounded-2xl bg-secondary/15 flex items-center justify-center mb-5">
+                <span class="material-symbols-outlined text-secondary text-4xl">add_card</span>
+              </div>
+              <h3 class="text-3xl font-extrabold text-primary mb-3">Vales adicionales</h3>
+              <p class="text-lg text-slate-600 leading-relaxed">
+                Genera vales especiales para reuniones, visitas u otras necesidades excepcionales de alimentación.
+              </p>
+            </div>
+            <div class="h-2 w-full flex opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <div class="h-full w-2/3 bg-primary"></div>
+              <div class="h-full w-1/3 bg-secondary"></div>
+            </div>
+          </article>
+
+          <article onclick="window.location.href='admin_reportes.html'" class="group cursor-pointer bg-surface-light shadow-card rounded-3xl overflow-hidden border border-slate-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(20,70,125,0.14)]">
+            <div class="p-8">
+              <div class="w-16 h-16 rounded-2xl bg-tertiary/15 flex items-center justify-center mb-5">
+                <span class="material-symbols-outlined text-tertiary text-4xl">assessment</span>
+              </div>
+              <h3 class="text-3xl font-extrabold text-primary mb-3">Reportes</h3>
+              <p class="text-lg text-slate-600 leading-relaxed">
+                Consulta informes de auditoría, vales emitidos, utilizados, no utilizados y comportamiento del beneficio.
+              </p>
+            </div>
+            <div class="h-2 w-full flex opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <div class="h-full w-2/3 bg-primary"></div>
+              <div class="h-full w-1/3 bg-secondary"></div>
+            </div>
+          </article>
+
+        </section>
+
+        <!-- Actividad reciente -->
+        <section class="mb-6">
+          <h2 class="text-3xl font-extrabold text-slate-600 mb-2">Actividad reciente</h2>
+        </section>
+
+        <section class="bg-surface-light rounded-3xl border border-slate-200 shadow-card overflow-hidden">
+          <div class="grid grid-cols-12 bg-slate-50 px-6 py-4 border-b border-slate-200">
+            <div class="col-span-4 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Fecha</div>
+            <div class="col-span-4 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Acción</div>
+            <div class="col-span-4 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Detalle</div>
+          </div>
+
+          <div class="divide-y divide-slate-200">
+            <div class="grid grid-cols-12 px-6 py-5 bg-white">
+              <div class="col-span-4 text-lg font-bold text-primary">24/10/2026 08:02</div>
+              <div class="col-span-4 text-lg text-slate-700">Nuevo usuario creado</div>
+              <div class="col-span-4 text-lg text-slate-500">Se registró a María Soto como funcionaria y se notificó por correo</div>
+            </div>
+
+            <div class="grid grid-cols-12 px-6 py-5 bg-white">
+              <div class="col-span-4 text-lg font-bold text-primary">24/10/2026 07:55</div>
+              <div class="col-span-4 text-lg text-slate-700">Tipo de comensal actualizado</div>
+              <div class="col-span-4 text-lg text-slate-500">Secretaria de gerencia quedó habilitada para múltiples vales por turno</div>
+            </div>
+
+            <div class="grid grid-cols-12 px-6 py-5 bg-white">
+              <div class="col-span-4 text-lg font-bold text-primary">24/10/2026 07:40</div>
+              <div class="col-span-4 text-lg text-slate-700">Servicio actualizado</div>
+              <div class="col-span-4 text-lg text-slate-500">Se ajustó horario de desayuno en sucursal norte</div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>

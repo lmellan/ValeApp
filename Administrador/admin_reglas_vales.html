@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Reglas de Vales - ValeApp</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#14467d",
+            secondary: "#71ba65",
+            tertiary: "#d97706",
+            "background-light": "#f4f5f7",
+            "surface-light": "#ffffff",
+            "text-light": "#334155",
+            "on-surface-variant": "#64748b"
+          },
+          fontFamily: {
+            manrope: ["Manrope", "sans-serif"]
+          },
+          boxShadow: {
+            card: "0 8px 24px rgba(15, 23, 42, 0.08)",
+            strong: "0 12px 28px rgba(15, 23, 42, 0.14)"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-background-light text-text-light min-h-screen antialiased">
+  <div class="min-h-screen flex flex-col">
+
+    <header class="w-full bg-surface-light border-b border-slate-200 shadow-sm">
+      <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <img
+            alt="Logo ValeApp"
+            class="h-14 w-auto object-contain"
+            src="logo_valeapp.png"
+          />
+        </div>
+
+        <div class="flex items-center gap-6">
+          <div class="text-right leading-tight">
+            <p class="text-sm text-slate-500 font-medium">24 Oct</p>
+            <p class="text-xl font-bold text-primary tabular-nums">08:15</p>
+          </div>
+
+          <button onclick="window.location.href='../inicio_sesion.html'" class="h-14 px-6 rounded-2xl border border-slate-200 bg-white text-slate-600 text-lg font-bold hover:bg-slate-50 transition">
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 w-full">
+      <div class="max-w-7xl mx-auto px-8 py-10">
+
+        <section class="mb-8">
+          <button
+            onclick="window.location.href='vista_principal.html'"
+            class="inline-flex items-center gap-3 self-start rounded-2xl border border-slate-200 bg-surface-light px-5 py-3 text-base font-extrabold text-primary shadow-sm hover:bg-slate-50 transition"
+          >
+            <span class="material-symbols-outlined text-[22px]">arrow_back</span>
+            Volver al panel
+          </button>
+        </section>
+
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+
+          <div class="xl:col-span-8 space-y-8">
+
+            <section>
+              <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-8">
+                <div class="mb-6">
+                  <h1 class="text-4xl font-extrabold text-primary mb-2">Reglas de vales</h1>
+                  <p class="text-lg text-slate-600">
+                    Define el valor del vale según la combinación entre tipo de comensal y servicio.
+                  </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                  <div class="lg:col-span-1">
+                    <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                      Tipo de comensal
+                    </label>
+                    <select class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition">
+                      <option>Todos</option>
+                      <option>Obrero</option>
+                      <option>Jefe</option>
+                      <option>Gerente</option>
+                      <option>Secretaria gerencia</option>
+                    </select>
+                  </div>
+
+                  <div class="lg:col-span-1">
+                    <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                      Servicio
+                    </label>
+                    <select class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition">
+                      <option>Todos</option>
+                      <option>Desayuno</option>
+                      <option>Almuerzo</option>
+                      <option>Once</option>
+                      <option>Cena 1</option>
+                      <option>Cena 2</option>
+                      <option>Box lunch</option>
+                    </select>
+                  </div>
+
+                  <div class="lg:col-span-1">
+                    <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                      Buscar regla
+                    </label>
+                    <div class="relative">
+                      <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                      <input
+                        class="w-full rounded-2xl border border-slate-300 bg-white pl-14 pr-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                        placeholder="Ej: Obrero, Almuerzo..."
+                        type="text"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card overflow-hidden">
+                <div class="grid grid-cols-12 bg-slate-50 px-6 py-4 border-b border-slate-200">
+                  <div class="col-span-3 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Tipo de comensal</div>
+                  <div class="col-span-3 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Servicio</div>
+                  <div class="col-span-3 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Valor del vale</div>
+                  <div class="col-span-3 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant text-right">Acción</div>
+                </div>
+
+                <div class="divide-y divide-slate-200">
+
+                  <div class="grid grid-cols-12 items-center px-6 py-5 bg-white gap-4">
+                    <div class="col-span-3">
+                      <p class="text-lg font-bold text-primary">Obrero</p>
+                    </div>
+                    <div class="col-span-3">
+                      <p class="text-sm text-slate-700">Desayuno</p>
+                    </div>
+                    <div class="col-span-3">
+                      <p class="text-lg font-bold text-slate-700">$2.500</p>
+                    </div>
+                    <div class="col-span-3 flex justify-end">
+                      <button onclick="abrirModalEdicionRegla('Obrero', 'Desayuno', '2500')" class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition">
+                        Editar
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-12 items-center px-6 py-5 bg-white gap-4">
+                    <div class="col-span-3">
+                      <p class="text-lg font-bold text-primary">Obrero</p>
+                    </div>
+                    <div class="col-span-3">
+                      <p class="text-sm text-slate-700">Almuerzo</p>
+                    </div>
+                    <div class="col-span-3">
+                      <p class="text-lg font-bold text-slate-700">$3.000</p>
+                    </div>
+                    <div class="col-span-3 flex justify-end">
+                      <button onclick="abrirModalEdicionRegla('Obrero', 'Almuerzo', '3000')" class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition">
+                        Editar
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-12 items-center px-6 py-5 bg-white gap-4">
+                    <div class="col-span-3">
+                      <p class="text-lg font-bold text-primary">Jefe</p>
+                    </div>
+                    <div class="col-span-3">
+                      <p class="text-sm text-slate-700">Almuerzo</p>
+                    </div>
+                    <div class="col-span-3">
+                      <p class="text-lg font-bold text-slate-700">$4.500</p>
+                    </div>
+                    <div class="col-span-3 flex justify-end">
+                      <button onclick="abrirModalEdicionRegla('Jefe', 'Almuerzo', '4500')" class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition">
+                        Editar
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-12 items-center px-6 py-5 bg-white gap-4">
+                    <div class="col-span-3">
+                      <p class="text-lg font-bold text-primary">Gerente</p>
+                    </div>
+                    <div class="col-span-3">
+                      <p class="text-sm text-slate-700">Almuerzo</p>
+                    </div>
+                    <div class="col-span-3">
+                      <p class="text-lg font-bold text-slate-700">$6.000</p>
+                    </div>
+                    <div class="col-span-3 flex justify-end">
+                      <button onclick="abrirModalEdicionRegla('Gerente', 'Almuerzo', '6000')" class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition">
+                        Editar
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-12 items-center px-6 py-5 bg-white gap-4">
+                    <div class="col-span-3">
+                      <p class="text-lg font-bold text-primary">Secretaria gerencia</p>
+                    </div>
+                    <div class="col-span-3">
+                      <p class="text-sm text-slate-700">Box lunch</p>
+                    </div>
+                    <div class="col-span-3">
+                      <p class="text-lg font-bold text-slate-700">$5.500</p>
+                    </div>
+                    <div class="col-span-3 flex justify-end">
+                      <button onclick="abrirModalEdicionRegla('Secretaria gerencia', 'Box lunch', '5500')" class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition">
+                        Editar
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+          <aside class="xl:col-span-4">
+            <section>
+              <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-strong overflow-hidden">
+                <div class="p-8 border-b border-slate-200">
+                  <h2 class="text-3xl font-extrabold text-primary mb-2">Crear regla</h2>
+                  <p class="text-lg text-slate-600">
+                    Registra una nueva combinación entre tipo de comensal y servicio, y define su valor.
+                  </p>
+                </div>
+
+                <div class="p-8 space-y-6">
+                  <div>
+                    <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                      Tipo de comensal
+                    </label>
+                    <select id="tipoComensalCrear" class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition">
+                      <option selected disabled>Selecciona un tipo de comensal</option>
+                      <option>Obrero</option>
+                      <option>Jefe</option>
+                      <option>Gerente</option>
+                      <option>Secretaria gerencia</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                      Servicio
+                    </label>
+                    <select id="servicioReglaCrear" class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition">
+                      <option selected disabled>Selecciona un servicio</option>
+                      <option>Desayuno</option>
+                      <option>Almuerzo</option>
+                      <option>Once</option>
+                      <option>Cena 1</option>
+                      <option>Cena 2</option>
+                      <option>Box lunch</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                      Valor del vale
+                    </label>
+                    <div class="relative">
+                      <span class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 text-lg font-bold">$</span>
+                      <input
+                        id="valorValeCrear"
+                        class="w-full rounded-2xl border border-slate-300 bg-white pl-10 pr-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                        placeholder="Ej: 3000"
+                        type="number"
+                        min="0"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                    <button class="flex-1 h-16 rounded-2xl bg-primary hover:bg-blue-800 text-white text-lg font-extrabold transition flex items-center justify-center gap-3">
+                      <span class="material-symbols-outlined">add</span>
+                      Crear
+                    </button>
+
+                    <button onclick="limpiarFormularioCrearRegla()" class="sm:w-[160px] h-16 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-lg font-bold transition" type="button">
+                      Limpiar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </aside>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="modalEdicionRegla" class="hidden fixed inset-0 z-50">
+    <div class="absolute inset-0 bg-slate-900/40" onclick="cerrarModalEdicionRegla()"></div>
+
+    <div class="relative min-h-screen flex items-center justify-center p-4 sm:p-6">
+      <div class="w-full max-w-2xl max-h-[90vh] bg-surface-light rounded-3xl border border-slate-200 shadow-strong overflow-hidden flex flex-col">
+        <div class="p-8 border-b border-slate-200 flex items-start justify-between gap-4 shrink-0">
+          <div>
+            <h2 class="text-3xl font-extrabold text-primary mb-2">Editar regla</h2>
+            <p class="text-lg text-slate-600">
+              Modifica el valor del vale para la combinación seleccionada.
+            </p>
+          </div>
+
+          <button
+            onclick="cerrarModalEdicionRegla()"
+            class="w-11 h-11 rounded-2xl border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 transition flex items-center justify-center shrink-0"
+            type="button"
+          >
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <div class="p-8 space-y-6 overflow-y-auto">
+          <div>
+            <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+              Tipo de comensal
+            </label>
+            <input
+              id="editarTipoComensal"
+              class="w-full rounded-2xl border border-slate-300 bg-slate-50 px-5 py-4 text-lg text-slate-500 outline-none"
+              type="text"
+              readonly
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+              Servicio
+            </label>
+            <input
+              id="editarServicioRegla"
+              class="w-full rounded-2xl border border-slate-300 bg-slate-50 px-5 py-4 text-lg text-slate-500 outline-none"
+              type="text"
+              readonly
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+              Valor del vale
+            </label>
+            <div class="relative">
+              <span class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 text-lg font-bold">$</span>
+              <input
+                id="editarValorVale"
+                class="w-full rounded-2xl border border-slate-300 bg-white pl-10 pr-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                placeholder="Ej: 3000"
+                type="number"
+                min="0"
+              />
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-4 pt-2">
+            <button onclick="window.location.href='admin_reglas_vales.html'" class="flex-1 h-16 rounded-2xl bg-primary hover:bg-blue-800 text-white text-lg font-extrabold transition flex items-center justify-center gap-3">
+              <span class="material-symbols-outlined">save</span>
+              Guardar cambios
+            </button>
+
+            <button onclick="cerrarModalEdicionRegla()" class="sm:w-[160px] h-16 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-lg font-bold transition" type="button">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function abrirModalEdicionRegla(tipoComensal, servicio, valor) {
+      document.getElementById("editarTipoComensal").value = tipoComensal;
+      document.getElementById("editarServicioRegla").value = servicio;
+      document.getElementById("editarValorVale").value = valor;
+
+      document.getElementById("modalEdicionRegla").classList.remove("hidden");
+    }
+
+    function cerrarModalEdicionRegla() {
+      document.getElementById("modalEdicionRegla").classList.add("hidden");
+    }
+
+    function limpiarFormularioCrearRegla() {
+      document.getElementById("tipoComensalCrear").selectedIndex = 0;
+      document.getElementById("servicioReglaCrear").selectedIndex = 0;
+      document.getElementById("valorValeCrear").value = "";
+    }
+  </script>
+</body>
+</html>

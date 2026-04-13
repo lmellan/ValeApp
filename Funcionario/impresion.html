@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Vale emitido - ValeApp</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#14467d",
+            secondary: "#71ba65",
+            tertiary: "#d97706",
+            "background-light": "#f4f5f7",
+            "surface-light": "#ffffff",
+            "text-light": "#334155",
+            "on-surface-variant": "#64748b",
+            "outline-variant": "#e2e8f0"
+          },
+          fontFamily: {
+            manrope: ["Manrope", "sans-serif"]
+          },
+          boxShadow: {
+            card: "0 8px 24px rgba(15, 23, 42, 0.08)",
+            strong: "0 12px 28px rgba(15, 23, 42, 0.14)",
+            ticket: "0 16px 36px rgba(20, 70, 125, 0.14)"
+          },
+          borderRadius: {
+            DEFAULT: "0.75rem",
+            lg: "1rem",
+            xl: "1.25rem",
+            "2xl": "1.5rem",
+            "3xl": "1.75rem"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .bg-sage-light {
+      background-color: rgba(113, 186, 101, 0.15);
+    }
+
+    .bg-amber-soft {
+      background-color: rgba(217, 119, 6, 0.12);
+    }
+  </style>
+</head>
+
+<body class="bg-background-light text-text-light min-h-screen antialiased">
+  <div class="min-h-screen flex flex-col">
+
+    <header class="w-full bg-surface-light border-b border-slate-200 shadow-sm">
+      <div class="max-w-6xl mx-auto px-8 py-5 flex items-center justify-between">
+
+        <div class="flex items-center gap-4">
+          <img
+            alt="Logo ValeApp"
+            class="h-14 w-auto object-contain"
+            src="logo_valeapp.png"
+          />
+        </div>
+
+        <div class="flex items-center gap-6">
+          <div class="text-right leading-tight">
+            <p id="fechaActual" class="text-sm text-slate-500 font-medium">-- ---</p>
+            <p id="horaActual" class="text-xl font-bold text-primary tabular-nums">--:--</p>
+          </div>
+
+          <button
+            onclick="window.location.href='../inicio_sesion.html'"
+            class="h-14 px-6 rounded-2xl border border-slate-200 bg-white text-slate-600 text-lg font-bold hover:bg-slate-50 transition"
+          >
+            Cerrar sesión
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <main class="flex-1 w-full">
+      <div class="max-w-6xl mx-auto px-8 py-10">
+
+        <section class="mb-8 text-center">
+          <div class="w-24 h-24 bg-sage-light rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <span class="material-symbols-outlined text-secondary text-6xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+          </div>
+
+          <h2 class="text-5xl font-extrabold text-primary tracking-tight">
+            Vale emitido correctamente
+          </h2>
+
+          <p class="mt-4 text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+            Este vale es personal e intransferible. Será validado en el casino al momento del canje.
+            Una vez emitido, no puede generarse otro para el mismo horario.
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <div class="rounded-3xl border border-amber-200 bg-amber-soft px-7 py-6 shadow-card">
+            <div class="flex items-start gap-4">
+              <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center border border-amber-200 shrink-0">
+                <span class="material-symbols-outlined text-tertiary text-3xl">print</span>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-2xl font-extrabold text-primary mb-2">Tu vale se está imprimiendo</h3>
+                <p class="text-lg leading-relaxed text-slate-700 mb-3">
+                  Serás redirigido automáticamente en
+                  <span id="contadorRedireccion" class="font-extrabold text-primary">2</span> segundos.
+                </p>
+                <div class="w-full h-3 bg-white/80 rounded-full overflow-hidden border border-amber-200">
+                  <div id="barraTiempo" class="h-full bg-tertiary rounded-full transition-all duration-1000" style="width: 100%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="w-full">
+          <div class="bg-surface-light rounded-3xl shadow-ticket overflow-hidden border border-slate-200">
+
+            <div class="bg-primary p-8 flex justify-between items-center">
+              <div>
+                <span class="text-white/60 text-sm font-extrabold uppercase tracking-[0.22em] block mb-2">
+                  Vale de alimentación
+                </span>
+                <h3 class="text-white text-4xl font-extrabold tracking-tight">
+                  Desayuno
+                </h3>
+              </div>
+
+              <div class="bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/10">
+                <span class="material-symbols-outlined text-white text-4xl">restaurant</span>
+              </div>
+            </div>
+
+            <div class="p-8">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-10 mb-10">
+                <div>
+                  <p class="text-sm font-bold text-on-surface-variant uppercase tracking-[0.16em] mb-2">Número del vale</p>
+                  <p class="text-3xl font-extrabold text-primary">#2940-X92</p>
+                </div>
+
+                <div class="md:text-right">
+                  <p class="text-sm font-bold text-on-surface-variant uppercase tracking-[0.16em] mb-2">Valor del vale</p>
+                  <p class="text-3xl font-extrabold text-secondary">$5.000</p>
+                </div>
+
+                <div>
+                  <p class="text-sm font-bold text-on-surface-variant uppercase tracking-[0.16em] mb-2">Horario de uso</p>
+                  <p class="text-2xl font-bold text-primary">09:00 — 10:00</p>
+                </div>
+
+                <div class="md:text-right">
+                  <p class="text-sm font-bold text-on-surface-variant uppercase tracking-[0.16em] mb-2">Fecha de impresión</p>
+                  <p id="fechaImpresion" class="text-2xl font-bold text-primary">--/--/---- --:--</p>
+                </div>
+              </div>
+
+              <div class="relative h-px w-full flex items-center justify-center overflow-visible mb-10">
+                <div class="w-[90%] border-t border-dashed border-slate-300"></div>
+              </div>
+
+              <div class="flex flex-col items-center bg-white">
+                <div class="p-5 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-300">
+                  <img
+                    alt="QR Code"
+                    class="w-56 h-56"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlbcWi2Wu2i2V8M-DJjaq4nak_PMdZFBm_odDmbnY1fbSLnJV37PRQh9EchxD8L_VJpCUCzd3_FSUe8OqwMmaZPep6rlngsTH9s6m9I7ttYhs8Fb-ZNVklRhpPxXPvI4Viiwwt9rvje4KkW8FF0MAtnQS5YmxzcHwq7Ii0pLwHdGIkgsV-6TDyMvt9r6SmjOn-vQ0ICL3pL0fbBpMJqyDIDCYYYHrD8Mqx-fVR00m-51cQyDfkTwammaDglNG_byjsy1Fehkak97g"
+                  />
+                </div>
+
+                <p class="mt-5 text-xs text-on-surface-variant font-bold tracking-[0.25em] uppercase text-center">
+                  Validación digital ValeApp
+                </p>
+              </div>
+            </div>
+
+            <div class="h-2 w-full flex">
+              <div class="h-full w-2/3 bg-primary"></div>
+              <div class="h-full w-1/3 bg-secondary"></div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+<script>
+  var REDIRECCION_MS = 2000;
+  var destinoRedireccion = "../inicio_sesion.html";
+
+  function actualizarFechaHora() {
+    var ahora = new Date();
+
+    var fechaCorta = ahora.toLocaleDateString("es-CL", {
+      day: "2-digit",
+      month: "short"
+    });
+
+    var hora = ahora.toLocaleTimeString("es-CL", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    });
+
+    var fechaImpresionTexto = ahora.toLocaleDateString("es-CL", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    }) + " " + ahora.toLocaleTimeString("es-CL", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    });
+
+    document.getElementById("fechaActual").textContent = fechaCorta;
+    document.getElementById("horaActual").textContent = hora;
+    document.getElementById("fechaImpresion").textContent = fechaImpresionTexto;
+  }
+
+  function iniciarRedireccion() {
+    var segundosRestantes = Math.ceil(REDIRECCION_MS / 1000);
+    var contador = document.getElementById("contadorRedireccion");
+    var barra = document.getElementById("barraTiempo");
+
+    contador.textContent = segundosRestantes;
+    barra.style.width = "100%";
+
+    var intervalo = setInterval(function () {
+      segundosRestantes = segundosRestantes - 1;
+
+      if (segundosRestantes < 0) {
+        clearInterval(intervalo);
+        return;
+      }
+
+      contador.textContent = segundosRestantes;
+
+      var porcentaje = (segundosRestantes / (REDIRECCION_MS / 1000)) * 100;
+      barra.style.width = porcentaje + "%";
+    }, 1000);
+
+    setTimeout(function () {
+      window.location.href = destinoRedireccion;
+    }, REDIRECCION_MS);
+  }
+
+  actualizarFechaHora();
+  setInterval(actualizarFechaHora, 1000);
+  iniciarRedireccion();
+</script>
+</body>
+</html>

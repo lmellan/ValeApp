@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Vales Adicionales - ValeApp</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#14467d",
+            secondary: "#71ba65",
+            tertiary: "#d97706",
+            "background-light": "#f4f5f7",
+            "surface-light": "#ffffff",
+            "text-light": "#334155",
+            "on-surface-variant": "#64748b"
+          },
+          fontFamily: {
+            manrope: ["Manrope", "sans-serif"]
+          },
+          boxShadow: {
+            card: "0 8px 24px rgba(15, 23, 42, 0.08)",
+            strong: "0 12px 28px rgba(15, 23, 42, 0.14)"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-background-light text-text-light min-h-screen antialiased">
+  <div class="min-h-screen flex flex-col">
+
+    <header class="w-full bg-surface-light border-b border-slate-200 shadow-sm">
+      <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <img
+            alt="Logo ValeApp"
+            class="h-14 w-auto object-contain"
+            src="logo_valeapp.png"
+          />
+        </div>
+
+        <div class="flex items-center gap-6">
+          <div class="text-right leading-tight">
+            <p class="text-sm text-slate-500 font-medium">24 Oct</p>
+            <p class="text-xl font-bold text-primary tabular-nums">08:15</p>
+          </div>
+
+          <button onclick="window.location.href='../inicio_sesion.html'" class="h-14 px-6 rounded-2xl border border-slate-200 bg-white text-slate-600 text-lg font-bold hover:bg-slate-50 transition">
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 w-full">
+      <div class="max-w-7xl mx-auto px-8 py-10">
+
+        <section class="mb-8">
+          <button
+            onclick="window.location.href='vista_principal.html'"
+            class="inline-flex items-center gap-3 self-start rounded-2xl border border-slate-200 bg-surface-light px-5 py-3 text-base font-extrabold text-primary shadow-sm hover:bg-slate-50 transition"
+          >
+            <span class="material-symbols-outlined text-[22px]">arrow_back</span>
+            Volver al panel
+          </button>
+        </section>
+
+        <section class="mb-8">
+          <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-8">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div>
+                <h1 class="text-4xl font-extrabold text-primary mb-2">Vales adicionales</h1>
+                <p class="text-lg text-slate-600">
+                  Administra las asignaciones de vales adicionales realizadas a funcionarios para su posterior impresión en tótems.
+                </p>
+              </div>
+
+              <button
+                onclick="window.location.href='admin_crear_asignacion_vale_adicional.html'"
+                class="inline-flex items-center justify-center gap-3 rounded-2xl bg-primary hover:bg-blue-800 text-white px-6 py-4 text-lg font-extrabold transition"
+              >
+                <span class="material-symbols-outlined">add</span>
+                Crear asignación
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card overflow-hidden">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 px-6 py-5 bg-slate-50 border-b border-slate-200">
+              <div>
+                <h2 class="text-2xl font-extrabold text-primary">Historial de asignaciones</h2>
+                <p class="text-sm text-slate-500 mt-1">Registro cronológico de vales adicionales asignados.</p>
+              </div>
+
+              <div class="w-full lg:w-[220px]">
+                <label class="block text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2 lg:text-right">
+                  Ordenar por
+                </label>
+                <select class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition">
+                  <option>Más reciente</option>
+                  <option>Más antiguo</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="min-w-full table-fixed border-collapse">
+                <thead class="bg-slate-50">
+                  <tr class="border-b border-slate-200">
+                    <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant w-[150px]">
+                      Fecha asignación
+                    </th>
+                    <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant w-[140px]">
+                      Fecha uso
+                    </th>
+                    <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant w-[220px]">
+                      Funcionario
+                    </th>
+                    <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant w-[170px]">
+                      Servicio
+                    </th>
+                    <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant w-[110px]">
+                      Cantidad
+                    </th>
+                    <th class="px-6 py-4 text-left text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant min-w-[260px]">
+                      Motivo
+                    </th>
+                    <th class="px-6 py-4 text-right text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant w-[140px]">
+                      Acción
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody class="divide-y divide-slate-200">
+                  <tr class="bg-white">
+                    <td class="px-6 py-5 text-sm font-semibold text-slate-700">25/10/2026</td>
+                    <td class="px-6 py-5 text-sm font-semibold text-slate-700">26/10/2026</td>
+                    <td class="px-6 py-5">
+                      <p class="text-sm font-semibold text-slate-700">Lorna Mella</p>
+                      <p class="text-xs text-slate-500">Obrero · Vale normal por turno</p>
+                    </td>
+                    <td class="px-6 py-5 text-sm text-slate-700">Box lunch</td>
+                    <td class="px-6 py-5 text-sm text-slate-700">1</td>
+                    <td class="px-6 py-5 text-sm text-slate-600">Capacitación interna</td>
+                    <td class="px-6 py-5 text-right">
+                      <button
+                        onclick="abrirModalEdicionVale('Lorna Mella', 'Obrero', 'Vale normal por turno', 'Box lunch', '1', '2026-10-26', 'Capacitación interna')"
+                        class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition"
+                      >
+                        Editar
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr class="bg-white">
+                    <td class="px-6 py-5 text-sm font-semibold text-slate-700">24/10/2026</td>
+                    <td class="px-6 py-5 text-sm font-semibold text-slate-700">24/10/2026</td>
+                    <td class="px-6 py-5">
+                      <p class="text-sm font-semibold text-slate-700">Rock Dabre</p>
+                      <p class="text-xs text-slate-500">Jefe · Vale normal por turno</p>
+                    </td>
+                    <td class="px-6 py-5 text-sm text-slate-700">Coffee break</td>
+                    <td class="px-6 py-5 text-sm text-slate-700">1</td>
+                    <td class="px-6 py-5 text-sm text-slate-600">Reunión de coordinación mensual</td>
+                    <td class="px-6 py-5 text-right">
+                      <button
+                        onclick="abrirModalEdicionVale('Rock Dabre', 'Jefe', 'Vale normal por turno', 'Coffee break', '1', '2026-10-24', 'Reunión de coordinación mensual')"
+                        class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition"
+                      >
+                        Editar
+                      </button>
+                    </td>
+                  </tr>
+ 
+
+                  <tr class="bg-white">
+                    <td class="px-6 py-5 text-sm font-semibold text-slate-700">23/10/2026</td>
+                    <td class="px-6 py-5 text-sm font-semibold text-slate-700">24/10/2026</td>
+                    <td class="px-6 py-5">
+                      <p class="text-sm font-semibold text-slate-700">Tito Titon</p>
+                      <p class="text-xs text-slate-500">Secretaria gerencia · Emisión múltiple por turno</p>
+                    </td>
+                    <td class="px-6 py-5 text-sm text-slate-700">Box lunch</td>
+                    <td class="px-6 py-5 text-sm text-slate-700">3</td>
+                    <td class="px-6 py-5 text-sm text-slate-600">Atención de visitas gerenciales</td>
+                    <td class="px-6 py-5 text-right">
+                      <button
+                        onclick="abrirModalEdicionVale('Tito Titon', 'Secretaria gerencia', 'Emisión múltiple por turno', 'Box lunch', '3', '2026-10-24', 'Atención de visitas gerenciales')"
+                        class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition"
+                      >
+                        Editar
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <div id="modalEdicionVale" class="hidden fixed inset-0 z-50">
+    <div class="absolute inset-0 bg-slate-900/40" onclick="cerrarModalEdicionVale()"></div>
+
+    <div class="relative min-h-screen flex items-center justify-center p-4 sm:p-6">
+      <div class="w-full max-w-2xl max-h-[90vh] bg-surface-light rounded-3xl border border-slate-200 shadow-strong overflow-hidden flex flex-col">
+        <div class="p-8 border-b border-slate-200 flex items-start justify-between gap-4 shrink-0">
+          <div>
+            <h2 class="text-3xl font-extrabold text-primary mb-2">Editar asignación</h2>
+            <p class="text-lg text-slate-600">
+              Modifica la cantidad, la fecha de canje y el servicio asignado para el vale adicional seleccionado.
+            </p>
+          </div>
+
+          <button
+            onclick="cerrarModalEdicionVale()"
+            class="w-11 h-11 rounded-2xl border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 transition flex items-center justify-center shrink-0"
+            type="button"
+          >
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <div class="p-8 space-y-6 overflow-y-auto">
+          <div>
+            <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+              Funcionario
+            </label>
+            <input
+              id="editarFuncionarioVale"
+              class="w-full rounded-2xl border border-slate-300 bg-slate-50 px-5 py-4 text-lg text-slate-500 outline-none"
+              type="text"
+              readonly
+            />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                Tipo de comensal
+              </label>
+              <input
+                id="editarComensalVale"
+                class="w-full rounded-2xl border border-slate-300 bg-slate-50 px-5 py-4 text-lg text-slate-500 outline-none"
+                type="text"
+                readonly
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                Modalidad de emisión
+              </label>
+              <input
+                id="editarModalidadVale"
+                class="w-full rounded-2xl border border-slate-300 bg-slate-50 px-5 py-4 text-lg text-slate-500 outline-none"
+                type="text"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div id="mensajeEdicionValeNormal" class="hidden rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4">
+            <p class="text-sm text-amber-800 leading-relaxed">
+              La cantidad de vales adicionales se fija automáticamente en <span class="font-bold">1</span>, ya que el usuario no podrá canjear este vale más de una vez y, si tiene otro vale asignado cuyo horario de validez coincide, solo podrá hacer uso de uno de los dos.
+            </p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+              Servicio
+            </label>
+            <select
+              id="editarServicioVale"
+              class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+            >
+              <option>Desayuno</option>
+              <option>Almuerzo</option>
+              <option>Once</option>
+              <option>Cena 1</option>
+              <option>Cena 2</option>
+              <option>Box lunch</option>
+              <option>Coffee break</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                Cantidad
+              </label>
+              <input
+                id="editarCantidadVales"
+                class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                type="number"
+                min="1"
+              />
+              <p id="ayudaCantidadEdicion" class="mt-2 text-sm text-slate-500">
+                Ajusta la cantidad según la modalidad del funcionario.
+              </p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                Fecha de canje
+              </label>
+              <input
+                id="editarFechaCanjeVale"
+                class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                type="date"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+              Motivo / referencia
+            </label>
+            <textarea
+              id="editarMotivoVale"
+              class="w-full rounded-2xl border border-slate-300 bg-slate-50 px-5 py-4 text-lg text-slate-500 outline-none min-h-[120px] resize-none"
+              readonly
+            ></textarea>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-4 pt-2">
+            <button onclick="window.location.href='admin_vales_adicionales.html'" class="flex-1 h-16 rounded-2xl bg-primary hover:bg-blue-800 text-white text-lg font-extrabold transition flex items-center justify-center gap-3">
+              <span class="material-symbols-outlined">save</span>
+              Guardar cambios
+            </button>
+
+            <button onclick="cerrarModalEdicionVale()" class="sm:w-[160px] h-16 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-lg font-bold transition" type="button">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function configurarCantidadEdicion(modalidad, cantidadActual) {
+      var campoCantidad = document.getElementById("editarCantidadVales");
+      var ayudaCantidad = document.getElementById("ayudaCantidadEdicion");
+      var mensaje = document.getElementById("mensajeEdicionValeNormal");
+
+      if (modalidad === "Vale normal por turno") {
+        campoCantidad.value = "1";
+        campoCantidad.disabled = true;
+        campoCantidad.classList.remove("bg-white", "text-slate-700");
+        campoCantidad.classList.add("bg-slate-50", "text-slate-500");
+        ayudaCantidad.textContent = "La cantidad queda fija en 1 para este funcionario.";
+        mensaje.classList.remove("hidden");
+      } else {
+        campoCantidad.value = cantidadActual;
+        campoCantidad.disabled = false;
+        campoCantidad.min = "1";
+        campoCantidad.classList.remove("bg-slate-50", "text-slate-500");
+        campoCantidad.classList.add("bg-white", "text-slate-700");
+        ayudaCantidad.textContent = "Puedes modificar manualmente la cantidad para esta asignación.";
+        mensaje.classList.add("hidden");
+      }
+    }
+
+    function abrirModalEdicionVale(funcionario, comensal, modalidad, servicio, cantidad, fechaCanje, motivo) {
+      document.getElementById("editarFuncionarioVale").value = funcionario;
+      document.getElementById("editarComensalVale").value = comensal;
+      document.getElementById("editarModalidadVale").value = modalidad;
+      document.getElementById("editarServicioVale").value = servicio;
+      document.getElementById("editarFechaCanjeVale").value = fechaCanje;
+      document.getElementById("editarMotivoVale").value = motivo;
+
+      configurarCantidadEdicion(modalidad, cantidad);
+
+      document.getElementById("modalEdicionVale").classList.remove("hidden");
+    }
+
+    function cerrarModalEdicionVale() {
+      document.getElementById("modalEdicionVale").classList.add("hidden");
+    }
+  </script>
+</body>
+</html>

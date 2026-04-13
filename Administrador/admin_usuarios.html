@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Usuarios del Sistema - ValeApp</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#14467d",
+            secondary: "#71ba65",
+            tertiary: "#d97706",
+            "background-light": "#f4f5f7",
+            "surface-light": "#ffffff",
+            "text-light": "#334155",
+            "on-surface-variant": "#64748b"
+          },
+          fontFamily: {
+            manrope: ["Manrope", "sans-serif"]
+          },
+          boxShadow: {
+            card: "0 8px 24px rgba(15, 23, 42, 0.08)",
+            strong: "0 12px 28px rgba(15, 23, 42, 0.14)"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-background-light text-text-light min-h-screen antialiased">
+  <div class="min-h-screen flex flex-col">
+
+    <header class="w-full bg-surface-light border-b border-slate-200 shadow-sm">
+      <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <img
+            alt="Logo ValeApp"
+            class="h-14 w-auto object-contain"
+            src="logo_valeapp.png"
+          />
+        </div>
+
+        <div class="flex items-center gap-6">
+          <div class="text-right leading-tight">
+            <p class="text-sm text-slate-500 font-medium">24 Oct</p>
+            <p class="text-xl font-bold text-primary tabular-nums">08:15</p>
+          </div>
+
+          <button onclick="window.location.href='../inicio_sesion.html'" class="h-14 px-6 rounded-2xl border border-slate-200 bg-white text-slate-600 text-lg font-bold hover:bg-slate-50 transition">
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 w-full">
+      <div class="max-w-7xl mx-auto px-8 py-10">
+
+        <section class="mb-8">
+          <button
+            onclick="window.location.href='vista_principal.html'"
+            class="inline-flex items-center gap-3 self-start rounded-2xl border border-slate-200 bg-surface-light px-5 py-3 text-base font-extrabold text-primary shadow-sm hover:bg-slate-50 transition"
+          >
+            <span class="material-symbols-outlined text-[22px]">arrow_back</span>
+            Volver al panel
+          </button>
+        </section>
+
+        <section class="mb-8">
+          <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-8">
+            <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-6">
+              <div>
+                <h2 class="text-3xl font-extrabold text-primary mb-2">Listado de usuarios</h2>
+                <p class="text-lg text-slate-600">
+                  Busca por nombre o código y filtra según el tipo de usuario o tipo de comensal.
+                </p>
+              </div>
+
+              <button
+                onclick="window.location.href='admin_crear_usuario.html'"
+                class="h-16 px-8 rounded-2xl bg-primary hover:bg-blue-800 text-white text-lg font-extrabold transition flex items-center justify-center gap-3 shrink-0"
+              >
+                <span class="material-symbols-outlined">person_add</span>
+                Crear usuario
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-5">
+              <div class="xl:col-span-2">
+                <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                  Buscar por nombre o código
+                </label>
+                <div class="relative">
+                  <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                  <input
+                    class="w-full rounded-2xl border border-slate-300 bg-white pl-14 pr-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                    placeholder="Ej: María Soto o 123456"
+                    type="text"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                  Tipo de usuario
+                </label>
+                <select class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition">
+                  <option>Todos</option>
+                  <option>Funcionario</option>
+                  <option>Cajero</option>
+                  <option>Administrador</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                  Tipo de comensal
+                </label>
+                <select class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition">
+                  <option>Todos</option>
+                  <option>Obrero</option>
+                  <option>Jefe</option>
+                  <option>Gerente</option>
+                  <option>Secretaria gerencia</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="mb-10">
+          <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card overflow-hidden">
+            <div class="grid grid-cols-12 bg-slate-50 px-6 py-4 border-b border-slate-200">
+              <div class="col-span-2 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">ID</div>
+              <div class="col-span-2 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Nombre</div>
+              <div class="col-span-2 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Correo</div>
+              <div class="col-span-1 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Tipo</div>
+              <div class="col-span-2 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Comensal</div>
+              <div class="col-span-1 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Turno</div>
+              <div class="col-span-1 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Estado</div>
+              <div class="col-span-1 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant text-right">Acción</div>
+            </div>
+
+            <div class="divide-y divide-slate-200">
+
+              <div class="grid grid-cols-12 items-center px-6 py-5 bg-white gap-4">
+                <div class="col-span-2">
+                  <p class="text-lg font-bold text-primary">123456</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-lg font-bold text-slate-700">Lorna Mella</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-sm text-slate-600 break-words">lmella@valeapp.cl</p>
+                </div>
+                <div class="col-span-1">
+                  <p class="text-sm font-semibold text-slate-700">Funcionario</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-sm text-slate-600">Obrero</p>
+                </div>
+                <div class="col-span-1">
+                  <p class="text-sm text-slate-600">08:00 — 16:00</p>
+                </div>
+                <div class="col-span-1">
+                  <span class="inline-flex px-3 py-1 rounded-full bg-secondary/15 text-secondary text-sm font-bold">Activo</span>
+                </div>
+                <div class="col-span-1 flex justify-end">
+                  <button onclick="window.location.href='admin_editar_usuario.html'" class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition">
+                    Editar
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-12 items-center px-6 py-5 bg-white gap-4">
+                <div class="col-span-2">
+                  <p class="text-lg font-bold text-primary">234567</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-lg font-bold text-slate-700">Rock Dabre</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-sm text-slate-600 break-words">rdabre@valeapp.cl</p>
+                </div>
+                <div class="col-span-1">
+                  <p class="text-sm font-semibold text-slate-700">Funcionario</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-sm text-slate-600">Jefe</p>
+                </div>
+                <div class="col-span-1">
+                  <p class="text-sm text-slate-600">16:00 — 24:00</p>
+                </div>
+                <div class="col-span-1">
+                  <span class="inline-flex px-3 py-1 rounded-full bg-secondary/15 text-secondary text-sm font-bold">Activo</span>
+                </div>
+                <div class="col-span-1 flex justify-end">
+                  <button onclick="window.location.href='admin_editar_usuario.html'" class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition">
+                    Editar
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-12 items-center px-6 py-5 bg-white gap-4">
+                <div class="col-span-2">
+                  <p class="text-lg font-bold text-primary">CAJ001</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-lg font-bold text-slate-700">Joaquin Navarro</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-sm text-slate-600 break-words">jnavarro@valeapp.cl</p>
+                </div>
+                <div class="col-span-1">
+                  <p class="text-sm font-semibold text-slate-700">Cajero</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-sm text-slate-400">No aplica</p>
+                </div>
+                <div class="col-span-1">
+                  <p class="text-sm text-slate-600">24:00 — 08:00</p>
+                </div>
+                <div class="col-span-1">
+                  <span class="inline-flex px-3 py-1 rounded-full bg-secondary/15 text-secondary text-sm font-bold">Activo</span>
+                </div>
+                <div class="col-span-1 flex justify-end">
+                  <button onclick="window.location.href='admin_editar_usuario.html'" class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition">
+                    Editar
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-12 items-center px-6 py-5 bg-white gap-4">
+                <div class="col-span-2">
+                  <p class="text-lg font-bold text-primary">ADM001</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-lg font-bold text-slate-700">Benjamin Vilches</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-sm text-slate-600 break-words">bviclhes@valeapp.cl</p>
+                </div>
+                <div class="col-span-1">
+                  <p class="text-sm font-semibold text-slate-700">Admin</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-sm text-slate-400">No aplica</p>
+                </div>
+                <div class="col-span-1">
+                  <p class="text-sm text-slate-600">16:00 — 24:00</p>
+                </div>
+                <div class="col-span-1">
+                  <span class="inline-flex px-3 py-1 rounded-full bg-secondary/15 text-secondary text-sm font-bold">Activo</span>
+                </div>
+                <div class="col-span-1 flex justify-end">
+                  <button onclick="window.location.href='admin_editar_usuario.html'" class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition">
+                    Editar
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-12 items-center px-6 py-5 bg-white gap-4">
+                <div class="col-span-2">
+                  <p class="text-lg font-bold text-primary">345678</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-lg font-bold text-slate-700">Tito Titon</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-sm text-slate-600 break-words">ttiton@valeapp.cl</p>
+                </div>
+                <div class="col-span-1">
+                  <p class="text-sm font-semibold text-slate-700">Funcionario</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-sm text-slate-600">Secretaria gerencia</p>
+                </div>
+                <div class="col-span-1">
+                  <p class="text-sm text-slate-600">24:00 — 08:00</p>
+                </div>
+                <div class="col-span-1">
+                  <span class="inline-flex px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-sm font-bold">Inactivo</span>
+                </div>
+                <div class="col-span-1 flex justify-end">
+                  <button onclick="window.location.href='admin_editar_usuario.html'" class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold hover:bg-slate-50 transition">
+                    Editar
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+
+            <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-7">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-primary text-3xl">group</span>
+                </div>
+                <div>
+                  <p class="text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant">Usuarios activos</p>
+                  <p class="text-3xl font-extrabold text-primary">4</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-7">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-secondary/15 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-secondary text-3xl">badge</span>
+                </div>
+                <div>
+                  <p class="text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant">Funcionarios</p>
+                  <p class="text-3xl font-extrabold text-primary">3</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-7">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-tertiary/15 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-tertiary text-3xl">point_of_sale</span>
+                </div>
+                <div>
+                  <p class="text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant">Cajeros</p>
+                  <p class="text-3xl font-extrabold text-primary">1</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-7">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-primary text-3xl">admin_panel_settings</span>
+                </div>
+                <div>
+                  <p class="text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant">Administradores</p>
+                  <p class="text-3xl font-extrabold text-primary">2</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>

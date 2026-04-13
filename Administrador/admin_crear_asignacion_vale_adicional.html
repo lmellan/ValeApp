@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Crear asignación de vale adicional - ValeApp</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#14467d",
+            secondary: "#71ba65",
+            tertiary: "#d97706",
+            "background-light": "#f4f5f7",
+            "surface-light": "#ffffff",
+            "text-light": "#334155",
+            "on-surface-variant": "#64748b"
+          },
+          fontFamily: {
+            manrope: ["Manrope", "sans-serif"]
+          },
+          boxShadow: {
+            card: "0 8px 24px rgba(15, 23, 42, 0.08)",
+            strong: "0 12px 28px rgba(15, 23, 42, 0.14)"
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-background-light text-text-light min-h-screen antialiased">
+  <div class="min-h-screen flex flex-col">
+
+    <header class="w-full bg-surface-light border-b border-slate-200 shadow-sm">
+      <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <img
+            alt="Logo ValeApp"
+            class="h-14 w-auto object-contain"
+            src="logo_valeapp.png"
+          />
+        </div>
+
+        <div class="flex items-center gap-6">
+          <div class="text-right leading-tight">
+            <p class="text-sm text-slate-500 font-medium">24 Oct</p>
+            <p class="text-xl font-bold text-primary tabular-nums">08:15</p>
+          </div>
+
+          <button
+            onclick="window.location.href='../inicio_sesion.html'"
+            class="h-14 px-6 rounded-2xl border border-slate-200 bg-white text-slate-600 text-lg font-bold hover:bg-slate-50 transition"
+          >
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 w-full">
+      <div class="max-w-5xl mx-auto px-8 py-10">
+
+        <section class="mb-8">
+          <button
+            onclick="window.location.href='admin_vales_adicionales.html'"
+            class="inline-flex items-center gap-3 self-start rounded-2xl border border-slate-200 bg-surface-light px-5 py-3 text-base font-extrabold text-primary shadow-sm hover:bg-slate-50 transition"
+          >
+            <span class="material-symbols-outlined text-[22px]">arrow_back</span>
+            Volver a vales adicionales
+          </button>
+        </section>
+
+        <section>
+          <div class="bg-surface-light rounded-3xl border border-slate-200 shadow-strong overflow-hidden">
+            <div class="p-8 border-b border-slate-200">
+              <h1 class="text-4xl font-extrabold text-primary mb-2">Crear asignación</h1>
+              <p class="text-lg text-slate-600">
+                Busca un funcionario por nombre o código y asigna un vale adicional para una fecha de uso específica.
+              </p>
+            </div>
+
+            <div class="p-8 space-y-8">
+
+              <div>
+                <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                  Buscar funcionario
+                </label>
+
+                <div class="relative">
+                  <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                  <input
+                    id="buscadorUsuario"
+                    autocomplete="off"
+                    class="w-full rounded-2xl border border-slate-300 bg-white pl-14 pr-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                    placeholder="Ej: Lorna, 123456, Tito..."
+                    type="text"
+                    oninput="filtrarUsuarios()"
+                    onfocus="filtrarUsuarios()"
+                  />
+
+                  <div
+                    id="listaResultados"
+                    class="hidden absolute z-20 mt-3 w-full rounded-2xl border border-slate-200 bg-white shadow-strong overflow-hidden"
+                  ></div>
+                </div>
+
+                <p class="mt-2 text-sm text-slate-500">
+                  Puedes buscar por nombre o por código del funcionario.
+                </p>
+              </div>
+
+              <div id="contenedorSeleccion" class="hidden rounded-3xl border border-slate-200 bg-slate-50 p-6">
+                <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                  <div>
+                    <p class="text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-3">
+                      Funcionario seleccionado
+                    </p>
+
+                    <div class="space-y-2">
+                      <p class="text-2xl font-extrabold text-primary" id="nombreSeleccionado">-</p>
+                      <p class="text-base text-slate-600">
+                        <span class="font-semibold text-slate-700">Código:</span>
+                        <span id="codigoSeleccionado">-</span>
+                      </p>
+                      <p class="text-base text-slate-600">
+                        <span class="font-semibold text-slate-700">Correo:</span>
+                        <span id="correoSeleccionado">-</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 min-w-0 lg:min-w-[360px]">
+                    <div class="rounded-2xl bg-white border border-slate-200 px-4 py-3">
+                      <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant mb-1">Tipo</p>
+                      <p class="text-base font-semibold text-slate-700" id="tipoSeleccionado">-</p>
+                    </div>
+
+                    <div class="rounded-2xl bg-white border border-slate-200 px-4 py-3">
+                      <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant mb-1">Comensal</p>
+                      <p class="text-base font-semibold text-slate-700" id="comensalSeleccionado">-</p>
+                    </div>
+
+                    <div class="rounded-2xl bg-white border border-slate-200 px-4 py-3 sm:col-span-2">
+                      <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant mb-1">Modalidad de emisión</p>
+                      <p class="text-base font-semibold text-slate-700" id="modalidadSeleccionada">-</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="mensajeValeNormal" class="hidden rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4">
+                <p class="text-sm text-amber-800 leading-relaxed">
+                  Este funcionario tiene asignado un tipo de comensal con <span class="font-bold">vale normal por turno</span>.
+                 La cantidad de vales adicionales se fija automáticamente en <span class="font-bold">1</span>, ya que el usuario no podrá canjear este mismo vale más de una vez. De tener otros vales asignados cuyos horarios de validez coinciden, solo podrá hacer uso de uno de ellos.
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div>
+                  <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                    Servicio adicional asignado
+                  </label>
+                  <select
+                    id="servicioVale"
+                    class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                  >
+                    <option selected disabled>Selecciona un servicio</option>
+                    <option>Desayuno</option>
+                    <option>Almuerzo</option>
+                    <option>Once</option>
+                    <option>Cena 1</option>
+                    <option>Cena 2</option>
+                    <option>Box lunch</option>
+                    <option>Coffee break</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                    Cantidad de vales
+                  </label>
+                  <input
+                    id="cantidadVales"
+                    class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                    type="number"
+                    min="1"
+                    placeholder="Ej: 1"
+                    disabled
+                  />
+                  <p id="ayudaCantidadVales" class="mt-2 text-sm text-slate-500">
+                    Selecciona primero un funcionario.
+                  </p>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                    Fecha de uso
+                  </label>
+                  <input
+                    id="fechaUso"
+                    class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                    type="date"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                  Motivo
+                </label>
+                <select
+                  id="motivoVale"
+                  class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                >
+                  <option selected disabled>Selecciona un motivo</option>
+                  <option>Reunión</option>
+                  <option>Visita</option>
+                  <option>Capacitación</option>
+                  <option>Evento interno</option>
+                  <option>Cambio excepcional de servicio</option>
+                  <option>Otro</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
+                  Observación
+                </label>
+                <textarea
+                  id="observacionVale"
+                  class="w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition min-h-[140px] resize-none"
+                  placeholder="Describe brevemente el contexto de esta asignación."
+                ></textarea>
+              </div>
+
+              <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                <button
+                  onclick="window.location.href='admin_vales_adicionales.html'"
+                  class="flex-1 h-16 rounded-2xl bg-primary hover:bg-blue-800 text-white text-lg font-extrabold transition flex items-center justify-center gap-3"
+                >
+                  <span class="material-symbols-outlined">save</span>
+                  Guardar asignación
+                </button>
+
+                <button
+                  onclick="limpiarFormularioAsignacion()"
+                  class="sm:w-[170px] h-16 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-lg font-bold transition"
+                  type="button"
+                >
+                  Limpiar
+                </button>
+
+                <button
+                  onclick="window.location.href='admin_vales_adicionales.html'"
+                  class="sm:w-[170px] h-16 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-lg font-bold transition"
+                  type="button"
+                >
+                  Cancelar
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    var usuarios = [
+      {
+        codigo: "123456",
+        nombre: "Lorna Mella",
+        correo: "lmella@valeapp.cl",
+        tipo: "Funcionario",
+        comensal: "Obrero",
+        modalidad: "Vale normal por turno"
+      },
+      {
+        codigo: "234567",
+        nombre: "Rock Dabre",
+        correo: "rdabre@valeapp.cl",
+        tipo: "Funcionario",
+        comensal: "Jefe",
+        modalidad: "Vale normal por turno"
+      },
+      {
+        codigo: "456789",
+        nombre: "Gerardo Muñoz",
+        correo: "gmunoz@valeapp.cl",
+        tipo: "Funcionario",
+        comensal: "Gerente",
+        modalidad: "Vale normal por turno"
+      },
+      {
+        codigo: "345678",
+        nombre: "Tito Titon",
+        correo: "ttiton@valeapp.cl",
+        tipo: "Funcionario",
+        comensal: "Secretaria gerencia",
+        modalidad: "Emisión múltiple por turno"
+      }
+    ];
+
+    var usuarioSeleccionado = null;
+
+    function escaparHtml(texto) {
+      return texto
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function filtrarUsuarios() {
+      var input = document.getElementById("buscadorUsuario");
+      var lista = document.getElementById("listaResultados");
+      var termino = input.value.trim().toLowerCase();
+
+      if (termino === "") {
+        lista.innerHTML = "";
+        lista.classList.add("hidden");
+        return;
+      }
+
+      var coincidencias = [];
+      for (var i = 0; i < usuarios.length; i++) {
+        var usuario = usuarios[i];
+        var nombre = usuario.nombre.toLowerCase();
+        var codigo = usuario.codigo.toLowerCase();
+
+        if (nombre.indexOf(termino) !== -1 || codigo.indexOf(termino) !== -1) {
+          coincidencias.push(usuario);
+        }
+      }
+
+      if (coincidencias.length === 0) {
+        lista.innerHTML =
+          '<div class="px-5 py-4 text-sm text-slate-500">No se encontraron funcionarios que coincidan con la búsqueda.</div>';
+        lista.classList.remove("hidden");
+        return;
+      }
+
+      var html = "";
+      for (var j = 0; j < coincidencias.length; j++) {
+        var item = coincidencias[j];
+        html +=
+          '<button type="button" onclick="seleccionarUsuario(\'' + item.codigo + '\')" class="w-full text-left px-5 py-4 hover:bg-slate-50 transition border-b border-slate-100 last:border-b-0">' +
+            '<div class="flex items-start justify-between gap-4">' +
+              '<div>' +
+                '<p class="text-base font-extrabold text-primary">' + escaparHtml(item.nombre) + '</p>' +
+                '<p class="text-sm text-slate-600 mt-1">' + escaparHtml(item.codigo) + ' · ' + escaparHtml(item.correo) + '</p>' +
+              '</div>' +
+              '<div class="text-right shrink-0">' +
+                '<p class="text-sm font-semibold text-slate-700">' + escaparHtml(item.tipo) + '</p>' +
+                '<p class="text-sm text-slate-500 mt-1">Comensal: ' + escaparHtml(item.comensal) + '</p>' +
+              '</div>' +
+            '</div>' +
+          '</button>';
+      }
+
+      lista.innerHTML = html;
+      lista.classList.remove("hidden");
+    }
+
+    function actualizarCantidadSegunModalidad(usuario) {
+      var campoCantidad = document.getElementById("cantidadVales");
+      var ayudaCantidad = document.getElementById("ayudaCantidadVales");
+
+      if (usuario.modalidad === "Vale normal por turno") {
+        campoCantidad.value = "1";
+        campoCantidad.disabled = true;
+        campoCantidad.classList.remove("bg-white", "text-slate-700");
+        campoCantidad.classList.add("bg-slate-50", "text-slate-500"); 
+        ayudaCantidad.textContent = "Para funcionarios con vale normal por turno, la cantidad se fija automáticamente en 1.";
+      } else {
+        campoCantidad.value = "";
+        campoCantidad.disabled = false;
+        campoCantidad.min = "1";
+        campoCantidad.classList.remove("bg-slate-50", "text-slate-500");
+        campoCantidad.classList.add("bg-white", "text-slate-700");
+        ayudaCantidad.textContent = "Para funcionarios con emisión múltiple por turno, puedes ingresar manualmente la cantidad.";
+      }
+    }
+
+    function seleccionarUsuario(codigo) {
+      var usuario = null;
+
+      for (var i = 0; i < usuarios.length; i++) {
+        if (usuarios[i].codigo === codigo) {
+          usuario = usuarios[i];
+        }
+      }
+
+      if (usuario === null) {
+        return;
+      }
+
+      usuarioSeleccionado = usuario;
+
+      document.getElementById("buscadorUsuario").value = usuario.nombre + " (" + usuario.codigo + ")";
+      document.getElementById("listaResultados").classList.add("hidden");
+
+      document.getElementById("nombreSeleccionado").textContent = usuario.nombre;
+      document.getElementById("codigoSeleccionado").textContent = usuario.codigo;
+      document.getElementById("correoSeleccionado").textContent = usuario.correo;
+      document.getElementById("tipoSeleccionado").textContent = usuario.tipo;
+      document.getElementById("comensalSeleccionado").textContent = usuario.comensal;
+      document.getElementById("modalidadSeleccionada").textContent = usuario.modalidad;
+      document.getElementById("contenedorSeleccion").classList.remove("hidden");
+
+      actualizarCantidadSegunModalidad(usuario);
+
+      if (usuario.modalidad === "Vale normal por turno") {
+        document.getElementById("mensajeValeNormal").classList.remove("hidden");
+      } else {
+        document.getElementById("mensajeValeNormal").classList.add("hidden");
+      }
+    }
+
+    function limpiarFormularioAsignacion() {
+      usuarioSeleccionado = null;
+
+      document.getElementById("buscadorUsuario").value = "";
+      document.getElementById("listaResultados").innerHTML = "";
+      document.getElementById("listaResultados").classList.add("hidden");
+
+      document.getElementById("contenedorSeleccion").classList.add("hidden");
+      document.getElementById("mensajeValeNormal").classList.add("hidden");
+
+      document.getElementById("servicioVale").selectedIndex = 0;
+      document.getElementById("fechaUso").value = "";
+      document.getElementById("motivoVale").selectedIndex = 0;
+      document.getElementById("observacionVale").value = "";
+
+      document.getElementById("cantidadVales").value = "";
+      document.getElementById("cantidadVales").disabled = true;
+      document.getElementById("cantidadVales").classList.remove("bg-white", "text-slate-700");
+      document.getElementById("cantidadVales").classList.add("bg-slate-50", "text-slate-500");
+      document.getElementById("ayudaCantidadVales").textContent = "Selecciona primero un funcionario.";
+    }
+
+    document.addEventListener("click", function(evento) {
+      var input = document.getElementById("buscadorUsuario");
+      var lista = document.getElementById("listaResultados");
+
+      if (!lista.contains(evento.target) && evento.target !== input) {
+        lista.classList.add("hidden");
+      }
+    });
+  </script>
+</body>
+</html>
