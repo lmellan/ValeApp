@@ -77,6 +77,8 @@
               <option selected disabled>Selecciona un código</option>
               <option value="ADM1203">ADM1203</option>
               <option value="FUN1203">FUN1203</option>
+              <option value="CAJ1203">CAJ1203</option>
+
             </select>
           </div>
 
@@ -146,6 +148,11 @@
 
       if (codigo === "FUN1203") {
         window.location.href = "Funcionario/vista_principal.html";
+        return;
+      }
+
+      if (codigo === "CAJ1203") {
+        window.location.href = "Cajero/vista_principal.html";
         return;
       }
 
