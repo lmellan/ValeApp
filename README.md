@@ -2,7 +2,7 @@
 
 Mockups HTML del Caso 18: "Sistema de Emision y Control de Vales de Alimentacion".
 
-Proyecto desarrollado por el grupo SyntaxTerror.
+Proyecto desarrollado por el grupo LosPapus.
 
 ## Descripcion
 
