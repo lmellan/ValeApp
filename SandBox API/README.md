@@ -50,9 +50,7 @@ La colección con los endpoints y ejemplos se encuentra en Postman:
 ```txt
 https://lorna-mella-1967672.postman.co/workspace/Lorna-Mella's-Workspace~40c83e1e-f515-416d-89e7-885ec567b718/collection/54549106-d2102bd2-e7a2-42f8-9b3c-821bbd40d82f?action=share&creator=54549106
 ```
-
----
-
+ 
 ## Endpoints disponibles
 
 | Actor                        | Acción                      | Método | Endpoint                            |
@@ -102,9 +100,7 @@ https://62ce4034-d264-44d5-acb7-6ca81bb547c7.mock.pstmn.io/vales/generar-base
 ```
 
 Este endpoint debe probarse desde Postman, porque usa el método `POST`.
-
----
-
+ 
 # 2. Consultar vales disponibles
 
 Este endpoint permite que un funcionario consulte los vales disponibles que el sistema generó automáticamente para él.
