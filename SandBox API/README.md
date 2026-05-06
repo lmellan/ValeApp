@@ -1,12 +1,4 @@
-Claro. Puedes copiar esto tal cual en un archivo llamado:
-
-```txt
-README.md
-```
-
----
-
-````md
+ 
 # ValeApp Sandbox API
 
 ## Descripción
@@ -364,5 +356,4 @@ La Sandbox API de ValeApp permite representar de forma simple el funcionamiento 
 
 Esta API permite probar los flujos principales sin requerir todavía una implementación real del backend.
 
-```
-```
+ 
