@@ -40,8 +40,7 @@ Para probar la API se debe usar una ruta completa, por ejemplo:
 ```txt
 https://62ce4034-d264-44d5-acb7-6ca81bb547c7.mock.pstmn.io/vales/VALE-0001
 ```
-
----
+ 
 
 ## Colección de Postman
 
@@ -154,7 +153,7 @@ https://62ce4034-d264-44d5-acb7-6ca81bb547c7.mock.pstmn.io/funcionarios/1/vales-
 
 Este endpoint puede probarse directamente desde el navegador, ya que usa el método `GET`.
 
----
+ 
 
 # 3. Imprimir vale disponible
 
@@ -192,7 +191,7 @@ https://62ce4034-d264-44d5-acb7-6ca81bb547c7.mock.pstmn.io/vales/VALE-0001/impri
 
 Este endpoint debe probarse desde Postman, porque usa el método `POST`.
 
----
+ 
 
 # 4. Crear vale adicional
 
@@ -239,9 +238,7 @@ https://62ce4034-d264-44d5-acb7-6ca81bb547c7.mock.pstmn.io/vales/adicional
 ```
 
 Este endpoint debe probarse desde Postman, porque usa el método `POST`.
-
----
-
+ 
 # 5. Validar vale
 
 Este endpoint permite que el cajero valide si un vale está vigente y disponible para uso.
@@ -273,8 +270,7 @@ https://62ce4034-d264-44d5-acb7-6ca81bb547c7.mock.pstmn.io/vales/VALE-0001/valid
 
 Este endpoint puede probarse directamente desde el navegador, ya que usa el método `GET`.
 
----
-
+ 
 # 6. Registrar uso del vale
 
 Este endpoint simula el registro del uso o canje de un vale por parte del cajero.
@@ -312,9 +308,7 @@ https://62ce4034-d264-44d5-acb7-6ca81bb547c7.mock.pstmn.io/vales/VALE-0001/regis
 ```
 
 Este endpoint debe probarse desde Postman, porque usa el método `POST`.
-
----
-
+ 
 # 7. Consultar vale
 
 Este endpoint permite consultar la información completa de un vale.
@@ -355,9 +349,7 @@ https://62ce4034-d264-44d5-acb7-6ca81bb547c7.mock.pstmn.io/vales/VALE-0001
 ```
 
 Este endpoint se puede probar directamente desde el navegador, ya que usa el método `GET`.
-
----
-
+ 
 ## Cómo probar la API en Postman
 
 1. Abrir Postman.
@@ -378,8 +370,7 @@ Body → raw → JSON
 6. Presionar `Send`.
 7. Verificar que la respuesta coincida con el JSON esperado.
 
----
-
+ 
 ## Cómo probar desde navegador
 
 Solo se pueden probar directamente desde navegador los endpoints `GET`.
@@ -400,7 +391,7 @@ https://62ce4034-d264-44d5-acb7-6ca81bb547c7.mock.pstmn.io/vales/VALE-0001/valid
 
 Los endpoints `POST` deben probarse desde Postman.
 
----
+ 
 
 ## Relación con el diagrama UML
 
