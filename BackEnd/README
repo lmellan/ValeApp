@@ -1,0 +1,67 @@
+ValeApp Backend - Arquitectura de Microservicios
+Este proyecto implementa el backend de ValeApp, un sistema de gestión de vales estructurado bajo una arquitectura de microservicios para garantizar escalabilidad, trazabilidad y separación de responsabilidades.
+
+- Servicios Implementados
+
+El sistema se compone de los siguientes microservicios:
+
+vale-service (Puerto 3000): Gestión centralizada de vales, reglas de negocio y persistencia de datos.
+
+usuario-service (Puerto 3001): Servicio encargado de la identidad, roles y autenticación de usuarios.
+
+audit-service (Puerto 3002): Servicio dedicado a la auditoría y logs de eventos críticos del sistema.
+
+- Tecnologías Utilizadas
+Node.js con Express.js
+
+Axios (para comunicación entre servicios)
+
+SQLite (Base de datos relacional ligera para persistencia local)
+
+- Requisitos Previos
+Tener instalado Node.js.
+
+Tener instalado Postman para pruebas de API.
+
+- Instalación y Ejecución
+Para levantar el sistema, debes ejecutar cada servicio en una terminal diferente siguiendo estos pasos:
+
+1. Preparar cada servicio
+Entra en la carpeta de cada servicio (vale-service, usuario-service, audit-service):
+
+# Dentro de cada carpeta
+npm install
+2. Levantar los servicios
+
+Ejecuta cada uno en su respectiva carpeta:
+
+# En terminal 1
+cd usuario-service
+node index.js
+
+# En terminal 2
+cd vale-service
+node index.js
+
+# En terminal 3
+cd audit-service
+node index.js
+
+- Contrato de API (Flujo de Validación)
+Para validar un vale, se debe realizar una petición POST al servicio de vales:
+
+Endpoint: POST /vales/:idVale/validar
+
+Header necesario: x-usuario-id: <ID_DEL_USUARIO>
+
+Ejemplo de petición exitosa:
+
+URL: http://localhost:3000/vales/VALE-1001/validar
+
+Header: x-usuario-id: 3
+
+- Estrategia de Resiliencia
+
+Timeouts: Se han implementado límites de tiempo (2s) en las llamadas a servicios externos para evitar bloqueos.
+
+Manejo de errores: El sistema implementa un esquema de Fail-fast, retornando códigos de error estándar (401, 403, 404, 503) para facilitar la depuración y la integridad de la información.
