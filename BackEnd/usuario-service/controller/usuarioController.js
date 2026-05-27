@@ -17,6 +17,14 @@ const obtenerRolUsuario = (req, res) => {
     res.json(usuario);
 };
 
+const obtenerDatosUsuario = (req, res) => {
+    const idUsuario = req.params.idUsuario;
+    res.json({
+        id: idUsuario,
+        nombre: "Funcionario Mock",
+        correo: `funcionario${idUsuario}@vales.cl`
+    });
+};
 
 
-module.exports = { obtenerRolUsuario };
+module.exports = { obtenerRolUsuario, obtenerDatosUsuario };

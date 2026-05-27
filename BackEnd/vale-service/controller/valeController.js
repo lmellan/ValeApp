@@ -114,4 +114,11 @@ const crearValeAdicional = async (req, res) => {
     }
 };
 
-module.exports = { consultarVale, validarVale, listarValesDisponibles, crearValeAdicional };
+const obtenerTodosLosVales = (req, res) => {
+    db.all(`SELECT * FROM vales`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+};
+
+module.exports = { consultarVale, validarVale, listarValesDisponibles, crearValeAdicional, obtenerTodosLosVales };
