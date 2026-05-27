@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 app.use(express.json());
-const port = 3002; // El tercer servicio en otro puerto
+const port = 3002; 
 
 app.post('/logs', (req, res) => {
     const { evento, detalle, timestamp } = req.body;

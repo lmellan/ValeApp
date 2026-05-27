@@ -2,7 +2,7 @@ const express = require('express');
 const { enviarResumenSemanal } = require('./controller/notificacionController');
 
 const app = express();
-const PORT = 3005;
+const PORT = 3006;
 
 app.use(express.json());
 app.post('/notificaciones/resumen-semanal/:idFuncionario', enviarResumenSemanal);
