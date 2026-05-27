@@ -11,6 +11,7 @@ app.get('/', (req, res) => {
 });
 
 // Rutas de vales
+app.get('/vales/todos', valeController.obtenerTodosLosVales);
 app.get('/vales/:idVale', valeController.consultarVale);
 app.post('/vales/:idVale/validar', valeController.validarVale); // NUEVA RUTA POST
 app.get('/funcionarios/:idFuncionario/vales-disponibles', valeController.listarValesDisponibles);

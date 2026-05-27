@@ -11,6 +11,10 @@ usuario-service (Puerto 3001): Servicio encargado de la identidad, roles y auten
 
 audit-service (Puerto 3002): Servicio dedicado a la auditoría y logs de eventos críticos del sistema.
 
+reporte-service (Puerto 3004): Generación de reportes administrativos y estadísticas globales de los vales del sistema.
+
+notificacion-service (Puerto 3005): Servicio encargado de la composición y simulación del envío de alertas y resúmenes semanales.
+
 - Tecnologías Utilizadas
 Node.js con Express.js
 
@@ -27,10 +31,11 @@ Tener instalado Postman para pruebas de API.
 Para levantar el sistema, debes ejecutar cada servicio en una terminal diferente siguiendo estos pasos:
 
 1. Preparar cada servicio
-Entra en la carpeta de cada servicio (vale-service, usuario-service, audit-service):
+Entra en la carpeta de cada servicio (vale-service, usuario-service, audit-service, reporte-service, notificacion-service):
 
 # Dentro de cada carpeta
 npm install
+
 2. Levantar los servicios
 
 Ejecuta cada uno en su respectiva carpeta:
@@ -45,6 +50,14 @@ node index.js
 
 # En terminal 3
 cd audit-service
+node index.js
+
+# En terminal 5
+cd reporte-service
+node index.js
+
+# En terminal 6
+cd notificacion-service
 node index.js
 
 - Contrato de API (Flujo de Validación)
