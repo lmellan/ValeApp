@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); cmd=$(echo \"$input\" | python3 -c \"import sys,json; print(json.load(sys.stdin)['tool_input']['command'])\"); if echo \"$cmd\" | grep -qE \"^git (push|pull)\"; then python3 -c \"import json; print(json.dumps({'hookSpecificOutput':{'hookEventName':'PreToolUse','additionalContext':'IMPORTANTE: Antes de ejecutar este comando git, pregunta al usuario si quiere actualizar CLAUDE.md antes de continuar. Si dice que sí, ayúdalo a actualizarlo y luego procede con el comando.'}}))\"; fi",
+            "statusMessage": "Verificando CLAUDE.md..."
+          }
+        ]
+      }
+    ]
+  }
+}
