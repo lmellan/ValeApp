@@ -78,7 +78,7 @@ VALE123
 
 ## BackEnd — Microservicios
 
-El backend esta compuesto por cinco microservicios independientes en Node.js/Express. Cada uno corre en su propio puerto y debe iniciarse por separado.
+El backend esta compuesto por siete microservicios independientes en Node.js/Express. Cada uno corre en su propio puerto y debe iniciarse por separado.
 
 ### Requisitos previos
 
@@ -95,6 +95,8 @@ cd BackEnd/usuario-service && npm install
 cd BackEnd/audit-service && npm install
 cd BackEnd/configuracion-service && npm install
 cd BackEnd/casino-service && npm install
+cd BackEnd/reporte-service && npm install
+cd BackEnd/notificacion-service && npm install
 ```
 
 ### Levantar los servicios
@@ -116,6 +118,12 @@ cd BackEnd/configuracion-service && node index.js
 
 # casino-service — casinos y servicios de alimentacion (puerto 3004)
 cd BackEnd/casino-service && node index.js
+
+# reporte-service — generacion de reportes administrativos (puerto 3005)
+cd BackEnd/reporte-service && node index.js
+
+# notificacion-service — envio de resumenes semanales (puerto 3006)
+cd BackEnd/notificacion-service && node index.js
 ```
 
 ### Puertos y responsabilidades
@@ -127,6 +135,8 @@ cd BackEnd/casino-service && node index.js
 | `audit-service` | 3002 | Registro de eventos de auditoria |
 | `configuracion-service` | 3003 | Turnos, tipos de comensal y reglas de emision |
 | `casino-service` | 3004 | Casinos y servicios de alimentacion |
+| `reporte-service` | 3005 | Generacion de reportes administrativos |
+| `notificacion-service` | 3006 | Envio de resumenes semanales a funcionarios |
 
 ### Endpoints principales
 
