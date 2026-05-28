@@ -1,0 +1,263 @@
+{
+  "info": {
+    "name": "UsuarioService (3001)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Listar usuarios",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3001/usuarios",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "usuarios"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y array', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listar funcionarios activos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3001/usuarios?rol=Funcionario&activo=true",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "usuarios"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y array', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Obtener Rol de Usuario",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3001/usuarios/3/rol",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "usuarios",
+            "3",
+            "rol"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y rol', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.have.property(\"rol\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Obtener Datos de Usuario",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3001/usuarios/3",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "usuarios",
+            "3"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y usuario', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.have.property(\"correo\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crear usuario funcionario",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3001/usuarios",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "usuarios"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Funcionario Postman\",\n  \"correo\": \"funcionario.postman.{{$timestamp}}@vales.cl\",\n  \"rol\": \"Funcionario\",\n  \"activo\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('usuario creado', function () {",
+              "  pm.response.to.have.status(201); pm.expect(pm.response.json().rol).to.eql(\"Funcionario\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Editar usuario existente",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3001/usuarios/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "usuarios",
+            "1"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Funcionario Mock Editado\",\n  \"activo\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('usuario editado', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json().id).to.eql(1);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crear usuario con rol invalido debe fallar",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3001/usuarios",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "usuarios"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Rol Malo\",\n  \"correo\": \"rol.malo.{{$timestamp}}@vales.cl\",\n  \"rol\": \"Supervisor\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('rechaza rol invalido', function () {",
+              "  pm.response.to.have.status(400);",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,321 @@
+{
+  "info": {
+    "name": "CasinoService (3004)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Listar todos los casinos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3004/casinos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3004",
+          "path": [
+            "casinos"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y array', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Obtener detalle de un casino",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3004/casinos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3004",
+          "path": [
+            "casinos",
+            "1"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y casino', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.have.property(\"idCasino\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listar servicios de un casino",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3004/casinos/1/servicios",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3004",
+          "path": [
+            "casinos",
+            "1",
+            "servicios"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y array', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crear nuevo casino",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3004/casinos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3004",
+          "path": [
+            "casinos"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Casino Postman {{$timestamp}}\",\n  \"direccion\": \"Edificio Principal, Piso 100\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('casino creado', function () {",
+              "  pm.response.to.have.status(201); pm.expect(pm.response.json()).to.have.property(\"idCasino\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listar todos los servicios de alimentacion",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3004/servicios-alimentacion",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3004",
+          "path": [
+            "servicios-alimentacion"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y array', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Obtener detalle de un servicio",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3004/servicios-alimentacion/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3004",
+          "path": [
+            "servicios-alimentacion",
+            "1"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y servicio', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.have.property(\"idServicio\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crear nuevo servicio de alimentacion",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3004/servicios-alimentacion",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3004",
+          "path": [
+            "servicios-alimentacion"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Almuerzo Ejecutivo {{$timestamp}}\",\n  \"categoria\": \"Menu Comun\",\n  \"horaInicio\": \"12:00\",\n  \"horaFin\": \"14:30\",\n  \"idCasino\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('servicio creado', function () {",
+              "  pm.response.to.have.status(201); pm.expect(pm.response.json()).to.have.property(\"idServicio\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Verificar disponibilidad de servicio",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3004/servicios-alimentacion/1/disponibilidad",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3004",
+          "path": [
+            "servicios-alimentacion",
+            "1",
+            "disponibilidad"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y disponibilidad', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.have.property(\"disponible\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Obtener servicio inexistente debe fallar",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3004/servicios-alimentacion/999999",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3004",
+          "path": [
+            "servicios-alimentacion",
+            "999999"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('servicio inexistente 404', function () {",
+              "  pm.response.to.have.status(404);",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

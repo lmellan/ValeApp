@@ -1,0 +1,81 @@
+{
+  "info": {
+    "name": "AuditService (3002)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Registrar Auditoria",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3002/logs",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3002",
+          "path": [
+            "logs"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"evento\": \"VALIDACION_VALE_EXITOSA\",\n  \"detalle\": \"Postman registro de auditoria\",\n  \"timestamp\": \"2026-05-27T17:25:00Z\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('auditoria recibida', function () {",
+              "  pm.response.to.have.status(202); pm.expect(pm.response.json()).to.have.property(\"log\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listar Auditorias",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3002/logs",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3002",
+          "path": [
+            "logs"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y array', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

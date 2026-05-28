@@ -1,0 +1,41 @@
+{
+  "info": {
+    "name": "ReporteService (3005)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Generar Resumen General",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3005/reportes/resumen",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3005",
+          "path": [
+            "reportes",
+            "resumen"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y resumen', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.have.property(\"totalEmitidos\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

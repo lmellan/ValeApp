@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: valeapp_postgres
+    environment:
+      POSTGRES_USER: valeapp_admin
+      POSTGRES_PASSWORD: valeapp_admin
+      POSTGRES_DB: valeapp_admin
+    ports:
+      - "15434:5432"
+    volumes:
+      - valeapp_postgres_data:/var/lib/postgresql/data
+      - ./database/postgres/init:/docker-entrypoint-initdb.d
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: valeapp_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@valeapp.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    volumes:
+      - valeapp_pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  valeapp_postgres_data:
+  valeapp_pgadmin_data:

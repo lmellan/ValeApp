@@ -1,0 +1,474 @@
+{
+  "info": {
+    "name": "ValeService (3000)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Healthcheck ValeService",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": []
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listar todos los vales",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/vales/todos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "vales",
+            "todos"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y array', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Consultar detalle de un vale",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/vales/VALE-1001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "vales",
+            "VALE-1001"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y vale esperado', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json().idVale).to.eql(\"VALE-1001\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listar vales disponibles por funcionario",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/funcionarios/1/vales-disponibles",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "funcionarios",
+            "1",
+            "vales-disponibles"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y array', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Imprimir un vale",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-funcionario-id",
+            "value": "1",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/vales/VALE-1001/imprimir",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "vales",
+            "VALE-1001",
+            "imprimir"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"idFuncionario\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('impresion exitosa o regla controlada', function () {",
+              "  pm.expect([200, 400, 403, 404]).to.include(pm.response.code);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Validar un vale",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-usuario-id",
+            "value": "3",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/vales/VALE-1001/validar",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "vales",
+            "VALE-1001",
+            "validar"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('validacion responde regla controlada', function () {",
+              "  pm.expect([200, 400, 403, 404]).to.include(pm.response.code);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Canjear un vale",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-usuario-id",
+            "value": "2",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/vales/VALE-1001/canjear",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "vales",
+            "VALE-1001",
+            "canjear"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('canje responde regla controlada', function () {",
+              "  pm.expect([200, 400, 403, 404, 409]).to.include(pm.response.code);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crear vale adicional",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/administrador/vales",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "administrador",
+            "vales"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"idVale\": \"VALE-POSTMAN-{{$timestamp}}\",\n  \"idFuncionario\": 1,\n  \"idServicio\": 2,\n  \"valor\": 3500,\n  \"fechaUso\": \"2026-12-31\",\n  \"horaInicioValidez\": \"00:00\",\n  \"horaFinValidez\": \"23:59\",\n  \"motivo\": \"Jornada extraordinaria Postman\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('creacion exitosa', function () {",
+              "  pm.response.to.have.status(201); pm.expect(pm.response.json()).to.have.property(\"valeCreado\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crear vale adicional sin motivo debe fallar",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/administrador/vales",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "administrador",
+            "vales"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"idVale\": \"VALE-SIN-MOTIVO-{{$timestamp}}\",\n  \"idFuncionario\": 1,\n  \"idServicio\": 2,\n  \"valor\": 3500,\n  \"fechaUso\": \"2026-12-31\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('rechaza vale adicional sin motivo', function () {",
+              "  pm.expect([400, 500]).to.include(pm.response.code);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Validar vale expirado debe fallar",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-usuario-id",
+            "value": "3",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/vales/VALE-1003/validar",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "vales",
+            "VALE-1003",
+            "validar"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('rechaza vale expirado', function () {",
+              "  pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Validar con funcionario debe fallar permiso",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-usuario-id",
+            "value": "1",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/vales/VALE-1001/validar",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "vales",
+            "VALE-1001",
+            "validar"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('rechaza usuario sin permiso', function () {",
+              "  pm.expect(pm.response.code).to.be.oneOf([403, 400, 404]);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Generar vales base automaticos",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/sistema/vales-base/generar",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "sistema",
+            "vales-base",
+            "generar"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fechaUso\": \"2026-12-31\",\n  \"valor\": 3500\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('generacion ejecutada', function () {",
+              "  pm.response.to.have.status(201); pm.expect(pm.response.json()).to.have.property(\"creados\"); pm.expect(pm.response.json()).to.have.property(\"omitidos\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

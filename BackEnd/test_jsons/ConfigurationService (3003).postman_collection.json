@@ -1,0 +1,458 @@
+{
+  "info": {
+    "name": "ConfigurationService (3003)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Listar tipos de comensal",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3003/tipos-comensal",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3003",
+          "path": [
+            "tipos-comensal"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y array', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Obtener tipo de comensal",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3003/tipos-comensal/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3003",
+          "path": [
+            "tipos-comensal",
+            "1"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y tipo', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.have.property(\"idTipoComensal\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crear tipo de comensal",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3003/tipos-comensal",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3003",
+          "path": [
+            "tipos-comensal"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Alumno Regular {{$timestamp}}\",\n  \"descripcion\": \"Estudiante con beneficio de alimentacion estandar\",\n  \"cantidadVales\": 1,\n  \"emisionMultiple\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('tipo creado', function () {",
+              "  pm.response.to.have.status(201); pm.expect(pm.response.json()).to.have.property(\"idTipoComensal\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listar todos los turnos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3003/turnos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3003",
+          "path": [
+            "turnos"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y array', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Obtener detalle de un turno",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3003/turnos/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3003",
+          "path": [
+            "turnos",
+            "2"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y turno', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.have.property(\"idTurno\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crear nuevo turno",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3003/turnos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3003",
+          "path": [
+            "turnos"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Turno Postman {{$timestamp}}\",\n  \"horaInicio\": \"12:00\",\n  \"horaFin\": \"14:30\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('turno creado', function () {",
+              "  pm.response.to.have.status(201); pm.expect(pm.response.json()).to.have.property(\"idTurno\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Obtener servicios por turno",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3003/turnos/2/servicios",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3003",
+          "path": [
+            "turnos",
+            "2",
+            "servicios"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y servicios', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.have.property(\"serviciosHabilitados\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Agregar servicio a un turno",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3003/turnos/2/servicios",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3003",
+          "path": [
+            "turnos",
+            "2",
+            "servicios"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"idServicio\": 5\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('servicio asociado o ya existente', function () {",
+              "  pm.expect([201, 400]).to.include(pm.response.code);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Agregar servicio inexistente debe fallar",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3003/turnos/2/servicios",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3003",
+          "path": [
+            "turnos",
+            "2",
+            "servicios"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"idServicio\": 999999\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('rechaza servicio inexistente', function () {",
+              "  pm.response.to.have.status(400);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crear asignacion de turno",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3003/asignaciones-turno",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3003",
+          "path": [
+            "asignaciones-turno"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"idFuncionario\": 1,\n  \"idTurno\": 2,\n  \"fechaInicio\": \"2026-05-27\",\n  \"fechaFin\": null\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('asignacion creada', function () {",
+              "  pm.response.to.have.status(201); pm.expect(pm.response.json()).to.have.property(\"idAsignacion\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Obtener configuracion vigente de funcionario",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3003/funcionarios/2/configuracion",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3003",
+          "path": [
+            "funcionarios",
+            "2",
+            "configuracion"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y configuracion', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.have.property(\"turno\"); pm.expect(pm.response.json()).to.have.property(\"tipoComensal\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Asignar tipo de comensal a funcionario",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3003/funcionarios/3/tipo-comensal",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3003",
+          "path": [
+            "funcionarios",
+            "3",
+            "tipo-comensal"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"idTipoComensal\": 2\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('tipo asignado', function () {",
+              "  pm.response.to.have.status(200);",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

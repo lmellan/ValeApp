@@ -1,0 +1,42 @@
+{
+  "info": {
+    "name": "NotificacionService (3006)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Enviar Resumen Semanal",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3006/notificaciones/resumen-semanal/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3006",
+          "path": [
+            "notificaciones",
+            "resumen-semanal",
+            "1"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200 y detalle', function () {",
+              "  pm.response.to.have.status(200); pm.expect(pm.response.json()).to.have.property(\"detalle\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
