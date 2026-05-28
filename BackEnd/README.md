@@ -67,13 +67,13 @@ docker compose up -d postgres
 Ejecutar una vez:
 
 ```bash
-cd services/usuario-service && npm install
-cd ../audit-service && npm install
-cd ../casino-service && npm install
-cd ../configuracion-service && npm install
-cd ../vale-service && npm install
-cd ../reporte-service && npm install
-cd ../notificacion-service && npm install
+cd .\services\usuario-service npm install
+cd ..\audit-service npm install
+cd ..\casino-service npm install
+cd ..\configuracion-service npm install
+cd ..\vale-service npm install
+cd ..\reporte-service npm install
+cd ..\notificacion-service npm install
 ```
 
 ## Levantar Servicios
@@ -84,17 +84,47 @@ Primero levantar PostgreSQL desde `BackEnd/`:
 docker compose up -d postgres
 ```
 
-Luego abrir una terminal por servicio:
+ 
+Luego, abrir una terminal por cada microservicio y ejecutar:
 
-```bash
-cd services/usuario-service && npm start
-cd services/audit-service && npm start
-cd services/casino-service && npm start
-cd services/configuracion-service && npm start
-cd services/vale-service && npm start
-cd services/reporte-service && npm start
-cd services/notificacion-service && npm start
+```powershell
+cd .\services\usuario-service
+npm start
+````
+
+```powershell
+cd .\services\audit-service
+npm start
 ```
+
+```powershell
+cd .\services\casino-service
+npm start
+```
+
+```powershell
+cd .\services\configuracion-service
+npm start
+```
+
+```powershell
+cd .\services\vale-service
+npm start
+```
+
+```powershell
+cd .\services\reporte-service
+npm start
+```
+
+```powershell
+cd .\services\notificacion-service
+npm start
+```
+
+Cada servicio debe ejecutarse en una terminal distinta, ya que `npm start` deja el microservicio corriendo.
+ 
+
 
 ## Servicios
 
