@@ -1,0 +1,295 @@
+{
+  "info": {
+    "_postman_id": "e45cccce-afbc-4422-a773-0243d3c059db",
+    "name": "ConfigurationService (3003)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "27560460",
+    "_collection_link": "https://go.postman.co/collection/44065675-e45cccce-afbc-4422-a773-0243d3c059db?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Comensal",
+      "item": [
+        {
+          "name": "Listar tipos de comensal",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/tipos-comensal",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3003",
+              "path": [
+                "tipos-comensal"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener tipo de comensal",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/tipos-comensal/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3003",
+              "path": [
+                "tipos-comensal",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear tipo de comensal",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Alumno Regular\",\r\n  \"descripcion\": \"Estudiante con beneficio de alimentación estándar de la USM\",\r\n  \"cantidadVales\": 1,\r\n  \"emisionMultiple\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3003/tipos-comensal",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3003",
+              "path": [
+                "tipos-comensal"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Turnos",
+      "item": [
+        {
+          "name": "Listar todos los turnos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/turnos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3003",
+              "path": [
+                "turnos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener detalle de un turno",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/turnos/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3003",
+              "path": [
+                "turnos",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear nuevo turno",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Turno 4\",\r\n  \"horaInicio\": \"12:00\",\r\n  \"horaFin\": \"14:30\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3003/turnos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3003",
+              "path": [
+                "turnos"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Servicios por turno y asignaciones",
+      "item": [
+        {
+          "name": "Obtener servicios por turno",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/turnos/2/servicios",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3003",
+              "path": [
+                "turnos",
+                "2",
+                "servicios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Agregar servicio a un turno",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"idServicio\": 50\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3003/turnos/2/servicios",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3003",
+              "path": [
+                "turnos",
+                "2",
+                "servicios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear asignación de turno",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"idFuncionario\": 1,\r\n  \"idTurno\": 2,\r\n  \"fechaInicio\": \"2026-05-27\",\r\n  \"fechaFin\": null\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3003/asignaciones-turno",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3003",
+              "path": [
+                "asignaciones-turno"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Configuracion funcionarios",
+      "item": [
+        {
+          "name": "Obtener configuración vigente de funcionario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/funcionarios/2/configuracion",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3003",
+              "path": [
+                "funcionarios",
+                "2",
+                "configuracion"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Asignar tipo de comensal a funcionario",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"idTipoComensal\": 2\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3003/funcionarios/3/tipo-comensal",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3003",
+              "path": [
+                "funcionarios",
+                "3",
+                "tipo-comensal"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,177 @@
+{
+  "info": {
+    "_postman_id": "cfde87e1-4c72-4f7a-87bc-693e6a9f41f7",
+    "name": "CasinoService (3004)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "27560460",
+    "_collection_link": "https://go.postman.co/collection/44065675-cfde87e1-4c72-4f7a-87bc-693e6a9f41f7?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Casino",
+      "item": [
+        {
+          "name": "Listar todos los casinos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3004/casinos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3004",
+              "path": [
+                "casinos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener detalle de un casino",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3004/casinos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3004",
+              "path": [
+                "casinos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear nuevo casino",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{        \r\n    \"nombre\": \"Casino Papu\",\r\n    \"direccion\": \"Edificio Principal, Piso 100\"\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3004/casinos/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3004",
+              "path": [
+                "casinos",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Servicios Alimentación",
+      "item": [
+        {
+          "name": "Listar todos los servicios de alimentación",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3004/servicios-alimentacion",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3004",
+              "path": [
+                "servicios-alimentacion"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener detalle de un servicio",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3004/servicios-alimentacion/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3004",
+              "path": [
+                "servicios-alimentacion",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear nuevo servicio de alimentación",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Almuerzo Ejecutivo\",\r\n  \"categoria\": \"Menú Común\",\r\n  \"horaInicio\": \"12:00:00\",\r\n  \"horaFin\": \"14:30:00\",\r\n  \"idCasino\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3004/servicios-alimentacion",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3004",
+              "path": [
+                "servicios-alimentacion"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Verificar disponibilidad de servicio",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3004/servicios-alimentacion/1/disponibilidad",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3004",
+          "path": [
+            "servicios-alimentacion",
+            "1",
+            "disponibilidad"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

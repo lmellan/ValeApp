@@ -1,0 +1,52 @@
+{
+  "info": {
+    "_postman_id": "ff727e1e-b0cf-4c43-994c-b20c86a57543",
+    "name": "UsuarioService (3001)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "27560460",
+    "_collection_link": "https://go.postman.co/collection/44065675-ff727e1e-b0cf-4c43-994c-b20c86a57543?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Obtener Rol de Usuario",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3001/usuarios/3/rol",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "usuarios",
+            "3",
+            "rol"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Obtener Datos de Usuario",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3001/usuarios/3",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "usuarios",
+            "3"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

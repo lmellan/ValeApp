@@ -1,0 +1,32 @@
+{
+  "info": {
+    "_postman_id": "12efa7f5-06c9-492f-a534-4b994d008117",
+    "name": "NotificacionService (3006)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "27560460",
+    "_collection_link": "https://go.postman.co/collection/44065675-12efa7f5-06c9-492f-a534-4b994d008117?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Enviar Resumen Semanal",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3006/notificaciones/resumen-semanal/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3006",
+          "path": [
+            "notificaciones",
+            "resumen-semanal",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
