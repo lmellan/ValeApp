@@ -18,6 +18,42 @@ const estaDentroDeRango = (vale, ahora = new Date()) => {
     return ahora >= inicio && ahora <= fin;
 };
 
+const obtenerServicioAlimentacion = async (idServicio) => {
+    const response = await axios.get(`${CASINO_SERVICE_URL}/servicios-alimentacion/${idServicio}`, { timeout: 2000 });
+    return response.data;
+};
+
+const obtenerValorConfigurado = async (idTipoComensal, idServicio) => {
+    const response = await axios.get(`${CONFIGURACION_SERVICE_URL}/valorizaciones-vales/valor`, {
+        params: { idTipoComensal, idServicio },
+        timeout: 2000
+    });
+    return response.data.valor;
+};
+
+const obtenerConfiguracionFuncionario = async (idFuncionario) => {
+    const response = await axios.get(`${CONFIGURACION_SERVICE_URL}/funcionarios/${idFuncionario}/configuracion`, { timeout: 2000 });
+    return response.data;
+};
+
+const prepararValeConValorizacion = async (valeData) => {
+    const config = await obtenerConfiguracionFuncionario(valeData.idFuncionario);
+    if (!config.tipoComensal) {
+        const error = new Error('El funcionario no tiene tipo de comensal configurado.');
+        error.status = 400;
+        throw error;
+    }
+    const servicio = await obtenerServicioAlimentacion(valeData.idServicio);
+    const valor = await obtenerValorConfigurado(config.tipoComensal.idTipoComensal, valeData.idServicio);
+
+    return {
+        ...valeData,
+        valor,
+        horaInicioValidez: valeData.horaInicioValidez || servicio.horaInicio || '00:00',
+        horaFinValidez: valeData.horaFinValidez || servicio.horaFin || '23:59'
+    };
+};
+
 const obtenerRolUsuario = async (idUsuario) => {
     const response = await axios.get(`${USUARIO_SERVICE_URL}/usuarios/${idUsuario}/rol`, { timeout: 2000 });
     return response.data.rol;
@@ -64,8 +100,8 @@ const validarReglasVale = async (idVale) => {
         error.status = 400;
         throw error;
     }
-    const config = await axios.get(`${CONFIGURACION_SERVICE_URL}/funcionarios/${vale.idFuncionario}/configuracion`, { timeout: 2000 });
-    const permiteEmisionMultiple = Boolean(config.data.tipoComensal?.emisionMultiple);
+    const config = await obtenerConfiguracionFuncionario(vale.idFuncionario);
+    const permiteEmisionMultiple = Boolean(config.tipoComensal?.emisionMultiple);
     if (!permiteEmisionMultiple) {
         const coincidencias = await valeRepository.contarCoincidenciasUsadas(vale);
         if (coincidencias > 0) {
@@ -104,18 +140,75 @@ const obtenerValesDisponibles = async (idFuncionario) => {
     return vales.filter((vale) => esNoUtilizado(vale) && !calcularExpirado(vale));
 };
 
+const obtenerVale = async (idVale) => {
+    await valeRepository.actualizarExpirados();
+    return valeRepository.obtenerPorId(idVale);
+};
+
+const obtenerResumenValesFuncionario = async (idFuncionario) => {
+    await valeRepository.actualizarExpirados();
+    return valeRepository.obtenerResumenPorFuncionario(idFuncionario);
+};
+
+const obtenerResumenGenerico = async () => {
+    await valeRepository.actualizarExpirados();
+    return valeRepository.obtenerResumenGeneral();
+};
+
 const registrarValeAdicional = async (nuevoValeData) => {
-    try {
-        await valeRepository.insertar(new Vale(nuevoValeData));
-        return 'Vale adicional creado y asignado con exito.';
-    } catch (err) {
-        if (err.message.includes('UNIQUE constraint failed')) {
-            const error = new Error('El ID de vale ya existe en el sistema.');
-            error.status = 400;
-            throw error;
+    const config = await obtenerConfiguracionFuncionario(nuevoValeData.idFuncionario);
+    const cantidadVales = config.tipoComensal?.emisionMultiple ? Math.max(1, Number(nuevoValeData.cantidadVales || 1)) : 1;
+    const creados = [];
+
+    for (let copia = 1; copia <= cantidadVales; copia += 1) {
+        const idVale = cantidadVales === 1 ? nuevoValeData.idVale : `${nuevoValeData.idVale}-${copia}`;
+        try {
+            const valeValorizado = await prepararValeConValorizacion({ ...nuevoValeData, idVale });
+            await valeRepository.insertar(new Vale(valeValorizado));
+            creados.push(idVale);
+        } catch (err) {
+            if (err.code === '23505' || err.message.includes('UNIQUE constraint failed')) {
+                const error = new Error('El ID de vale ya existe en el sistema.');
+                error.status = 400;
+                throw error;
+            }
+            if (err.status) throw err;
+            throw new Error(err.response?.data?.error || 'Error al insertar el vale adicional en la base de datos.');
         }
-        throw new Error('Error al insertar el vale adicional en la base de datos.');
     }
+
+    return { mensaje: 'Vale adicional creado y asignado con exito.', creados };
+};
+const listarValesAdicionales = async () => {
+    await valeRepository.actualizarExpirados();
+    return valeRepository.listarAdministrativos();
+};
+
+const actualizarValeAdicional = async (idVale, valeData) => {
+    const existente = await valeRepository.obtenerPorId(idVale);
+    if (!existente || existente.tipoAsignacion !== 'ADMINISTRATIVA') {
+        const error = new Error('Vale adicional no encontrado.');
+        error.status = 404;
+        throw error;
+    }
+    if (existente.estadoUso !== 'NO_UTILIZADO') {
+        const error = new Error('No se puede editar un vale adicional que ya fue utilizado.');
+        error.status = 409;
+        throw error;
+    }
+
+    const valeValorizado = await prepararValeConValorizacion(valeData);
+    const actualizado = await valeRepository.actualizarAdministrativo(idVale, new Vale({
+        ...valeValorizado,
+        idVale,
+        tipoAsignacion: 'ADMINISTRATIVA'
+    }));
+    if (!actualizado) {
+        const error = new Error('No se pudo actualizar el vale adicional.');
+        error.status = 409;
+        throw error;
+    }
+    return actualizado;
 };
 
 const imprimirVale = async (idVale, idFuncionario) => {
@@ -136,34 +229,66 @@ const imprimirVale = async (idVale, idFuncionario) => {
         throw error;
     }
 
+    const config = await obtenerConfiguracionFuncionario(vale.idFuncionario);
+    const permiteEmisionMultiple = Boolean(config.tipoComensal?.emisionMultiple);
+    if (!permiteEmisionMultiple) {
+        const coincidencias = await valeRepository.contarCoincidenciasImpresas(vale);
+        if (coincidencias > 0) {
+            const error = new Error('No se puede imprimir otro vale con horario coincidente para este funcionario.');
+            error.status = 409;
+            throw error;
+        }
+    }
+
     const fechaHoraImpresion = new Date().toISOString();
     await valeRepository.marcarImpreso(idVale, fechaHoraImpresion);
     return { mensaje: 'Vale impreso correctamente.', fechaHoraImpresion };
 };
 
-const generarValesBase = async ({ fechaUso, valor }) => {
-    if (!fechaUso) throw new Error('fechaUso es requerida.');
+const toInputDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
 
-    const usuariosRes = await axios.get(`${USUARIO_SERVICE_URL}/usuarios?rol=Funcionario&activo=true`, { timeout: 2000 });
-    const funcionarios = usuariosRes.data;
+const obtenerDiasHabilesDelMes = (periodo, desdeFecha = null) => {
+    const [year, month] = periodo.split('-').map(Number);
+    const date = new Date(year, month - 1, 1);
+    const dates = [];
+
+    while (date.getFullYear() === year && date.getMonth() === month - 1) {
+        const day = date.getDay();
+        const inputDate = toInputDate(date);
+        if (day !== 0 && day !== 6 && (!desdeFecha || inputDate >= desdeFecha)) {
+            dates.push(inputDate);
+        }
+        date.setDate(date.getDate() + 1);
+    }
+
+    return dates;
+};
+
+const generarValesBaseParaFecha = async ({ fechaUso, funcionarios }) => {
     const creados = [];
     const omitidos = [];
 
     for (const funcionario of funcionarios) {
         try {
-            const configRes = await axios.get(`${CONFIGURACION_SERVICE_URL}/funcionarios/${funcionario.id}/configuracion`, { timeout: 2000 });
-            const { turno, tipoComensal } = configRes.data;
+            const { turno, tipoComensal } = await obtenerConfiguracionFuncionario(funcionario.id);
             if (!turno || !tipoComensal) {
-                omitidos.push({ idFuncionario: funcionario.id, motivo: 'Sin turno o tipo de comensal.' });
+                omitidos.push({ fechaUso, idFuncionario: funcionario.id, motivo: 'Sin turno o tipo de comensal.' });
                 continue;
             }
 
             const serviciosRes = await axios.get(`${CONFIGURACION_SERVICE_URL}/turnos/${turno.idTurno}/servicios`, { timeout: 2000 });
-            const servicios = serviciosRes.data.serviciosHabilitados.slice(0, tipoComensal.cantidadVales);
+            const servicios = serviciosRes.data.serviciosHabilitados || [];
 
             for (const idServicio of servicios) {
                 const idVale = `BASE-${fechaUso}-${funcionario.id}-${idServicio}`;
                 try {
+                    const servicio = await obtenerServicioAlimentacion(idServicio);
+                    const valor = await obtenerValorConfigurado(tipoComensal.idTipoComensal, idServicio);
                     await valeRepository.insertar(new Vale({
                         idVale,
                         idFuncionario: funcionario.id,
@@ -173,24 +298,75 @@ const generarValesBase = async ({ fechaUso, valor }) => {
                         tipoAsignacion: 'POR_TURNO',
                         valor,
                         fechaUso,
-                        horaInicioValidez: '00:00',
-                        horaFinValidez: '23:59',
+                        horaInicioValidez: servicio.horaInicio || '00:00',
+                        horaFinValidez: servicio.horaFin || '23:59',
                         fechaExpiracion: fechaUso,
                         motivo: null
                     }));
                     creados.push(idVale);
                 } catch (err) {
-                    omitidos.push({ idVale, motivo: 'Duplicado o no insertable.' });
+                    omitidos.push({ fechaUso, idVale, motivo: err.response?.data?.error || 'Duplicado, sin valorizacion o no insertable.' });
                 }
             }
         } catch (err) {
-            omitidos.push({ idFuncionario: funcionario.id, motivo: 'No se pudo obtener configuracion.' });
+            omitidos.push({ fechaUso, idFuncionario: funcionario.id, motivo: err.response?.data?.error || 'No se pudo obtener configuracion.' });
         }
     }
 
     return { creados, omitidos };
 };
 
+const obtenerFuncionariosParaGeneracion = async (idFuncionario = null) => {
+    if (idFuncionario) {
+        const usuarioRes = await axios.get(`${USUARIO_SERVICE_URL}/usuarios/${idFuncionario}`, { timeout: 2000 });
+        const usuario = usuarioRes.data;
+        return usuario.rol === 'Funcionario' && usuario.activo ? [usuario] : [];
+    }
+
+    const usuariosRes = await axios.get(`${USUARIO_SERVICE_URL}/usuarios?rol=Funcionario&activo=true`, { timeout: 2000 });
+    return usuariosRes.data;
+};
+
+const generarValesBase = async ({ fechaUso, periodo, idFuncionario = null, desdeFecha = null }) => {
+    if (!fechaUso && !periodo) throw new Error('fechaUso o periodo es requerido.');
+
+    const fechas = periodo ? obtenerDiasHabilesDelMes(periodo, desdeFecha) : [fechaUso];
+    const funcionarios = await obtenerFuncionariosParaGeneracion(idFuncionario);
+    const creados = [];
+    const omitidos = [];
+
+    for (const fecha of fechas) {
+        const resultado = await generarValesBaseParaFecha({ fechaUso: fecha, funcionarios });
+        creados.push(...resultado.creados);
+        omitidos.push(...resultado.omitidos);
+    }
+
+    return {
+        periodo: periodo || fechaUso,
+        diasHabiles: fechas.length,
+        funcionarios: funcionarios.length,
+        creados,
+        omitidos
+    };
+};
+
+const obtenerPeriodoDeFecha = (fecha) => fecha.slice(0, 7);
+
+const recalcularValesBaseFuncionario = async ({ idFuncionario, desdeFecha }) => {
+    const fechaInicio = desdeFecha || toInputDate(new Date());
+    const periodo = obtenerPeriodoDeFecha(fechaInicio);
+    const eliminados = await valeRepository.eliminarValesBaseFuturos(idFuncionario, fechaInicio);
+    const resultado = await generarValesBase({ periodo, idFuncionario, desdeFecha: fechaInicio });
+
+    return {
+        idFuncionario: parseInt(idFuncionario),
+        periodo,
+        desdeFecha: fechaInicio,
+        eliminados,
+        creados: resultado.creados,
+        omitidos: resultado.omitidos
+    };
+};
 const obtenerTodosLosVales = async () => {
     await valeRepository.actualizarExpirados();
     return valeRepository.listarTodos();
@@ -200,8 +376,17 @@ module.exports = {
     validarVale,
     registrarCanjeVale,
     obtenerValesDisponibles,
+    obtenerVale,
+    obtenerResumenValesFuncionario,
+    obtenerResumenGenerico,
     registrarValeAdicional,
+    listarValesAdicionales,
+    actualizarValeAdicional,
     imprimirVale,
     generarValesBase,
+    recalcularValesBaseFuncionario,
     obtenerTodosLosVales
 };
+
+
+

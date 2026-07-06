@@ -7,7 +7,8 @@ const mapTipo = (row) => row && ({
     nombre: row.nombre,
     descripcion: row.descripcion,
     cantidadVales: row.cantidad_vales,
-    emisionMultiple: row.emision_multiple
+    emisionMultiple: row.emision_multiple,
+    color: row.color
 });
 
 const mapTurno = (row) => row && ({
@@ -16,6 +17,32 @@ const mapTurno = (row) => row && ({
     horaInicio: String(row.hora_inicio).slice(0, 5),
     horaFin: String(row.hora_fin).slice(0, 5)
 });
+
+const mapValorizacion = (row) => row && ({
+    idValorizacion: row.id_valorizacion,
+    idTipoComensal: row.id_tipo_comensal,
+    idServicio: row.id_servicio,
+    valor: row.valor,
+    activo: row.activo
+});
+
+const asegurarTablaValorizaciones = async () => {
+    await db.query(`CREATE TABLE IF NOT EXISTS valorizaciones_vale (
+        id_valorizacion SERIAL PRIMARY KEY,
+        id_tipo_comensal INTEGER NOT NULL REFERENCES tipos_comensal(id_tipo_comensal),
+        id_servicio INTEGER NOT NULL,
+        valor INTEGER NOT NULL CHECK (valor >= 0),
+        activo BOOLEAN NOT NULL DEFAULT true,
+        UNIQUE (id_tipo_comensal, id_servicio)
+    )`);
+
+    await db.query(`INSERT INTO valorizaciones_vale (id_tipo_comensal, id_servicio, valor, activo) VALUES
+        (1, 1, 2500, true), (1, 2, 3500, true), (1, 3, 2500, true), (1, 4, 3500, true), (1, 5, 3500, true), (1, 6, 4000, true),
+        (2, 1, 3000, true), (2, 2, 4500, true), (2, 3, 3000, true), (2, 4, 4500, true), (2, 5, 4500, true), (2, 6, 5000, true),
+        (3, 1, 3500, true), (3, 2, 5500, true), (3, 3, 3500, true), (3, 4, 5500, true), (3, 5, 5500, true), (3, 6, 6000, true),
+        (4, 1, 2500, true), (4, 2, 3500, true), (4, 3, 2500, true), (4, 4, 3500, true), (4, 5, 3500, true), (4, 6, 4000, true)
+     ON CONFLICT (id_tipo_comensal, id_servicio) DO NOTHING`);
+};
 
 const listarTiposComensal = async () => {
     const result = await db.query('SELECT * FROM tipos_comensal ORDER BY id_tipo_comensal');
@@ -31,15 +58,36 @@ const obtenerTipoComensal = async (idTipoComensal) => {
 const crearTipoComensal = async (datos) => {
     try {
         const result = await db.query(
-            `INSERT INTO tipos_comensal (nombre, descripcion, cantidad_vales, emision_multiple)
-             VALUES ($1, $2, $3, $4)
+            `INSERT INTO tipos_comensal (nombre, descripcion, cantidad_vales, emision_multiple, color)
+             VALUES ($1, $2, $3, $4, $5)
              RETURNING id_tipo_comensal`,
-            [datos.nombre, datos.descripcion, datos.cantidadVales, Boolean(datos.emisionMultiple)]
+            [datos.nombre, datos.descripcion, 1, Boolean(datos.emisionMultiple), datos.color]
         );
         return result.rows[0].id_tipo_comensal;
     } catch (err) {
         if (err.code === '23505') throw 'Ya existe un tipo de comensal con ese nombre.';
         throw 'Error al crear tipo de comensal.';
+    }
+};
+
+const editarTipoComensal = async (idTipoComensal, datos) => {
+    await obtenerTipoComensal(idTipoComensal);
+    try {
+        const result = await db.query(
+            `UPDATE tipos_comensal
+             SET nombre = $1,
+                 descripcion = $2,
+                 cantidad_vales = $3,
+                 emision_multiple = $4,
+                 color = $5
+             WHERE id_tipo_comensal = $6
+             RETURNING *`,
+            [datos.nombre, datos.descripcion, 1, Boolean(datos.emisionMultiple), datos.color, idTipoComensal]
+        );
+        return mapTipo(result.rows[0]);
+    } catch (err) {
+        if (err.code === '23505') throw 'Ya existe un tipo de comensal con ese nombre.';
+        throw 'Error al editar tipo de comensal.';
     }
 };
 
@@ -156,10 +204,49 @@ const asignarTipoComensalAFuncionario = async (idFuncionario, idTipoComensal) =>
     );
 };
 
+const quitarTipoComensalAFuncionario = async (idFuncionario) => {
+    await db.query('DELETE FROM funcionario_tipo_comensal WHERE id_funcionario = $1', [idFuncionario]);
+};
+
+const listarValorizacionesVale = async () => {
+    await asegurarTablaValorizaciones();
+    const result = await db.query('SELECT * FROM valorizaciones_vale ORDER BY id_tipo_comensal, id_servicio');
+    return result.rows.map(mapValorizacion);
+};
+
+const guardarValorizacionVale = async (datos) => {
+    await asegurarTablaValorizaciones();
+    await obtenerTipoComensal(datos.idTipoComensal);
+    const result = await db.query(
+        `INSERT INTO valorizaciones_vale (id_tipo_comensal, id_servicio, valor, activo)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (id_tipo_comensal, id_servicio)
+         DO UPDATE SET valor = EXCLUDED.valor,
+                       activo = EXCLUDED.activo
+         RETURNING *`,
+        [datos.idTipoComensal, datos.idServicio, datos.valor, datos.activo]
+    );
+    return mapValorizacion(result.rows[0]);
+};
+
+const obtenerValorVale = async (idTipoComensal, idServicio) => {
+    await asegurarTablaValorizaciones();
+    const result = await db.query(
+        `SELECT * FROM valorizaciones_vale
+         WHERE id_tipo_comensal = $1
+           AND id_servicio = $2
+           AND activo = true`,
+        [idTipoComensal, idServicio]
+    );
+    if (!result.rows[0]) throw 'No existe una valorizacion activa para este tipo de comensal y servicio.';
+    return mapValorizacion(result.rows[0]);
+};
+
 module.exports = {
     listarTiposComensal,
     obtenerTipoComensal,
     crearTipoComensal,
+    editarTipoComensal,
     listarTurnos,
     obtenerTurno,
     crearTurno,
@@ -168,5 +255,11 @@ module.exports = {
     obtenerServiciosPorTurno,
     agregarServicioATurno,
     obtenerTipoComensalPorFuncionario,
-    asignarTipoComensalAFuncionario
+    asignarTipoComensalAFuncionario,
+    quitarTipoComensalAFuncionario,
+    listarValorizacionesVale,
+    guardarValorizacionVale,
+    obtenerValorVale
 };
+
+

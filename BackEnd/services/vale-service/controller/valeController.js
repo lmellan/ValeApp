@@ -1,6 +1,6 @@
 const axios = require('axios');
 const valeService = require('../service/valeService');
-const { infoValeResponseDTO, crearValeInputDTO, generarValesBaseInputDTO } = require('../dto/valeDTO');
+const { infoValeResponseDTO, crearValeInputDTO, actualizarValeInputDTO, generarValesBaseInputDTO } = require('../dto/valeDTO');
 
 const AUDIT_SERVICE_URL = process.env.AUDIT_SERVICE_URL || 'http://localhost:3002';
 
@@ -21,8 +21,7 @@ const auditar = async (evento, detalle) => {
 
 const consultarVale = async (req, res) => {
     try {
-        const vales = await valeService.obtenerTodosLosVales();
-        const vale = vales.find((item) => item.idVale === req.params.idVale);
+        const vale = await valeService.obtenerVale(req.params.idVale);
         if (!vale) return res.status(404).json({ error: 'Vale no encontrado' });
         res.json(infoValeResponseDTO(vale));
     } catch (error) {
@@ -68,11 +67,30 @@ const listarValesDisponibles = async (req, res) => {
     }
 };
 
+const listarValesAdicionales = async (req, res) => {
+    try {
+        const vales = await valeService.listarValesAdicionales();
+        res.status(200).json(vales.map(infoValeResponseDTO));
+    } catch (error) {
+        res.status(statusFromError(error)).json({ error: messageFromError(error) });
+    }
+};
+
 const crearValeAdicional = async (req, res) => {
     try {
         const datosValidados = crearValeInputDTO(req.body);
-        const mensaje = await valeService.registrarValeAdicional(datosValidados);
-        res.status(201).json({ mensaje, valeCreado: datosValidados.idVale });
+        const resultado = await valeService.registrarValeAdicional(datosValidados);
+        res.status(201).json({ mensaje: resultado.mensaje, valesCreados: resultado.creados });
+    } catch (error) {
+        res.status(statusFromError(error) === 500 ? 400 : statusFromError(error)).json({ error: messageFromError(error) });
+    }
+};
+
+const actualizarValeAdicional = async (req, res) => {
+    try {
+        const datosValidados = actualizarValeInputDTO(req.body);
+        const vale = await valeService.actualizarValeAdicional(req.params.idVale, datosValidados);
+        res.status(200).json(infoValeResponseDTO(vale));
     } catch (error) {
         res.status(statusFromError(error) === 500 ? 400 : statusFromError(error)).json({ error: messageFromError(error) });
     }
@@ -100,6 +118,35 @@ const generarValesBase = async (req, res) => {
     }
 };
 
+const recalcularValesBaseFuncionario = async (req, res) => {
+    try {
+        const resultado = await valeService.recalcularValesBaseFuncionario({
+            idFuncionario: req.params.idFuncionario,
+            desdeFecha: req.body.desdeFecha
+        });
+        res.status(200).json(resultado);
+    } catch (error) {
+        res.status(statusFromError(error)).json({ error: messageFromError(error) });
+    }
+};
+const obtenerResumenValesFuncionario = async (req, res) => {
+    try {
+        const resumen = await valeService.obtenerResumenValesFuncionario(req.params.idFuncionario);
+        res.status(200).json(resumen);
+    } catch (error) {
+        res.status(statusFromError(error)).json({ error: messageFromError(error) });
+    }
+};
+
+const obtenerResumenGenerico = async (req, res) => {
+    try {
+        const resumen = await valeService.obtenerResumenGenerico();
+        res.status(200).json(resumen);
+    } catch (error) {
+        res.status(statusFromError(error)).json({ error: messageFromError(error) });
+    }
+};
+
 const obtenerTodosLosVales = async (req, res) => {
     try {
         const vales = await valeService.obtenerTodosLosVales();
@@ -114,8 +161,15 @@ module.exports = {
     validarVale,
     canjearVale,
     listarValesDisponibles,
+    listarValesAdicionales,
+    obtenerResumenValesFuncionario,
+    obtenerResumenGenerico,
     crearValeAdicional,
+    actualizarValeAdicional,
     imprimirVale,
     generarValesBase,
+    recalcularValesBaseFuncionario,
     obtenerTodosLosVales
 };
+
+

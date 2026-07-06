@@ -8,9 +8,9 @@ const obtenerUsuario = async (idFuncionario) => {
     return response.data;
 };
 
-const obtenerVales = async () => {
-    const response = await axios.get(`${VALE_SERVICE_URL}/vales/todos`, { timeout: 2000 });
+const obtenerResumenValesFuncionario = async (idFuncionario) => {
+    const response = await axios.get(`${VALE_SERVICE_URL}/funcionarios/${idFuncionario}/vales/resumen`, { timeout: 2000 });
     return response.data;
 };
 
-module.exports = { obtenerUsuario, obtenerVales };
+module.exports = { obtenerUsuario, obtenerResumenValesFuncionario };

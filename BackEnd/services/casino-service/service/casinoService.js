@@ -1,4 +1,4 @@
-const db = require('../repository/database');
+﻿const db = require('../repository/database');
 
 const mapCasino = (row) => row && ({
     idCasino: row.id_casino,
@@ -57,21 +57,42 @@ const listarServicios = async () => {
 
 const obtenerServicio = async (idServicio) => {
     const result = await db.query('SELECT * FROM servicios_alimentacion WHERE id_servicio = $1', [idServicio]);
-    if (!result.rows[0]) throw 'Servicio de alimentacion no encontrado.';
+    if (!result.rows[0]) throw 'Servicio de alimentación no encontrado.';
     return mapServicio(result.rows[0]);
 };
 
 const crearServicio = async (datos) => {
     try {
         const result = await db.query(
-            `INSERT INTO servicios_alimentacion (nombre, categoria, hora_inicio, hora_fin, id_casino)
-             VALUES ($1, $2, $3, $4, $5)
+            `INSERT INTO servicios_alimentacion (nombre, categoria, hora_inicio, hora_fin, id_casino, activo)
+             VALUES ($1, $2, $3, $4, $5, $6)
              RETURNING id_servicio`,
-            [datos.nombre, datos.categoria || null, datos.horaInicio, datos.horaFin, datos.idCasino]
+            [datos.nombre, datos.categoria || null, datos.horaInicio, datos.horaFin, datos.idCasino, datos.activo !== false]
         );
         return result.rows[0].id_servicio;
     } catch (err) {
-        throw 'Error al crear servicio de alimentacion.';
+        throw 'Error al crear servicio de alimentación.';
+    }
+};
+
+const editarServicio = async (idServicio, datos) => {
+    await obtenerServicio(idServicio);
+    try {
+        const result = await db.query(
+            `UPDATE servicios_alimentacion
+             SET nombre = $1,
+                 categoria = $2,
+                 hora_inicio = $3,
+                 hora_fin = $4,
+                 id_casino = $5,
+                 activo = $6
+             WHERE id_servicio = $7
+             RETURNING *`,
+            [datos.nombre, datos.categoria || null, datos.horaInicio, datos.horaFin, datos.idCasino, datos.activo !== false, idServicio]
+        );
+        return mapServicio(result.rows[0]);
+    } catch (err) {
+        throw 'Error al editar servicio de alimentación.';
     }
 };
 
@@ -107,5 +128,6 @@ module.exports = {
     listarServicios,
     obtenerServicio,
     crearServicio,
+    editarServicio,
     verificarDisponibilidad
 };

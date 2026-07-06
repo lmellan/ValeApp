@@ -1,4 +1,4 @@
-# ValeApp Backend
+﻿# ValeApp Backend
 
 Backend de ValeApp implementado con microservicios Node.js/Express y PostgreSQL.
 
@@ -123,14 +123,17 @@ npm start
 ```
 
 Cada servicio debe ejecutarse en una terminal distinta, ya que `npm start` deja el microservicio corriendo.
- 
 
+### Arrancar todo con un solo comando
 
-## Servicios
+Desde `BackEnd/` puedes ejecutar el script `start-all.ps1`:
 
-| Servicio | Puerto | Responsabilidad |
-| --- | --- | --- |
-| `vale-service` | 3000 | Vales, impresion, validacion, canje y generacion base |
+```powershell
+cd C:\Users\Casa\Desktop\ValeApp\BackEnd
+.\start-all.ps1
+```
+
+Esto iniciarÃ¡ PostgreSQL en Docker y abrirÃ¡ una ventana de PowerShell para cada microservicio con `npm start`.
 | `usuario-service` | 3001 | Usuarios, roles y estado activo |
 | `audit-service` | 3002 | Logs de auditoria |
 | `configuracion-service` | 3003 | Tipos de comensal, turnos y asociaciones |
@@ -270,3 +273,4 @@ GET /reportes/resumen
 ```text
 POST /notificaciones/resumen-semanal/:idFuncionario
 ```
+

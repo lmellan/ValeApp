@@ -31,6 +31,17 @@ const crearTipoComensal = async (req, res) => {
     }
 };
 
+
+const editarTipoComensal = async (req, res) => {
+    try {
+        const datos = dto.crearTipoComensalInputDTO(req.body);
+        const row = await service.editarTipoComensal(req.params.idTipoComensal, datos);
+        res.status(200).json(dto.tipoComenalResponseDTO(row));
+    } catch (err) {
+        const message = err.message || err;
+        res.status(String(message).includes('no encontrado') ? 404 : 400).json({ error: message });
+    }
+};
 // --- Turnos ---
 
 const listarTurnos = async (req, res) => {
@@ -117,6 +128,50 @@ const obtenerConfiguracionFuncionario = async (req, res) => {
     }
 };
 
+
+
+// --- Valorización de vales ---
+
+const listarValorizacionesVale = async (req, res) => {
+    try {
+        const rows = await service.listarValorizacionesVale();
+        res.status(200).json(rows.map(dto.valorizacionValeResponseDTO));
+    } catch (err) {
+        res.status(500).json({ error: err.message || err });
+    }
+};
+
+const guardarValorizacionVale = async (req, res) => {
+    try {
+        const datos = dto.guardarValorizacionValeInputDTO(req.body);
+        const row = await service.guardarValorizacionVale(datos);
+        res.status(200).json(dto.valorizacionValeResponseDTO(row));
+    } catch (err) {
+        res.status(400).json({ error: err.message || err });
+    }
+};
+
+const obtenerValorVale = async (req, res) => {
+    try {
+        const idTipoComensal = parseInt(req.query.idTipoComensal);
+        const idServicio = parseInt(req.query.idServicio);
+        if (!idTipoComensal || !idServicio) {
+            return res.status(400).json({ error: 'idTipoComensal e idServicio son requeridos.' });
+        }
+        const row = await service.obtenerValorVale(idTipoComensal, idServicio);
+        res.status(200).json(dto.valorizacionValeResponseDTO(row));
+    } catch (err) {
+        res.status(404).json({ error: err.message || err });
+    }
+};
+const quitarTipoComensalAFuncionario = async (req, res) => {
+    try {
+        await service.quitarTipoComensalAFuncionario(req.params.idFuncionario);
+        res.status(200).json({ mensaje: 'Tipo de comensal removido del funcionario.' });
+    } catch (err) {
+        res.status(400).json({ error: err.message || err });
+    }
+};
 const asignarTipoComensalAFuncionario = async (req, res) => {
     try {
         const idFuncionario   = req.params.idFuncionario;
@@ -133,6 +188,7 @@ module.exports = {
     listarTiposComensal,
     obtenerTipoComensal,
     crearTipoComensal,
+    editarTipoComensal,
     listarTurnos,
     obtenerTurno,
     crearTurno,
@@ -140,5 +196,14 @@ module.exports = {
     agregarServicioATurno,
     crearAsignacionTurno,
     obtenerConfiguracionFuncionario,
-    asignarTipoComensalAFuncionario
+    asignarTipoComensalAFuncionario,
+    quitarTipoComensalAFuncionario,
+    listarValorizacionesVale,
+    guardarValorizacionVale,
+    obtenerValorVale
 };
+
+
+
+
+

@@ -1,9 +1,7 @@
-const service = require('../service/casinoService');
-const dto     = require('../dto/casinoDTO');
+﻿const service = require('../service/casinoService');
+const dto = require('../dto/casinoDTO');
 
 const errorMessage = (err) => err.message || err.detail || err.toString();
-
-// --- Casinos ---
 
 const listarCasinos = async (req, res) => {
     try {
@@ -26,14 +24,13 @@ const obtenerCasino = async (req, res) => {
 const crearCasino = async (req, res) => {
     try {
         const datos = dto.crearCasinoInputDTO(req.body);
-        const id    = await service.crearCasino(datos);
+        const id = await service.crearCasino(datos);
         res.status(201).json({ mensaje: 'Casino creado.', idCasino: id });
     } catch (err) {
         res.status(400).json({ error: errorMessage(err) });
     }
 };
 
-// R22: servicios de alimentación que ofrece un casino
 const obtenerServiciosPorCasino = async (req, res) => {
     try {
         const rows = await service.obtenerServiciosPorCasino(req.params.idCasino);
@@ -42,8 +39,6 @@ const obtenerServiciosPorCasino = async (req, res) => {
         res.status(500).json({ error: errorMessage(err) });
     }
 };
-
-// --- Servicios de alimentación ---
 
 const listarServicios = async (req, res) => {
     try {
@@ -66,15 +61,24 @@ const obtenerServicio = async (req, res) => {
 const crearServicio = async (req, res) => {
     try {
         const datos = dto.crearServicioInputDTO(req.body);
-        const id    = await service.crearServicio(datos);
+        const id = await service.crearServicio(datos);
         res.status(201).json({ mensaje: 'Servicio de alimentación creado.', idServicio: id });
     } catch (err) {
         res.status(400).json({ error: errorMessage(err) });
     }
 };
 
-// Endpoint principal para vale-service: ¿este servicio existe y está disponible ahora?
-// R30: disponibilidad calculada en tiempo real
+const editarServicio = async (req, res) => {
+    try {
+        const datos = dto.crearServicioInputDTO(req.body);
+        const row = await service.editarServicio(req.params.idServicio, datos);
+        res.status(200).json(dto.servicioResponseDTO(row));
+    } catch (err) {
+        const message = errorMessage(err);
+        res.status(message.includes('no encontrado') ? 404 : 400).json({ error: message });
+    }
+};
+
 const verificarDisponibilidad = async (req, res) => {
     try {
         const resultado = await service.verificarDisponibilidad(req.params.idServicio);
@@ -92,5 +96,6 @@ module.exports = {
     listarServicios,
     obtenerServicio,
     crearServicio,
+    editarServicio,
     verificarDisponibilidad
 };
