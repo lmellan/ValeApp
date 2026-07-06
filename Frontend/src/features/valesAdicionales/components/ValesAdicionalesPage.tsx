@@ -103,7 +103,7 @@ const ValesAdicionalesPage = () => {
             <div className="shrink-0 p-8 border-b border-slate-200 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5">
               <div>
                 <h1 className="text-4xl font-extrabold text-primary mb-2">Crear asignacion</h1>
-                <p className="text-lg text-slate-600">Selecciona funcionario, servicio adicional, fecha de uso y motivo.</p>
+                <p className="text-lg text-slate-600">Selecciona funcionario, servicio adicional, fecha o periodo de uso y motivo.</p>
               </div>
               <button
                 type="button"
@@ -148,14 +148,14 @@ const ValesAdicionalesPage = () => {
             <div className="shrink-0 p-8 border-b border-slate-200 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5">
               <div>
                 <h1 className="text-4xl font-extrabold text-primary mb-2">Editar asignacion</h1>
-                <p className="text-lg text-slate-600">Modifica la fecha, el servicio adicional, el horario de validez o el motivo.</p>
+                <p className="text-lg text-slate-600">Modifica la fecha, el servicio adicional o el motivo. El horario lo define el servicio.</p>
               </div>
 
               <div className="flex items-start gap-3">
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
                   <p className="text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-1">Asignacion seleccionada</p>
                   <p className="text-2xl font-extrabold text-primary">{selectedUsuario?.nombre || editing.idFuncionario}</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-500">{selectedServicio?.nombre || editing.idServicio} · {editing.fechaUso}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-500">{selectedServicio?.nombre || editing.idServicio} - {editing.fechaUso}</p>
                 </div>
                 <button
                   type="button"

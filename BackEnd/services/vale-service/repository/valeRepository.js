@@ -216,6 +216,7 @@ module.exports = {
     marcarImpreso,
     marcarCanjeadoSiDisponible,
     actualizarExpirados,
+    eliminarValesBaseFuturos,
     contarCoincidenciasUsadas,
     contarCoincidenciasImpresas,
     obtenerResumenPorFuncionario,

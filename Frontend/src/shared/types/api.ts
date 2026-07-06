@@ -1,4 +1,4 @@
-﻿export interface User {
+export interface User {
   id: number;
   nombre: string;
   correo: string;
@@ -12,17 +12,23 @@
 }
 
 export interface ValeDisponible {
-  id_vale?: number;
-  id_vale_disponible?: number;
-  id_servicio?: number;
-  id_funcionario?: number;
-  codigo?: string;
-  servicio?: string;
-  casino?: string;
-  estado?: string;
-  valor?: number;
-  vigencia?: string;
-  fecha_emision?: string;
+  idVale: string;
+  idFuncionario?: number | null;
+  idServicio?: number | null;
+  estadoUso?: string | null;
+  expirado?: boolean;
+  tipoAsignacion?: string | null;
+  valor?: number | null;
+  fechaUso?: string | null;
+  horaInicioValidez?: string | null;
+  horaFinValidez?: string | null;
+  fechaExpiracion?: string | null;
+  motivo?: string | null;
+  impreso?: boolean;
+  fechaHoraImpresion?: string | null;
+  idCajeroCanje?: number | null;
+  fechaHoraCanje?: string | null;
+  createdAt?: string | null;
 }
 
 export interface ValeValidationResult {

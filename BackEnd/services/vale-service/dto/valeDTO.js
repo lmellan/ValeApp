@@ -1,4 +1,4 @@
-﻿const getTodayInput = () => {
+const getTodayInput = () => {
     const today = new Date();
     const offset = today.getTimezoneOffset() * 60000;
     return new Date(today.getTime() - offset).toISOString().slice(0, 10);
@@ -40,6 +40,12 @@ const validarDatosValeAdicional = (body, requiereId = true) => {
     if (body.fechaUso < getTodayInput()) {
         throw new Error('La fecha de uso no puede ser anterior a hoy.');
     }
+    if (body.fechaExpiracion && !isValidDateInput(body.fechaExpiracion)) {
+        throw new Error('La fecha final de uso no es valida.');
+    }
+    if (body.fechaExpiracion && body.fechaExpiracion < body.fechaUso) {
+        throw new Error('La fecha final no puede ser anterior a la fecha de uso.');
+    }
 
     return {
         idVale: body.idVale,
@@ -50,8 +56,6 @@ const validarDatosValeAdicional = (body, requiereId = true) => {
         tipoAsignacion: 'ADMINISTRATIVA',
         valor: body.valor === undefined || body.valor === null || body.valor === '' ? null : parseInt(body.valor),
         fechaUso: body.fechaUso,
-        horaInicioValidez: body.horaInicioValidez || '00:00',
-        horaFinValidez: body.horaFinValidez || '23:59',
         fechaExpiracion: body.fechaExpiracion || body.fechaUso,
         motivo: body.motivo || null,
         cantidadVales: Math.max(1, parseInt(body.cantidadVales || 1))

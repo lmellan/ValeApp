@@ -1,6 +1,7 @@
-﻿import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { getServicios } from '../../servicios/services/serviciosService';
 import { getUsers } from '../../users/services/usersService';
+import { getTiposComensal } from '../../tiposComensal/services/tiposComensalService';
 import { ReporteFilters, ReporteKpis, ReporteVale, createEmptyReporteFilters } from '../types';
 import { getTodosLosVales } from '../services/reportesService';
 
@@ -8,6 +9,7 @@ export type ReporteValeRow = ReporteVale & {
   funcionarioNombre: string;
   funcionarioCodigo: string;
   tipoComensal: string;
+  tipoComensalColor: string;
   servicioNombre: string;
   servicioCategoria: string;
   sucursalNombre: string;
@@ -48,7 +50,7 @@ const getKpis = (rows: ReporteValeRow[]): ReporteKpis => ({
 
 export const useReportes = () => {
   const [vales, setVales] = useState<ReporteVale[]>([]);
-  const [usuarios, setUsuarios] = useState<Record<number, { nombre: string; codigo: string; tipoComensal: string }>>({});
+  const [usuarios, setUsuarios] = useState<Record<number, { nombre: string; codigo: string; tipoComensal: string; tipoComensalColor: string }>>({});
   const [servicios, setServicios] = useState<Record<number, { nombre: string; categoria: string; sucursal: string }>>({});
   const [filters, setFilters] = useState<ReporteFilters>(() => createEmptyReporteFilters());
   const [loading, setLoading] = useState(false);
@@ -58,15 +60,25 @@ export const useReportes = () => {
     setLoading(true);
     setError('');
     try {
-      const [valesData, usuariosData, serviciosData] = await Promise.all([getTodosLosVales(), getUsers(), getServicios()]);
+      const [valesData, usuariosData, serviciosData, tiposComensalData] = await Promise.all([getTodosLosVales(), getUsers(), getServicios(), getTiposComensal()]);
+      const tiposById = tiposComensalData.reduce<Record<number, { color: string }>>((acc, tipo) => {
+        acc[tipo.idTipoComensal] = { color: tipo.color };
+        return acc;
+      }, {});
+      const tiposByName = tiposComensalData.reduce<Record<string, { color: string }>>((acc, tipo) => {
+        acc[tipo.nombre] = { color: tipo.color };
+        return acc;
+      }, {});
 
       setVales(valesData);
       setUsuarios(
-        usuariosData.reduce<Record<number, { nombre: string; codigo: string; tipoComensal: string }>>((acc, user) => {
+        usuariosData.reduce<Record<number, { nombre: string; codigo: string; tipoComensal: string; tipoComensalColor: string }>>((acc, user) => {
+          const tipoColor = (user.id_tipo_comensal ? tiposById[user.id_tipo_comensal]?.color : null) || (user.tipo_comensal ? tiposByName[user.tipo_comensal]?.color : null) || '#64748b';
           acc[user.id] = {
             nombre: user.nombre,
             codigo: user.codigo || String(user.id),
-            tipoComensal: user.tipo_comensal || 'No aplica'
+            tipoComensal: user.tipo_comensal || 'No aplica',
+            tipoComensalColor: tipoColor
           };
           return acc;
         }, {})
@@ -102,6 +114,7 @@ export const useReportes = () => {
         funcionarioNombre: usuario?.nombre || 'No personalizado',
         funcionarioCodigo: usuario?.codigo || 'Sin codigo',
         tipoComensal: usuario?.tipoComensal || 'No aplica',
+        tipoComensalColor: usuario?.tipoComensalColor || '#64748b',
         servicioNombre: servicio?.nombre || `Servicio ${vale.idServicio ?? 'N/A'}`,
         servicioCategoria: servicio?.categoria || 'Sin categoria',
         sucursalNombre: servicio?.sucursal || 'Sin sucursal',

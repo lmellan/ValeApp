@@ -1,4 +1,4 @@
-﻿const pool = require('./database');
+const pool = require('./database');
 
 const mapUsuario = (row) => row && ({
     id: row.id_usuario,
@@ -71,6 +71,16 @@ const obtenerPorCorreoOCodigo = async (identificador) => {
     return mapUsuario(result.rows[0]);
 };
 
+
+const obtenerUltimoNumeroCodigo = async (prefijo) => {
+    const result = await pool.query(
+        `SELECT COALESCE(MAX(SUBSTRING(codigo FROM LENGTH($1) + 1)::int), 0) AS ultimo
+         FROM usuarios
+         WHERE codigo ~ $2`,
+        [prefijo, `^${prefijo}[0-9]+$`]
+    );
+    return result.rows[0].ultimo;
+};
 const crear = async (datos) => {
     const result = await pool.query(
         `WITH nuevo AS (
@@ -125,5 +135,5 @@ const actualizar = async (idUsuario, datos) => {
     return mapUsuario(result.rows[0]);
 };
 
-module.exports = { listar, obtenerPorId, obtenerPorCorreo, obtenerPorCorreoOCodigo, crear, actualizar };
+module.exports = { listar, obtenerPorId, obtenerPorCorreo, obtenerPorCorreoOCodigo, obtenerUltimoNumeroCodigo, crear, actualizar };
 

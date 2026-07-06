@@ -8,16 +8,29 @@ const CASINO_SERVICE_URL = process.env.CASINO_SERVICE_URL || 'http://localhost:3
 
 const esNoUtilizado = (vale) => vale.estadoUso === 'NO_UTILIZADO' || vale.estado === 'No utilizado';
 
-const fechaFinValidez = (vale) => new Date(`${vale.fechaExpiracion || vale.fechaUso}T${vale.horaFinValidez || '23:59'}:59`);
+const toDateOnly = (value) => {
+    if (!value) return '';
+    if (value instanceof Date) return toInputDate(value);
+    const text = String(value);
+    if (/^\d{4}-\d{2}-\d{2}/.test(text)) return text.slice(0, 10);
+    const parsed = new Date(text);
+    return Number.isNaN(parsed.getTime()) ? text.slice(0, 10) : toInputDate(parsed);
+};
+
+const toHourMinute = (value, fallback) => (value ? String(value).slice(0, 5) : fallback);
+const fechaBaseVale = (vale) => toDateOnly(vale.fechaUso || vale.fechaExpiracion);
+const fechaExpiracionVale = (vale) => toDateOnly(vale.fechaExpiracion || vale.fechaUso);
+const fechaFinValidez = (vale) => new Date(`${fechaExpiracionVale(vale)}T${toHourMinute(vale.horaFinValidez, '23:59')}:59`);
 
 const calcularExpirado = (vale, ahora = new Date()) => Boolean(vale.expirado) || fechaFinValidez(vale) < ahora;
 
+const esValeDeHoy = (vale, ahora = new Date()) => fechaBaseVale(vale) === toInputDate(ahora);
+
 const estaDentroDeRango = (vale, ahora = new Date()) => {
-    const inicio = new Date(`${vale.fechaUso || vale.fechaExpiracion}T${vale.horaInicioValidez || '00:00'}:00`);
+    const inicio = new Date(`${fechaBaseVale(vale)}T${toHourMinute(vale.horaInicioValidez, '00:00')}:00`);
     const fin = fechaFinValidez(vale);
     return ahora >= inicio && ahora <= fin;
 };
-
 const obtenerServicioAlimentacion = async (idServicio) => {
     const response = await axios.get(`${CASINO_SERVICE_URL}/servicios-alimentacion/${idServicio}`, { timeout: 2000 });
     return response.data;
@@ -49,8 +62,8 @@ const prepararValeConValorizacion = async (valeData) => {
     return {
         ...valeData,
         valor,
-        horaInicioValidez: valeData.horaInicioValidez || servicio.horaInicio || '00:00',
-        horaFinValidez: valeData.horaFinValidez || servicio.horaFin || '23:59'
+        horaInicioValidez: servicio.horaInicio || '00:00',
+        horaFinValidez: servicio.horaFin || '23:59'
     };
 };
 
@@ -134,9 +147,13 @@ const registrarCanjeVale = async (idVale, idCajero) => {
     return 'Vale validado y canjeado con exito';
 };
 
-const obtenerValesDisponibles = async (idFuncionario) => {
+const obtenerValesFuncionario = async (idFuncionario) => {
     await valeRepository.actualizarExpirados();
-    const vales = await valeRepository.listarPorFuncionario(idFuncionario);
+    return valeRepository.listarPorFuncionario(idFuncionario);
+};
+
+const obtenerValesDisponibles = async (idFuncionario) => {
+    const vales = await obtenerValesFuncionario(idFuncionario);
     return vales.filter((vale) => esNoUtilizado(vale) && !calcularExpirado(vale));
 };
 
@@ -155,31 +172,54 @@ const obtenerResumenGenerico = async () => {
     return valeRepository.obtenerResumenGeneral();
 };
 
+const obtenerFechasHabilesEntre = (fechaInicio, fechaFin) => {
+    const inicio = new Date(`${fechaInicio}T00:00:00`);
+    const fin = new Date(`${fechaFin || fechaInicio}T00:00:00`);
+    if (Number.isNaN(inicio.getTime()) || Number.isNaN(fin.getTime()) || fin < inicio) return [fechaInicio];
+
+    const fechas = [];
+    const cursor = new Date(inicio);
+    while (cursor <= fin) {
+        const day = cursor.getDay();
+        if (day !== 0 && day !== 6) fechas.push(toInputDate(cursor));
+        cursor.setDate(cursor.getDate() + 1);
+    }
+    return fechas.length ? fechas : [fechaInicio];
+};
+
 const registrarValeAdicional = async (nuevoValeData) => {
     const config = await obtenerConfiguracionFuncionario(nuevoValeData.idFuncionario);
     const cantidadVales = config.tipoComensal?.emisionMultiple ? Math.max(1, Number(nuevoValeData.cantidadVales || 1)) : 1;
+    const fechasUso = obtenerFechasHabilesEntre(nuevoValeData.fechaUso, nuevoValeData.fechaExpiracion || nuevoValeData.fechaUso);
     const creados = [];
 
-    for (let copia = 1; copia <= cantidadVales; copia += 1) {
-        const idVale = cantidadVales === 1 ? nuevoValeData.idVale : `${nuevoValeData.idVale}-${copia}`;
-        try {
-            const valeValorizado = await prepararValeConValorizacion({ ...nuevoValeData, idVale });
-            await valeRepository.insertar(new Vale(valeValorizado));
-            creados.push(idVale);
-        } catch (err) {
-            if (err.code === '23505' || err.message.includes('UNIQUE constraint failed')) {
-                const error = new Error('El ID de vale ya existe en el sistema.');
-                error.status = 400;
-                throw error;
+    for (const fechaUso of fechasUso) {
+        for (let copia = 1; copia <= cantidadVales; copia += 1) {
+            const necesitaSufijo = fechasUso.length > 1 || cantidadVales > 1;
+            const idVale = necesitaSufijo ? `${nuevoValeData.idVale}-${fechaUso}-${copia}` : nuevoValeData.idVale;
+            try {
+                const valeValorizado = await prepararValeConValorizacion({
+                    ...nuevoValeData,
+                    idVale,
+                    fechaUso,
+                    fechaExpiracion: fechaUso
+                });
+                await valeRepository.insertar(new Vale(valeValorizado));
+                creados.push(idVale);
+            } catch (err) {
+                if (err.code === '23505' || err.message.includes('UNIQUE constraint failed')) {
+                    const error = new Error('El ID de vale ya existe en el sistema.');
+                    error.status = 400;
+                    throw error;
+                }
+                if (err.status) throw err;
+                throw new Error(err.response?.data?.error || 'Error al insertar el vale adicional en la base de datos.');
             }
-            if (err.status) throw err;
-            throw new Error(err.response?.data?.error || 'Error al insertar el vale adicional en la base de datos.');
         }
     }
 
     return { mensaje: 'Vale adicional creado y asignado con exito.', creados };
-};
-const listarValesAdicionales = async () => {
+};const listarValesAdicionales = async () => {
     await valeRepository.actualizarExpirados();
     return valeRepository.listarAdministrativos();
 };
@@ -212,6 +252,7 @@ const actualizarValeAdicional = async (idVale, valeData) => {
 };
 
 const imprimirVale = async (idVale, idFuncionario) => {
+    await valeRepository.actualizarExpirados();
     const vale = await valeRepository.obtenerPorId(idVale);
     if (!vale) {
         const error = new Error('Vale no encontrado');
@@ -223,8 +264,28 @@ const imprimirVale = async (idVale, idFuncionario) => {
         error.status = 403;
         throw error;
     }
-    if (!esNoUtilizado(vale) || calcularExpirado(vale)) {
-        const error = new Error('El vale no esta en condiciones validas para imprimir.');
+    if (!esValeDeHoy(vale)) {
+        const error = new Error('Solo se pueden imprimir vales del dia actual.');
+        error.status = 400;
+        throw error;
+    }
+    if (vale.fechaHoraImpresion) {
+        const error = new Error('El vale ya fue impreso y no puede imprimirse nuevamente.');
+        error.status = 409;
+        throw error;
+    }
+    if (!esNoUtilizado(vale)) {
+        const error = new Error('El vale ya fue utilizado y no puede imprimirse.');
+        error.status = 400;
+        throw error;
+    }
+    if (calcularExpirado(vale)) {
+        const error = new Error('El vale esta expirado y no puede imprimirse.');
+        error.status = 400;
+        throw error;
+    }
+    if (!estaDentroDeRango(vale)) {
+        const error = new Error('El vale solo puede imprimirse dentro de su horario de validez.');
         error.status = 400;
         throw error;
     }
@@ -375,6 +436,7 @@ const obtenerTodosLosVales = async () => {
 module.exports = {
     validarVale,
     registrarCanjeVale,
+    obtenerValesFuncionario,
     obtenerValesDisponibles,
     obtenerVale,
     obtenerResumenValesFuncionario,
@@ -387,6 +449,7 @@ module.exports = {
     recalcularValesBaseFuncionario,
     obtenerTodosLosVales
 };
+
 
 
 

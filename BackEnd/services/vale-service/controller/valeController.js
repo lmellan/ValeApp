@@ -58,6 +58,15 @@ const canjearVale = async (req, res) => {
     }
 };
 
+const listarValesFuncionario = async (req, res) => {
+    try {
+        const vales = await valeService.obtenerValesFuncionario(req.params.idFuncionario);
+        res.status(200).json(vales.map(infoValeResponseDTO));
+    } catch (error) {
+        res.status(statusFromError(error)).json({ error: messageFromError(error) });
+    }
+};
+
 const listarValesDisponibles = async (req, res) => {
     try {
         const vales = await valeService.obtenerValesDisponibles(req.params.idFuncionario);
@@ -160,6 +169,7 @@ module.exports = {
     consultarVale,
     validarVale,
     canjearVale,
+    listarValesFuncionario,
     listarValesDisponibles,
     listarValesAdicionales,
     obtenerResumenValesFuncionario,
@@ -171,5 +181,6 @@ module.exports = {
     recalcularValesBaseFuncionario,
     obtenerTodosLosVales
 };
+
 
 

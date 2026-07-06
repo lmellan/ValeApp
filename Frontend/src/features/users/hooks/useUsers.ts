@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { User } from '../../../shared/types/api';
 import { TipoComensal } from '../../tiposComensal/types';
 import { getTiposComensal } from '../../tiposComensal/services/tiposComensalService';
@@ -31,7 +31,7 @@ const toPayload = (draft: UserDraft) => {
   const payload: Partial<User> = {
     nombre: draft.nombre.trim(),
     correo: draft.correo.trim(),
-    codigo: draft.codigo?.trim() || undefined,
+    codigo: !draft.id && draft.autoGenerateCodigo !== false ? undefined : draft.codigo?.trim() || undefined,
     rol: draft.rol,
     activo: draft.activo,
     id_tipo_comensal: isFuncionario ? draft.id_tipo_comensal : null,
@@ -41,6 +41,7 @@ const toPayload = (draft: UserDraft) => {
 
   if (!draft.id) {
     payload.contrasena = draft.contrasena;
+    if (draft.autoGenerateCodigo !== false) delete payload.codigo;
   }
 
   return payload;

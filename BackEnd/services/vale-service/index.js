@@ -35,6 +35,7 @@ app.get('/vales/:idVale', valeController.consultarVale);
 app.post('/vales/:idVale/validar', valeController.validarVale);
 app.post('/vales/:idVale/canjear', valeController.canjearVale);
 app.post('/vales/:idVale/imprimir', valeController.imprimirVale);
+app.get('/funcionarios/:idFuncionario/vales', valeController.listarValesFuncionario);
 app.get('/funcionarios/:idFuncionario/vales-disponibles', valeController.listarValesDisponibles);
 app.get('/funcionarios/:idFuncionario/vales/resumen', valeController.obtenerResumenValesFuncionario);
 app.get('/administrador/vales', valeController.listarValesAdicionales);
@@ -82,5 +83,19 @@ const runMonthlyBaseVoucherJob = async () => {
   }
 };
 
-setTimeout(runMonthlyBaseVoucherJob, 5000);
+const runCurrentMonthRecoveryJob = async () => {
+  const today = new Date();
+  const fechaInicio = toInputDate(today);
+  const periodo = fechaInicio.slice(0, 7);
+
+  try {
+    const result = await valeService.generarValesBase({ periodo, desdeFecha: fechaInicio });
+    console.log(`[vale-service] Recuperacion vales base ${periodo} desde ${fechaInicio}: ${result.creados.length} creados, ${result.omitidos.length} omitidos.`);
+  } catch (err) {
+    console.error('[vale-service] Error recuperando vales base del mes actual:', err.message || err);
+  }
+};
+
+setTimeout(runCurrentMonthRecoveryJob, 5000);
+setTimeout(runMonthlyBaseVoucherJob, 10000);
 setInterval(runMonthlyBaseVoucherJob, 6 * 60 * 60 * 1000);

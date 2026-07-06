@@ -20,9 +20,8 @@ CREATE TABLE IF NOT EXISTS servicios_alimentacion (
 );
 
 INSERT INTO casinos (id_casino, nombre, direccion, activo) VALUES
-    (1, 'Casa Matriz', 'Casino central', true),
-    (2, 'Sucursal Norte', 'Casino sucursal norte', true),
-    (3, 'Sucursal Sur', 'Casino sucursal sur', true)
+    (1, 'Casino 1', 'Casino 1', true),
+    (2, 'Casino 2', 'Casino 2', true)
 ON CONFLICT (id_casino) DO UPDATE
     SET nombre = EXCLUDED.nombre,
         direccion = EXCLUDED.direccion,
@@ -32,8 +31,8 @@ INSERT INTO servicios_alimentacion (id_servicio, nombre, categoria, hora_inicio,
     (1, 'Desayuno', 'Base', '08:00', '10:00', 1, true),
     (2, 'Almuerzo', 'Base', '12:00', '15:00', 1, true),
     (3, 'Once', 'Base', '16:00', '18:00', 2, true),
-    (4, 'Cena 1', 'Base', '20:00', '23:00', 3, true),
-    (5, 'Cena 2', 'Base', '00:00', '03:00', 3, true),
+    (4, 'Cena 1', 'Base', '20:00', '23:00', 2, true),
+    (5, 'Cena 2', 'Base', '00:00', '03:00', 2, true),
     (6, 'Box lunch', 'Adicional', '09:00', '18:00', 2, true)
 ON CONFLICT (id_servicio) DO UPDATE
     SET nombre = EXCLUDED.nombre,
@@ -42,6 +41,9 @@ ON CONFLICT (id_servicio) DO UPDATE
         hora_fin = EXCLUDED.hora_fin,
         id_casino = EXCLUDED.id_casino,
         activo = EXCLUDED.activo;
+
+UPDATE servicios_alimentacion SET id_casino = 2 WHERE id_casino NOT IN (1, 2);
+DELETE FROM casinos WHERE id_casino NOT IN (1, 2);
 
 SELECT setval('casinos_id_casino_seq', GREATEST((SELECT MAX(id_casino) FROM casinos), 1));
 SELECT setval('servicios_alimentacion_id_servicio_seq', GREATEST((SELECT MAX(id_servicio) FROM servicios_alimentacion), 1));

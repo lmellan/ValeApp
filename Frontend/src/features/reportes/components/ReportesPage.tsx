@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ReporteValeRow, useReportes } from '../hooks/useReportes';
 
 type ReportType = 'diario' | 'semanal' | 'mensual' | 'anual';
-type ReportTab = 'resumen' | 'no-utilizados' | 'adicionales';
+type ReportTab = 'resumen' | 'vales';
 
 type GroupedMetric = {
   name: string;
@@ -12,13 +12,15 @@ type GroupedMetric = {
   monto: number;
 };
 
-type BranchMetric = {
-  name: string;
-  used: number;
-  detail: string;
+type VoucherFilters = {
+  query: string;
+  tipo: string;
+  estado: string;
+  servicio: string;
 };
 
 const pageSizeOptions = [5, 10, 20];
+const initialVoucherFilters: VoucherFilters = { query: '', tipo: 'Todos', estado: 'Todos', servicio: 'Todos' };
 
 const toInputDate = (date: Date) => {
   const year = date.getFullYear();
@@ -33,6 +35,8 @@ const formatDate = (value?: string | null) => {
   if (!year || !month || !day) return value;
   return `${day}/${month}/${year}`;
 };
+
+const formatTime = (value?: string | null) => value?.slice(0, 5) || '--:--';
 
 const formatCurrency = (value?: number | null) =>
   new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(Number(value || 0));
@@ -58,10 +62,31 @@ const getPeriodStart = (type: ReportType, cutDate: string) => {
   return new Date(date.getFullYear(), date.getMonth(), 1);
 };
 
+const getComparableDateForYear = (year: number) => {
+  const today = new Date();
+  const month = today.getMonth();
+  const day = today.getDate();
+  const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+  return new Date(year, month, Math.min(day, lastDayOfMonth));
+};
+
+const getCutDate = (type: ReportType, selectedYear: number) => {
+  const currentYear = new Date().getFullYear();
+  if (type === 'anual' && selectedYear < currentYear) return `${selectedYear}-12-31`;
+  return toInputDate(getComparableDateForYear(selectedYear));
+};
+
 const getPeriodLabel = (type: ReportType, from: string, to: string) => {
   if (type === 'diario') return `${formatDate(to)} (diario)`;
   const suffix = type === 'semanal' ? 'semanal a la fecha' : type === 'anual' ? 'anual a la fecha' : 'mensual a la fecha';
   return `${formatDate(from)} al ${formatDate(to)} (${suffix})`;
+};
+
+const getServiceReportTitle = (type: ReportType) => {
+  if (type === 'diario') return 'Emisiones por servicio hoy';
+  if (type === 'semanal') return 'Emisiones por servicio semanal a la fecha';
+  if (type === 'anual') return 'Emisiones por servicio anual a la fecha';
+  return 'Emisiones por servicio mensual a la fecha';
 };
 
 const getSuffix = (type: ReportType) => {
@@ -98,8 +123,10 @@ const matchesSearch = (vale: ReporteValeRow, query: string) => {
     vale.funcionarioCodigo,
     vale.tipoComensal,
     vale.servicioNombre,
-    vale.sucursalNombre,
-    vale.motivo
+    vale.tipoLabel,
+    vale.estadoLabel,
+    vale.motivo,
+    vale.idCajeroCanje
   ].some((field) => normalize(field).includes(term));
 };
 
@@ -116,14 +143,24 @@ const groupByService = (rows: ReporteValeRow[]): GroupedMetric[] => {
   return Array.from(map.values()).sort((a, b) => b.emitidos - a.emitidos);
 };
 
-const groupByBranch = (rows: ReporteValeRow[]): BranchMetric[] => {
-  const map = new Map<string, BranchMetric>();
-  rows.filter((vale) => vale.estadoLabel === 'Utilizado').forEach((vale) => {
-    const current = map.get(vale.sucursalNombre) || { name: vale.sucursalNombre, used: 0, detail: 'Casino asociado' };
-    current.used += 1;
-    map.set(vale.sucursalNombre, current);
-  });
-  return Array.from(map.values()).sort((a, b) => b.used - a.used);
+const normalizeHexColor = (color?: string) => (/^#[0-9a-fA-F]{6}$/.test(color || '') ? color || '#64748b' : '#64748b');
+
+const getReadableAccent = (color?: string) => {
+  const hex = normalizeHexColor(color).replace('#', '');
+  const red = parseInt(hex.slice(0, 2), 16);
+  const green = parseInt(hex.slice(2, 4), 16);
+  const blue = parseInt(hex.slice(4, 6), 16);
+  const luminance = (0.299 * red + 0.587 * green + 0.114 * blue) / 255;
+  return luminance > 0.78 ? '#334155' : normalizeHexColor(color);
+};
+
+const getTagStyle = (color?: string) => {
+  const normalized = normalizeHexColor(color);
+  return {
+    color: getReadableAccent(normalized),
+    backgroundColor: `${normalized}26`,
+    borderColor: `${normalized}73`
+  };
 };
 
 const ReportesPage = () => {
@@ -132,8 +169,7 @@ const ReportesPage = () => {
   const [activeTab, setActiveTab] = useState<ReportTab>('resumen');
   const [selectedYear, setSelectedYear] = useState(() => new Date().getFullYear());
   const [hasSyncedYear, setHasSyncedYear] = useState(false);
-  const [unusedQuery, setUnusedQuery] = useState('');
-  const [additionalQuery, setAdditionalQuery] = useState('');
+  const [voucherFilters, setVoucherFilters] = useState<VoucherFilters>(initialVoucherFilters);
 
   useEffect(() => {
     if (hasSyncedYear || allRows.length === 0) return;
@@ -143,7 +179,7 @@ const ReportesPage = () => {
     setHasSyncedYear(true);
   }, [allRows, hasSyncedYear]);
 
-  const cutDate = `${selectedYear}-12-31`;
+  const cutDate = useMemo(() => getCutDate(reportType, selectedYear), [reportType, selectedYear]);
   const yearOptions = useMemo(() => {
     const currentYear = new Date().getFullYear();
     const lastYear = Math.max(currentYear, selectedYear);
@@ -151,20 +187,26 @@ const ReportesPage = () => {
   }, [selectedYear]);
   const periodStart = useMemo(() => toInputDate(getPeriodStart(reportType, cutDate)), [cutDate, reportType]);
   const periodRows = useMemo(() => allRows.filter((vale) => inRange(vale.fechaUso, periodStart, cutDate)), [allRows, cutDate, periodStart]);
+
+  const serviceOptions = useMemo(() => Array.from(new Set(periodRows.map((vale) => vale.servicioNombre))).sort(), [periodRows]);
+  const filteredVoucherRows = useMemo(() => periodRows.filter((vale) => {
+    const matchesTipo = voucherFilters.tipo === 'Todos' || vale.tipoLabel === voucherFilters.tipo;
+    const matchesEstado = voucherFilters.estado === 'Todos' || vale.estadoLabel === voucherFilters.estado;
+    const matchesServicio = voucherFilters.servicio === 'Todos' || vale.servicioNombre === voucherFilters.servicio;
+    return matchesTipo && matchesEstado && matchesServicio && matchesSearch(vale, voucherFilters.query);
+  }), [periodRows, voucherFilters]);
+
   const usedRows = useMemo(() => periodRows.filter((vale) => vale.estadoLabel === 'Utilizado'), [periodRows]);
   const unusedRows = useMemo(() => periodRows.filter((vale) => vale.estadoLabel !== 'Utilizado'), [periodRows]);
   const additionalRows = useMemo(() => periodRows.filter((vale) => vale.tipoLabel === 'Adicional'), [periodRows]);
-  const filteredUnusedRows = useMemo(() => unusedRows.filter((vale) => matchesSearch(vale, unusedQuery)), [unusedQuery, unusedRows]);
-  const filteredAdditionalRows = useMemo(() => additionalRows.filter((vale) => matchesSearch(vale, additionalQuery)), [additionalQuery, additionalRows]);
-
   const serviceMetrics = useMemo(() => groupByService(periodRows), [periodRows]);
-  const branchMetrics = useMemo(() => groupByBranch(periodRows), [periodRows]);
   const suffix = getSuffix(reportType);
 
   const totalAmount = periodRows.reduce((total, vale) => total + Number(vale.valor || 0), 0);
   const usedAmount = usedRows.reduce((total, vale) => total + Number(vale.valor || 0), 0);
   const unusedAmount = unusedRows.reduce((total, vale) => total + Number(vale.valor || 0), 0);
   const additionalAmount = additionalRows.reduce((total, vale) => total + Number(vale.valor || 0), 0);
+
   return (
     <div className="space-y-8">
       <section className="rounded-3xl border border-slate-200 bg-surface-light p-7 shadow-card">
@@ -212,7 +254,6 @@ const ReportesPage = () => {
       {error && <div className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-semibold text-red-700">{error}</div>}
       {loading && <div className="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm font-semibold text-slate-600">Cargando reportes...</div>}
 
-
       <Tabs activeTab={activeTab} onChange={setActiveTab} />
 
       {activeTab === 'resumen' && (
@@ -224,56 +265,22 @@ const ReportesPage = () => {
             <KpiCard label="Vales adicionales" value={additionalRows.length} amount={additionalAmount} detail={`Generados manualmente en el ${suffix}`} color="text-primary" />
           </section>
 
-          <section className="grid grid-cols-1 gap-8 xl:grid-cols-12">
-            <div className="xl:col-span-7">
-              <ReportCard title={`Emision exacta por servicio ${suffix}`} subtitle="Cantidad de vales asignados y usados por cada servicio.">
-                <ServiceTable rows={serviceMetrics} />
-              </ReportCard>
-            </div>
-            <div className="xl:col-span-5">
-              <section className="rounded-3xl border border-slate-200 bg-surface-light p-8 shadow-card">
-                <h2 className="mb-4 text-2xl font-extrabold text-primary">Resumen por sucursal {suffix}</h2>
-                <div className="space-y-4">
-                  {branchMetrics.length === 0 ? <EmptyMessage text="No hay vales utilizados en el periodo." /> : branchMetrics.map((branch) => (
-                    <div key={branch.name} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                      <div className="flex items-center justify-between gap-4">
-                        <div>
-                          <p className="text-lg font-extrabold text-primary">{branch.name}</p>
-                          <p className="mt-1 text-sm text-slate-500">{branch.detail}</p>
-                        </div>
-                        <p className="text-2xl font-extrabold text-primary">{branch.used}</p>
-                      </div>
-                      <p className="mt-3 text-sm text-slate-600">Vales utilizados en el periodo</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            </div>
-          </section>
+          <ReportCard title={getServiceReportTitle(reportType)} subtitle="Cantidad de vales asignados y usados por cada servicio.">
+            <ServiceTable rows={serviceMetrics} />
+          </ReportCard>
         </div>
       )}
 
-      {activeTab === 'no-utilizados' && (
-        <ReportCard title={`Vales no utilizados ${suffix}`} subtitle="Detalle paginado de vales asignados que no registran uso.">
-          <TableToolbar
-            query={unusedQuery}
-            placeholder="Buscar funcionario, codigo, servicio o comensal"
-            total={filteredUnusedRows.length}
-            onQueryChange={setUnusedQuery}
+      {activeTab === 'vales' && (
+        <ReportCard title={`Detalle de vales ${suffix}`} subtitle="Consulta todos los vales del periodo, incluyendo bases y adicionales, usados, pendientes y expirados.">
+          <VoucherToolbar
+            filters={voucherFilters}
+            services={serviceOptions}
+            total={filteredVoucherRows.length}
+            onChange={(changes) => setVoucherFilters((current) => ({ ...current, ...changes }))}
+            onClear={() => setVoucherFilters(initialVoucherFilters)}
           />
-          <ValeTable rows={filteredUnusedRows} type="unused" />
-        </ReportCard>
-      )}
-
-      {activeTab === 'adicionales' && (
-        <ReportCard title={`Detalle de vales adicionales ${suffix}`} subtitle="Seguimiento paginado de vales adicionales emitidos por administracion.">
-          <TableToolbar
-            query={additionalQuery}
-            placeholder="Buscar funcionario, motivo, servicio o comensal"
-            total={filteredAdditionalRows.length}
-            onQueryChange={setAdditionalQuery}
-          />
-          <ValeTable rows={filteredAdditionalRows} type="additional" />
+          <ValeTable rows={filteredVoucherRows} />
         </ReportCard>
       )}
     </div>
@@ -283,8 +290,7 @@ const ReportesPage = () => {
 const Tabs = ({ activeTab, onChange }: { activeTab: ReportTab; onChange: (tab: ReportTab) => void }) => {
   const tabs: Array<{ id: ReportTab; label: string; icon: string }> = [
     { id: 'resumen', label: 'Resumen', icon: 'dashboard' },
-    { id: 'no-utilizados', label: 'No utilizados', icon: 'event_busy' },
-    { id: 'adicionales', label: 'Adicionales', icon: 'add_card' }
+    { id: 'vales', label: 'Vales', icon: 'receipt_long' }
   ];
 
   return (
@@ -326,24 +332,49 @@ const ReportCard = ({ title, subtitle, children }: { title: string; subtitle: st
   </section>
 );
 
-const TableToolbar = ({ query, placeholder, total, onQueryChange }: { query: string; placeholder: string; total: number; onQueryChange: (query: string) => void }) => (
-  <div className="grid grid-cols-1 gap-4 border-b border-slate-200 bg-white px-6 py-5 lg:grid-cols-12 lg:items-end">
-    <label className="lg:col-span-7">
-      <span className="mb-2 block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant">Buscar</span>
-      <span className="relative block">
-        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-        <input
-          value={query}
-          onChange={(event) => onQueryChange(event.target.value)}
-          placeholder={placeholder}
-          className="w-full rounded-2xl border border-slate-300 bg-white py-4 pl-14 pr-5 text-base text-slate-700 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-        />
-      </span>
-    </label>
-    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm font-bold text-slate-600 lg:col-span-5">
-      {total.toLocaleString('es-CL')} registros encontrados
+const VoucherToolbar = ({ filters, services, total, onChange, onClear }: { filters: VoucherFilters; services: string[]; total: number; onChange: (filters: Partial<VoucherFilters>) => void; onClear: () => void }) => (
+  <div className="border-b border-slate-200 bg-white px-6 py-5">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-end">
+      <label className="lg:col-span-4">
+        <span className="mb-2 block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant">Buscar</span>
+        <span className="relative block">
+          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+          <input
+            value={filters.query}
+            onChange={(event) => onChange({ query: event.target.value })}
+            placeholder="Usuario, codigo, vale o cajero"
+            className="w-full rounded-2xl border border-slate-300 bg-white py-4 pl-14 pr-5 text-base text-slate-700 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+          />
+        </span>
+      </label>
+
+      <FilterSelect label="Tipo" value={filters.tipo} options={['Todos', 'Base', 'Adicional']} onChange={(value) => onChange({ tipo: value })} className="lg:col-span-2" />
+      <FilterSelect label="Estado" value={filters.estado} options={['Todos', 'Disponible', 'Utilizado', 'Expirado']} onChange={(value) => onChange({ estado: value })} className="lg:col-span-2" />
+      <FilterSelect label="Servicio" value={filters.servicio} options={['Todos', ...services]} onChange={(value) => onChange({ servicio: value })} className="lg:col-span-2" />
+
+      <button
+        type="button"
+        onClick={onClear}
+        className="h-[54px] rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-extrabold text-slate-600 transition hover:bg-slate-100 lg:col-span-2"
+      >
+        Limpiar
+      </button>
     </div>
+    <p className="mt-4 text-sm font-bold text-slate-500">{total.toLocaleString('es-CL')} vales encontrados</p>
   </div>
+);
+
+const FilterSelect = ({ label, value, options, onChange, className = '' }: { label: string; value: string; options: string[]; onChange: (value: string) => void; className?: string }) => (
+  <label className={className}>
+    <span className="mb-2 block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant">{label}</span>
+    <select
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+      className="h-[54px] w-full rounded-2xl border border-slate-300 bg-white px-4 text-base text-slate-700 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+    >
+      {options.map((option) => <option key={option} value={option}>{option}</option>)}
+    </select>
+  </label>
 );
 
 const ServiceTable = ({ rows }: { rows: GroupedMetric[] }) => (
@@ -369,7 +400,7 @@ const ServiceTable = ({ rows }: { rows: GroupedMetric[] }) => (
   </div>
 );
 
-const ValeTable = ({ rows, type }: { rows: ReporteValeRow[]; type: 'unused' | 'additional' }) => {
+const ValeTable = ({ rows }: { rows: ReporteValeRow[] }) => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -383,24 +414,37 @@ const ValeTable = ({ rows, type }: { rows: ReporteValeRow[]; type: 'unused' | 'a
   return (
     <div>
       <div className="hidden grid-cols-12 gap-4 border-b border-slate-200 bg-slate-50 px-6 py-4 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant lg:grid">
-        <span className="col-span-2">Fecha</span>
+        <span className="col-span-2">Fecha y vigencia</span>
         <span className="col-span-2">Funcionario</span>
         <span className="col-span-2">Comensal</span>
+        <span className="col-span-1">Tipo</span>
         <span className="col-span-2">Servicio</span>
         <span className="col-span-1">Estado</span>
         <span className="col-span-1">Valor</span>
-        <span className="col-span-2">{type === 'additional' ? 'Motivo' : 'Vigencia'}</span>
       </div>
       <div className="divide-y divide-slate-200">
-        {paginatedRows.length === 0 ? <EmptyMessage text="No hay registros para los filtros seleccionados." /> : paginatedRows.map((row) => (
+        {paginatedRows.length === 0 ? <EmptyMessage text="No hay vales para los filtros seleccionados." /> : paginatedRows.map((row) => (
           <div key={row.idVale} className="grid grid-cols-1 gap-3 px-6 py-5 text-sm text-slate-600 lg:grid-cols-12 lg:items-center lg:gap-4">
-            <MetricCell label="Fecha" value={formatDate(type === 'additional' ? row.createdAt || row.fechaUso : row.fechaUso)} className="lg:col-span-2" />
-            <span className="font-semibold text-slate-700 lg:col-span-2">{row.funcionarioNombre}</span>
-            <MetricCell label="Comensal" value={row.tipoComensal} className="lg:col-span-2" />
+            <span className="lg:col-span-2">
+              <span className="block text-xs font-bold uppercase tracking-[0.14em] text-slate-400 lg:hidden">Fecha y vigencia</span>
+              <span className="block font-bold text-slate-700">{formatDate(row.fechaUso)}</span>
+              <span className="block text-xs text-slate-500">{formatTime(row.horaInicioValidez)} a {formatTime(row.horaFinValidez)}</span>
+            </span>
+            <span className="font-semibold text-slate-700 lg:col-span-2">
+              <span className="block text-xs font-bold uppercase tracking-[0.14em] text-slate-400 lg:hidden">Funcionario</span>
+              {row.funcionarioNombre}
+              <span className="block text-xs font-semibold text-slate-500">{row.funcionarioCodigo}</span>
+            </span>
+            <span className="lg:col-span-2">
+              <span className="block text-xs font-bold uppercase tracking-[0.14em] text-slate-400 lg:hidden">Comensal</span>
+              <span className="inline-flex max-w-full items-center rounded-full border px-3 py-1 text-sm font-bold leading-5" style={getTagStyle(row.tipoComensalColor)}>
+                <span className="truncate">{row.tipoComensal}</span>
+              </span>
+            </span>
+            <MetricCell label="Tipo" value={row.tipoLabel} className="font-semibold text-slate-700 lg:col-span-1" />
             <MetricCell label="Servicio" value={row.servicioNombre} className="lg:col-span-2" />
             <div className="lg:col-span-1"><StatusBadge status={row.estadoLabel} /></div>
             <MetricCell label="Valor" value={formatCurrency(row.valor)} className="font-bold text-slate-800 lg:col-span-1" />
-            <MetricCell label={type === 'additional' ? 'Motivo' : 'Vigencia'} value={type === 'additional' ? row.motivo || 'Sin motivo' : `${row.horaInicioValidez || '--:--'} a ${row.horaFinValidez || '--:--'}`} className="lg:col-span-2" />
           </div>
         ))}
       </div>
@@ -453,7 +497,7 @@ const StatusBadge = ({ status }: { status: string }) => {
     : status === 'Disponible'
       ? 'bg-tertiary/15 text-tertiary'
       : 'bg-slate-100 text-slate-600';
-  const label = status === 'Disponible' ? 'Pendiente' : status === 'Utilizado' ? 'Usado' : 'No usado';
+  const label = status === 'Disponible' ? 'Disponible' : status === 'Utilizado' ? 'Utilizado' : 'Expirado';
 
   return <span className={`inline-flex rounded-full px-3 py-1 text-sm font-bold ${className}`}>{label}</span>;
 };

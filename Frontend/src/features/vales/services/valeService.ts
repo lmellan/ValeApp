@@ -1,6 +1,11 @@
-﻿import api from '../../../shared/services/api';
+import api from '../../../shared/services/api';
 import { ValeDisponible, ValeValidationResult } from '../../../shared/types/api';
 import { VALE_API_URL } from '../../../shared/config/api';
+
+export const getFuncionarioVales = async (idFuncionario: number): Promise<ValeDisponible[]> => {
+  const response = await api.get<ValeDisponible[]>(`${VALE_API_URL}/funcionarios/${idFuncionario}/vales`);
+  return response.data;
+};
 
 export const getAvailableVales = async (idFuncionario: number): Promise<ValeDisponible[]> => {
   const response = await api.get<ValeDisponible[]>(`${VALE_API_URL}/funcionarios/${idFuncionario}/vales-disponibles`);
@@ -14,5 +19,14 @@ export const getValeById = async (idVale: string): Promise<ValeDisponible> => {
 
 export const validateVale = async (idVale: string): Promise<ValeValidationResult> => {
   const response = await api.post<{ mensaje: string; valido: boolean }>(`${VALE_API_URL}/vales/${idVale}/validar`);
+  return response.data;
+};
+
+export const printVale = async (idVale: string, idFuncionario: number): Promise<{ mensaje: string; fechaHoraImpresion: string }> => {
+  const response = await api.post<{ mensaje: string; fechaHoraImpresion: string }>(
+    `${VALE_API_URL}/vales/${idVale}/imprimir`,
+    { idFuncionario },
+    { headers: { 'x-funcionario-id': String(idFuncionario) } }
+  );
   return response.data;
 };

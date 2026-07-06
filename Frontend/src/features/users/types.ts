@@ -1,4 +1,4 @@
-﻿import { User } from '../../shared/types/api';
+import { User } from '../../shared/types/api';
 
 export type RoleFilter = 'Todos' | 'Funcionario' | 'Cajero' | 'Administrador';
 export type ComensalFilter = string;
@@ -11,6 +11,7 @@ export type UserFilters = {
 
 export type UserDraft = User & {
   contrasena?: string;
+  autoGenerateCodigo?: boolean;
 };
 
 export type TurnOption = {
@@ -30,6 +31,7 @@ export const createEmptyUserDraft = (): UserDraft => ({
   nombre: '',
   correo: '',
   codigo: '',
+  autoGenerateCodigo: true,
   rol: 'Funcionario',
   id_tipo_comensal: null,
   tipo_comensal: '',

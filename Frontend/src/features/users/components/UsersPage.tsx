@@ -1,4 +1,4 @@
-﻿import UserFiltersPanel from './UserFilters';
+import UserFiltersPanel from './UserFilters';
 import UserFormPanel from './UserFormPanel';
 import UserStats from './UserStats';
 import UsersTable from './UsersTable';
@@ -56,7 +56,7 @@ const UsersPage = () => {
           </button>
         </div>
 
-        <UserFiltersPanel filters={filters} pageSize={pageSize} tiposComensal={tiposComensal} onChange={updateFilters} onPageSizeChange={setPageSize} />
+        <UserFiltersPanel filters={filters} tiposComensal={tiposComensal} onChange={updateFilters} />
       </section>
 
       {error && (
@@ -78,7 +78,7 @@ const UsersPage = () => {
           No hay usuarios registrados.
         </div>
       ) : (
-        <UsersTable users={currentUsers} tiposComensal={tiposComensal} page={page} totalPages={totalPages} onEdit={openEdit} onPageChange={setPage} />
+        <UsersTable users={currentUsers} tiposComensal={tiposComensal} page={page} totalPages={totalPages} pageSize={pageSize} onEdit={openEdit} onPageChange={setPage} onPageSizeChange={setPageSize} />
       )}
 
       <UserStats users={users} />

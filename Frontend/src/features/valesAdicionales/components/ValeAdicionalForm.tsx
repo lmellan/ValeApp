@@ -25,6 +25,7 @@ const labelClass = 'block text-sm font-bold uppercase tracking-[0.16em] text-on-
 
 const normalize = (value: string) => value.trim().toLowerCase();
 const userLabel = (usuario: User) => `${usuario.codigo || usuario.id} - ${usuario.nombre}`;
+const formatTime = (value?: string | null) => value?.slice(0, 5) || '--:--';
 
 const getTodayInput = () => {
   const today = new Date();
@@ -33,8 +34,8 @@ const getTodayInput = () => {
 };
 
 const ValeAdicionalForm = ({
-  title = 'Crear asignaci\u00f3n',
-  description = 'Busca un usuario y asigna un vale adicional para una fecha espec\u00edfica.',
+  title = 'Crear asignacion',
+  description = 'Busca un usuario y asigna un vale adicional para una fecha especifica.',
   draft,
   usuarios,
   tiposComensal,
@@ -48,6 +49,7 @@ const ValeAdicionalForm = ({
   allowCantidad = true
 }: ValeAdicionalFormProps) => {
   const selectedUsuario = usuarios.find((usuario) => usuario.id === Number(draft.idFuncionario));
+  const selectedServicio = servicios.find((servicio) => servicio.idServicio === Number(draft.idServicio));
   const selectedTipoComensal = tiposComensal.find((tipo) => tipo.idTipoComensal === selectedUsuario?.id_tipo_comensal || tipo.nombre === selectedUsuario?.tipo_comensal);
   const permiteMultiples = Boolean(selectedTipoComensal?.emisionMultiple);
   const [usuarioQuery, setUsuarioQuery] = useState('');
@@ -113,40 +115,20 @@ const ValeAdicionalForm = ({
           <label className={labelClass}>Usuario <span className="text-red-500">*</span></label>
           <div className="relative">
             <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
-            <input
-              value={usuarioQuery}
-              onChange={(event) => handleUsuarioInput(event.target.value)}
-              onFocus={() => setShowUserList(true)}
-              onBlur={handleUsuarioBlur}
-              className={`${inputClass} pl-12`}
-              placeholder={'Escribe nombre, c\u00f3digo o correo'}
-              type="text"
-            />
+            <input value={usuarioQuery} onChange={(event) => handleUsuarioInput(event.target.value)} onFocus={() => setShowUserList(true)} onBlur={handleUsuarioBlur} className={`${inputClass} pl-12`} placeholder="Escribe nombre, codigo o correo" type="text" />
           </div>
 
           {showUserList && (
             <div className="absolute z-20 mt-2 max-h-72 w-full overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-strong">
-              {filteredUsuarios.length === 0 ? (
-                <div className="px-5 py-4 text-sm font-semibold text-slate-500">No hay usuarios que coincidan.</div>
-              ) : (
-                filteredUsuarios.map(({ usuario }) => (
-                  <button
-                    key={usuario.id}
-                    type="button"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      selectUsuario(usuario);
-                    }}
-                    className="flex w-full items-start justify-between gap-4 border-b border-slate-100 px-5 py-4 text-left transition last:border-b-0 hover:bg-primary/5"
-                  >
-                    <span className="min-w-0">
-                      <span className="block truncate text-base font-extrabold text-slate-800">{usuario.nombre}</span>
-                      <span className="mt-1 block truncate text-sm font-semibold text-slate-500">{usuario.codigo || usuario.id} {'\u00b7'} {usuario.correo || 'Sin correo'}</span>
-                    </span>
-                    <span className="shrink-0 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-600">{usuario.rol}</span>
-                  </button>
-                ))
-              )}
+              {filteredUsuarios.length === 0 ? <div className="px-5 py-4 text-sm font-semibold text-slate-500">No hay usuarios que coincidan.</div> : filteredUsuarios.map(({ usuario }) => (
+                <button key={usuario.id} type="button" onMouseDown={(event) => { event.preventDefault(); selectUsuario(usuario); }} className="flex w-full items-start justify-between gap-4 border-b border-slate-100 px-5 py-4 text-left transition last:border-b-0 hover:bg-primary/5">
+                  <span className="min-w-0">
+                    <span className="block truncate text-base font-extrabold text-slate-800">{usuario.nombre}</span>
+                    <span className="mt-1 block truncate text-sm font-semibold text-slate-500">{usuario.codigo || usuario.id} {' - '} {usuario.correo || 'Sin correo'}</span>
+                  </span>
+                  <span className="shrink-0 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-600">{usuario.rol}</span>
+                </button>
+              ))}
             </div>
           )}
         </div>
@@ -155,9 +137,7 @@ const ValeAdicionalForm = ({
           <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-1">Usuario seleccionado</p>
             <p className="text-xl font-extrabold text-primary">{selectedUsuario.nombre}</p>
-            <p className="mt-1 text-sm font-semibold text-slate-500">
-              {selectedUsuario.codigo || selectedUsuario.id} {'\u00b7'} {selectedUsuario.rol} {'\u00b7'} {selectedUsuario.tipo_comensal || 'Sin tipo de comensal'}
-            </p>
+            <p className="mt-1 text-sm font-semibold text-slate-500">{selectedUsuario.codigo || selectedUsuario.id} {' - '} {selectedUsuario.rol} {' - '} {selectedUsuario.tipo_comensal || 'Sin tipo de comensal'}</p>
           </div>
         )}
 
@@ -166,50 +146,41 @@ const ValeAdicionalForm = ({
             <label className={labelClass}>Servicio adicional asignado <span className="text-red-500">*</span></label>
             <select value={draft.idServicio} onChange={(event) => onChange({ idServicio: Number(event.target.value) || '' })} className={inputClass}>
               <option value="">Seleccionar</option>
-              {servicios.map((servicio) => (
-                <option key={servicio.idServicio} value={servicio.idServicio}>
-                  {servicio.nombre} {'\u00b7'} {servicio.horaInicio} a {servicio.horaFin}
-                </option>
-              ))}
+              {servicios.map((servicio) => <option key={servicio.idServicio} value={servicio.idServicio}>{servicio.nombre}</option>)}
             </select>
-            {servicios.length === 0 && <p className="mt-2 text-sm font-semibold text-amber-700">Primero crea un servicio de tipo Adicional en la secci&oacute;n Servicios.</p>}
+            {selectedServicio && <div className="mt-3 rounded-2xl border border-blue-100 bg-blue-50 px-5 py-4 text-sm font-bold text-primary">Horario definido por el servicio: {formatTime(selectedServicio.horaInicio)} a {formatTime(selectedServicio.horaFin)}</div>}
+            {servicios.length === 0 && <p className="mt-2 text-sm font-semibold text-amber-700">Primero crea un servicio de tipo Adicional en la seccion Servicios.</p>}
           </div>
 
           <div>
-            <label className={labelClass}>Fecha de uso <span className="text-red-500">*</span></label>
-            <input value={draft.fechaUso} onChange={(event) => onChange({ fechaUso: event.target.value, fechaExpiracion: event.target.value })} className={inputClass} min={getTodayInput()} type="date" />
+            <label className={labelClass}>Fecha de inicio <span className="text-red-500">*</span></label>
+            <input value={draft.fechaUso} onChange={(event) => onChange({ fechaUso: event.target.value })} className={inputClass} min={getTodayInput()} type="date" />
           </div>
 
-          {allowCantidad && selectedUsuario && (
+          {allowCantidad && (
             <div>
-              <label className={labelClass}>Cantidad de vales a crear <span className="text-red-500">*</span></label>
-              <input
-                value={permiteMultiples ? draft.cantidadVales || 1 : 1}
-                onChange={(event) => onChange({ cantidadVales: permiteMultiples ? Math.max(1, Number(event.target.value) || 1) : 1 })}
-                className={inputClass}
-                disabled={!permiteMultiples}
-                min="1"
-                step="1"
-                type="number"
-              />
-              <p className="mt-2 text-sm font-semibold text-slate-500">{permiteMultiples ? 'Este usuario permite m\u00faltiples vales en el mismo horario.' : 'Este usuario solo permite 1 vale por horario.'}</p>
+              <label className={labelClass}>Alcance <span className="text-red-500">*</span></label>
+              <select value={draft.periodoUso || 'dia'} onChange={(event) => onChange({ periodoUso: event.target.value as ValeAdicionalPayload['periodoUso'] })} className={inputClass}>
+                <option value="dia">Solo ese dia</option>
+                <option value="semana">Semana desde la fecha</option>
+                <option value="mes">Mes de la fecha</option>
+              </select>
+              {draft.fechaExpiracion && draft.fechaExpiracion !== draft.fechaUso && <p className="mt-2 text-sm font-semibold text-slate-500">Se generaran vales por dias habiles hasta el {draft.fechaExpiracion}.</p>}
             </div>
           )}
 
-          <div>
-            <label className={labelClass}>Inicio validez <span className="text-red-500">*</span></label>
-            <input value={draft.horaInicioValidez} onChange={(event) => onChange({ horaInicioValidez: event.target.value })} className={inputClass} type="time" />
-          </div>
-
-          <div>
-            <label className={labelClass}>Fin validez <span className="text-red-500">*</span></label>
-            <input value={draft.horaFinValidez} onChange={(event) => onChange({ horaFinValidez: event.target.value })} className={inputClass} type="time" />
-          </div>
+          {allowCantidad && selectedUsuario && (
+            <div className="lg:col-span-2">
+              <label className={labelClass}>Cantidad de vales por dia <span className="text-red-500">*</span></label>
+              <input value={permiteMultiples ? draft.cantidadVales || 1 : 1} onChange={(event) => onChange({ cantidadVales: permiteMultiples ? Math.max(1, Number(event.target.value) || 1) : 1 })} className={inputClass} disabled={!permiteMultiples} min="1" step="1" type="number" />
+              <p className="mt-2 text-sm font-semibold text-slate-500">{permiteMultiples ? 'Este usuario permite multiples vales en el mismo horario.' : 'Este usuario solo permite 1 vale por horario.'}</p>
+            </div>
+          )}
         </div>
 
         <div>
           <label className={labelClass}>Motivo <span className="normal-case tracking-normal text-slate-400">(opcional)</span></label>
-          <textarea value={draft.motivo} onChange={(event) => onChange({ motivo: event.target.value })} className={`${inputClass} min-h-[120px] resize-none`} placeholder={'Opcional: describe brevemente el contexto de esta asignaci\u00f3n.'} />
+          <textarea value={draft.motivo} onChange={(event) => onChange({ motivo: event.target.value })} className={`${inputClass} min-h-[120px] resize-none`} placeholder="Opcional: describe brevemente el contexto de esta asignacion." />
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 pt-2">
@@ -217,12 +188,7 @@ const ValeAdicionalForm = ({
             <span className="material-symbols-outlined">save</span>
             {saving ? 'Guardando...' : submitLabel}
           </button>
-
-          {onReset && (
-            <button type="button" onClick={onReset} className="sm:w-[180px] h-16 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-lg font-bold transition">
-              Limpiar
-            </button>
-          )}
+          {onReset && <button type="button" onClick={onReset} className="sm:w-[180px] h-16 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-lg font-bold transition">Limpiar</button>}
         </div>
       </div>
     </form>

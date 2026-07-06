@@ -15,8 +15,11 @@ const labelClass = 'block text-sm font-bold uppercase tracking-[0.16em] text-on-
 
 const UserFormPanel = ({ user, saving, tiposComensal, onCancel, onSave }: UserFormPanelProps) => {
   const [draft, setDraft] = useState(user);
+  const [showPassword, setShowPassword] = useState(false);
   const isEditing = Boolean(draft.id && draft.id > 0);
   const isFuncionario = draft.rol === 'Funcionario';
+  const isAutoCode = !isEditing && draft.autoGenerateCodigo !== false;
+  const codePrefix = draft.rol === 'Administrador' ? 'ADM' : draft.rol === 'Cajero' ? 'CAJ' : 'FUN';
   const selectedTipoComensalId = draft.id_tipo_comensal ? String(draft.id_tipo_comensal) : String(tiposComensal.find((tipo) => tipo.nombre === draft.tipo_comensal)?.idTipoComensal || '');
 
   useEffect(() => {
@@ -99,14 +102,36 @@ const UserFormPanel = ({ user, saving, tiposComensal, onCancel, onSave }: UserFo
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div>
-                <label className={labelClass}>Codigo de acceso <span className="normal-case tracking-normal text-slate-400">(opcional)</span></label>
-                <input
-                  value={draft.codigo || ''}
-                  onChange={(event) => updateDraft({ codigo: event.target.value })}
-                  className={inputClass}
-                  placeholder="Ej: ADM001 o 123456"
-                  type="text"
-                />
+                <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <label className="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant">Codigo de acceso</label>
+                  {!isEditing && (
+                    <label className="inline-flex items-center gap-2 text-sm font-bold text-primary">
+                      <input
+                        checked={isAutoCode}
+                        onChange={(event) => updateDraft({ autoGenerateCodigo: event.target.checked, codigo: event.target.checked ? '' : draft.codigo })}
+                        className="rounded border-slate-300 text-primary focus:ring-primary"
+                        type="checkbox"
+                      />
+                      Generar automatico
+                    </label>
+                  )}
+                </div>
+                <div className="relative">
+                  <input
+                    value={isAutoCode ? `${codePrefix} siguiente disponible` : draft.codigo || ''}
+                    onChange={(event) => updateDraft({ codigo: event.target.value, autoGenerateCodigo: false })}
+                    className={`${inputClass} ${isAutoCode ? 'bg-slate-50 pr-16 text-slate-500' : ''}`}
+                    disabled={isAutoCode}
+                    placeholder={`Ej: ${codePrefix}001`}
+                    type="text"
+                  />
+                  {isAutoCode && (
+                    <span className="material-symbols-outlined pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-primary">auto_awesome</span>
+                  )}
+                </div>
+                <p className="mt-2 text-sm text-slate-500">
+                  {isAutoCode ? `El sistema asignara el siguiente codigo ${codePrefix}.` : 'Puedes escribir un codigo manual si necesitas mantener uno existente.'}
+                </p>
               </div>
 
               <div>
@@ -208,13 +233,23 @@ const UserFormPanel = ({ user, saving, tiposComensal, onCancel, onSave }: UserFo
             {!isEditing && (
               <div>
                 <label className={labelClass}>Contrasena inicial <span className="text-red-500">*</span></label>
-                <input
-                  value={draft.contrasena || ''}
-                  onChange={(event) => updateDraft({ contrasena: event.target.value })}
-                  className={inputClass}
-                  placeholder="Define una contrasena inicial"
-                  type="password"
-                />
+                <div className="relative">
+                  <input
+                    value={draft.contrasena || ''}
+                    onChange={(event) => updateDraft({ contrasena: event.target.value })}
+                    className={`${inputClass} pr-16`}
+                    placeholder="Define una contrasena inicial"
+                    type={showPassword ? 'text' : 'password'}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((current) => !current)}
+                    className="absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100 hover:text-primary"
+                    aria-label={showPassword ? 'Ocultar contrasena' : 'Mostrar contrasena'}
+                  >
+                    <span className="material-symbols-outlined">{showPassword ? 'visibility_off' : 'visibility'}</span>
+                  </button>
+                </div>
               </div>
             )}
 

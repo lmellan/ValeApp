@@ -24,9 +24,8 @@ export type ValeAdicionalPayload = {
   idServicio: number | '';
   valor?: number | '';
   fechaUso: string;
-  horaInicioValidez: string;
-  horaFinValidez: string;
   fechaExpiracion: string;
+  periodoUso?: 'dia' | 'semana' | 'mes';
   motivo: string;
   cantidadVales?: number;
 };
@@ -41,13 +40,8 @@ export const createEmptyValeAdicionalDraft = (): ValeAdicionalPayload => ({
   idFuncionario: '',
   idServicio: '',
   fechaUso: new Date().toISOString().slice(0, 10),
-  horaInicioValidez: '00:00',
-  horaFinValidez: '23:59',
   fechaExpiracion: new Date().toISOString().slice(0, 10),
+  periodoUso: 'dia',
   motivo: '',
   cantidadVales: 1
 });
-
-
-
-

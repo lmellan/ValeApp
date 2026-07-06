@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const repository = require('../repository/usuarioRepository');
 
 const CONFIGURACION_SERVICE_URL = process.env.CONFIGURACION_SERVICE_URL || 'http://localhost:3003';
@@ -7,7 +6,7 @@ const rolesValidos = ['Funcionario', 'Administrador', 'Cajero'];
 
 const validarRol = (rol) => {
     if (!rolesValidos.includes(rol)) {
-        throw new Error('Rol invÃƒÂ¡lido. Debe ser Funcionario, Administrador o Cajero.');
+        throw new Error('Rol invalido. Debe ser Funcionario, Administrador o Cajero.');
     }
 };
 
@@ -63,7 +62,6 @@ const sincronizarTurno = async (usuario) => {
 
 const recalcularValesFuturosPorCambioTurno = async (usuario) => {
     try {
-        if (usuario.rol !== 'Funcionario') return;
         const response = await fetch(`${VALE_SERVICE_URL}/sistema/funcionarios/${usuario.id}/vales-base/recalcular`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -99,7 +97,7 @@ const loginUsuario = async (identificador, contrasena) => {
     console.log('[loginUsuario] identificador=', identificador, 'provided=', contrasena);
     console.log('[loginUsuario] usuarioStoreContrasena=', usuario && usuario.contrasena);
     if (!usuario || usuario.contrasena !== contrasena) {
-        throw new Error('CÃƒÂ³digo, correo o contraseÃƒÂ±a incorrectos');
+        throw new Error('Codigo, correo o contrasena incorrectos');
     }
     return usuario;
 };
@@ -107,7 +105,7 @@ const loginUsuario = async (identificador, contrasena) => {
 const crearUsuario = async (datos) => {
     validarRol(datos.rol);
     if (!datos.codigo) {
-        datos.codigo = generarCodigoParaRol(datos.rol);
+        datos.codigo = await generarCodigoParaRol(datos.rol);
     }
     if (datos.rol === 'Funcionario') {
         if (!datos.id_tipo_comensal || !datos.tipo_comensal || !datos.turno) {
@@ -122,6 +120,9 @@ const crearUsuario = async (datos) => {
     const usuario = await repository.crear(datos);
     await sincronizarTipoComensal(usuario);
     await sincronizarTurno(usuario);
+    if (usuario.rol === 'Funcionario') {
+        await recalcularValesFuturosPorCambioTurno(usuario);
+    }
     return usuario;
 };
 
@@ -145,11 +146,22 @@ const editarUsuario = async (idUsuario, datos) => {
     }
 
     const turnoAnterior = usuarioActual.turno;
+    const tipoComensalAnterior = usuarioActual.id_tipo_comensal;
+    const rolAnterior = usuarioActual.rol;
+    const activoAnterior = usuarioActual.activo;
     const usuario = await repository.actualizar(idUsuario, datos);
     if (!usuario) throw new Error('Usuario no encontrado');
     await sincronizarTipoComensal(usuario);
-    if (usuario.rol === 'Funcionario' && datos.turno && datos.turno !== turnoAnterior) {
+
+    const cambioTurno = datos.turno && datos.turno !== turnoAnterior;
+    const cambioTipoComensal = datos.id_tipo_comensal && datos.id_tipo_comensal !== tipoComensalAnterior;
+    const cambioRol = datos.rol && datos.rol !== rolAnterior;
+    const cambioActivo = datos.activo !== undefined && datos.activo !== activoAnterior;
+
+    if (usuario.rol === 'Funcionario' && cambioTurno) {
         await sincronizarTurno(usuario);
+    }
+    if (usuarioActual.rol === 'Funcionario' && (cambioTurno || cambioTipoComensal || cambioRol || cambioActivo)) {
         await recalcularValesFuturosPorCambioTurno(usuario);
     }
     return usuario;

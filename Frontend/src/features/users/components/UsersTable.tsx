@@ -1,4 +1,4 @@
-﻿import { User } from '../../../shared/types/api';
+import { User } from '../../../shared/types/api';
 import { TipoComensal } from '../../tiposComensal/types';
 
 type UsersTableProps = {
@@ -6,8 +6,10 @@ type UsersTableProps = {
   tiposComensal: TipoComensal[];
   page: number;
   totalPages: number;
+  pageSize: number;
   onEdit: (user: User) => void;
   onPageChange: (page: number) => void;
+  onPageSizeChange: (pageSize: number) => void;
 };
 
 const normalizeHexColor = (color?: string) => (/^#[0-9a-fA-F]{6}$/.test(color || '') ? color || '#64748b' : '#64748b');
@@ -34,7 +36,7 @@ const getColorStyle = (color?: string) => {
 const tableGridClass =
   'grid grid-cols-[1.1fr_1.45fr_1.75fr_1.15fr_1.65fr_1.15fr_0.9fr_0.85fr] gap-x-6';
 
-const UsersTable = ({ users, tiposComensal, page, totalPages, onEdit, onPageChange }: UsersTableProps) => (
+const UsersTable = ({ users, tiposComensal, page, totalPages, pageSize, onEdit, onPageChange, onPageSizeChange }: UsersTableProps) => (
   <section className="bg-surface-light rounded-3xl border border-slate-200 shadow-card overflow-hidden">
     <div className="overflow-x-auto">
       <div className="min-w-[1040px]">
@@ -104,7 +106,14 @@ const UsersTable = ({ users, tiposComensal, page, totalPages, onEdit, onPageChan
       <p className="text-sm font-semibold text-slate-500">
         Pagina {page} de {totalPages}
       </p>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <select
+          value={pageSize}
+          onChange={(event) => onPageSizeChange(Number(event.target.value))}
+          className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-600 outline-none transition focus:border-primary"
+        >
+          {[5, 10, 20].map((size) => <option key={size} value={size}>{size} filas</option>)}
+        </select>
         <button
           type="button"
           disabled={page <= 1}
