@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import { User } from '../../../shared/types/api';
 import { ServicioAlimentacion } from '../../servicios/types';
 import { getUsers } from '../../users/services/usersService';
 import { getServicios } from '../../servicios/services/serviciosService';
 import { getTiposComensal } from '../../tiposComensal/services/tiposComensalService';
 import { TipoComensal } from '../../tiposComensal/types';
-import { createValeAdicional, getValesAdicionales, updateValeAdicional } from '../services/valesAdicionalesService';
+import { createValeAdicional, deleteValeAdicional, getValesAdicionales, updateValeAdicional } from '../services/valesAdicionalesService';
 import { createEmptyValeAdicionalDraft, ValeAdicional, ValeAdicionalFilters, ValeAdicionalPayload } from '../types';
 
 const initialFilters: ValeAdicionalFilters = {
@@ -14,30 +14,10 @@ const initialFilters: ValeAdicionalFilters = {
   estado: 'Todos'
 };
 
-const getTodayInput = () => {
-  const today = new Date();
-  const offset = today.getTimezoneOffset() * 60000;
-  return new Date(today.getTime() - offset).toISOString().slice(0, 10);
-};
 
 const toDateInput = (value?: string | null) => value ? value.slice(0, 10) : '';
 const toTimeInput = (value?: string | null) => value ? value.slice(0, 5) : '';
 
-const addDays = (date: Date, days: number) => {
-  const next = new Date(date);
-  next.setDate(next.getDate() + days);
-  return next;
-};
-
-const getMonthEnd = (date: Date) => new Date(date.getFullYear(), date.getMonth() + 1, 0);
-
-const getFechaFinByPeriodo = (fechaUso: string, periodoUso: ValeAdicionalPayload['periodoUso'] = 'dia') => {
-  const base = new Date(`${fechaUso}T00:00:00`);
-  if (Number.isNaN(base.getTime())) return fechaUso;
-  if (periodoUso === 'semana') return addDays(base, 6).toISOString().slice(0, 10);
-  if (periodoUso === 'mes') return getMonthEnd(base).toISOString().slice(0, 10);
-  return fechaUso;
-};
 
 const normalizeVale = (vale: ValeAdicional): ValeAdicional => ({
   ...vale,
@@ -52,8 +32,7 @@ const normalizePayload = (draft: ValeAdicionalPayload, idVale?: string): ValeAdi
   idFuncionario: Number(draft.idFuncionario),
   idServicio: Number(draft.idServicio),
   fechaUso: draft.fechaUso,
-  fechaExpiracion: draft.fechaExpiracion || draft.fechaUso,
-  periodoUso: draft.periodoUso || 'dia',
+  fechaExpiracion: draft.fechaUso,
   motivo: draft.motivo.trim(),
   cantidadVales: Math.max(1, Number(draft.cantidadVales || 1))
 });
@@ -63,7 +42,6 @@ const toDraft = (vale: ValeAdicional): ValeAdicionalPayload => ({
   idServicio: vale.idServicio,
   fechaUso: vale.fechaUso,
   fechaExpiracion: vale.fechaExpiracion || vale.fechaUso,
-  periodoUso: 'dia',
   motivo: vale.motivo || '',
   cantidadVales: 1
 });
@@ -77,8 +55,10 @@ const validate = (draft: ValeAdicionalPayload) => {
   if (!draft.idFuncionario) return 'Selecciona un funcionario.';
   if (!draft.idServicio) return 'Selecciona un servicio adicional.';
   if (!draft.fechaUso) return 'Selecciona la fecha de uso.';
-  if (draft.fechaUso < getTodayInput()) return 'La fecha de uso no puede ser anterior a hoy.';
-  if (draft.fechaExpiracion && draft.fechaExpiracion < draft.fechaUso) return 'La fecha final no puede ser anterior a la fecha de uso.';
+  const today = new Date();
+  const offset = today.getTimezoneOffset() * 60000;
+  const todayInput = new Date(today.getTime() - offset).toISOString().slice(0, 10);
+  if (draft.fechaUso < todayInput) return 'La fecha de uso no puede ser anterior a hoy.';
   if (!draft.cantidadVales || Number(draft.cantidadVales) < 1) return 'La cantidad de vales debe ser al menos 1.';
   return null;
 };
@@ -110,7 +90,7 @@ export const useValesAdicionales = () => {
       ...base,
       idFuncionario: '',
       idServicio: firstServicio?.idServicio || '',
-      fechaExpiracion: getFechaFinByPeriodo(base.fechaUso, base.periodoUso)
+      fechaExpiracion: base.fechaUso
     });
   };
 
@@ -162,8 +142,8 @@ export const useValesAdicionales = () => {
 
   const applyDateRange = (draft: ValeAdicionalPayload, changes: Partial<ValeAdicionalPayload>) => {
     const next = { ...draft, ...changes };
-    if (changes.fechaUso || changes.periodoUso) {
-      next.fechaExpiracion = getFechaFinByPeriodo(next.fechaUso, next.periodoUso || 'dia');
+    if (changes.fechaUso) {
+      next.fechaExpiracion = next.fechaUso;
     }
     if (changes.idFuncionario) next.cantidadVales = 1;
     return next;
@@ -224,6 +204,23 @@ export const useValesAdicionales = () => {
 
   const closeEdit = () => setEditing(null);
 
+  const deleteEdit = async () => {
+    if (!editing) return;
+    setError(null);
+    setSuccess(null);
+    setSaving(true);
+    try {
+      await deleteValeAdicional(editing.idVale);
+      setVales((current) => current.filter((vale) => vale.idVale !== editing.idVale));
+      setSuccess('Vale adicional eliminado correctamente.');
+      setEditing(null);
+    } catch (err: any) {
+      setError(err?.response?.data?.error || err?.message || 'No se pudo eliminar el vale adicional.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const saveEdit = async () => {
     if (!editing) return;
     setError(null);
@@ -280,6 +277,7 @@ export const useValesAdicionales = () => {
     openEdit,
     closeEdit,
     saveEdit,
+    deleteEdit,
     resetCreate
   };
 };

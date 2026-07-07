@@ -1,4 +1,4 @@
-import { User } from '../../../shared/types/api';
+﻿import { User } from '../../../shared/types/api';
 import { ServicioAlimentacion } from '../../servicios/types';
 import { ValeAdicional } from '../types';
 
@@ -129,3 +129,4 @@ const ValesAdicionalesTable = ({ vales, usuarios, servicios, page, pageSize, tot
 );
 
 export default ValesAdicionalesTable;
+

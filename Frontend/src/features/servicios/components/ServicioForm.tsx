@@ -14,6 +14,8 @@ type ServicioFormProps = {
   onTurnosChange?: (turnos: number[]) => void;
   onSubmit: () => void;
   onReset?: () => void;
+  lockName?: boolean;
+  forceCategoria?: 'Base' | 'Adicional';
 };
 
 const inputClass = 'w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition';
@@ -22,7 +24,7 @@ const labelClass = 'block text-sm font-bold uppercase tracking-[0.16em] text-on-
 
 const getCategoriaDescription = (categoria: string) =>
   categoria === 'Base'
-    ? 'Se asigna automáticamente según el turno fijo del funcionario.'
+    ? 'Se asigna automaticamente segun el turno fijo del funcionario.'
     : 'Lo crea el administrador para una necesidad especial o excepcional.';
 
 const ServicioForm = ({
@@ -38,9 +40,13 @@ const ServicioForm = ({
   onChange,
   onTurnosChange,
   onSubmit,
-  onReset
+  onReset,
+  lockName = false,
+  forceCategoria
 }: ServicioFormProps) => {
-  const isBase = (draft.categoria || 'Base') === 'Base';
+  const isBase = (draft.categoria || 'Adicional') === 'Base';
+  const nameLocked = lockName;
+  const categoriaFija = forceCategoria || null;
 
   const toggleTurno = (idTurno: number) => {
     if (!onTurnosChange) return;
@@ -61,31 +67,28 @@ const ServicioForm = ({
       )}
 
       <div className="p-8 space-y-6">
-
-        {/* Nombre */}
         <div>
           <label className={labelClass}>
             Nombre del servicio <span className="text-red-500">*</span>
-            {isBase && (
+            {nameLocked && (
               <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold text-slate-500">
                 <span className="material-symbols-outlined text-[14px]">lock</span>fijo
               </span>
             )}
           </label>
-          {isBase ? (
-            <div className={inputLockedClass}>{draft.nombre || '—'}</div>
+          {nameLocked ? (
+            <div className={inputLockedClass}>{draft.nombre || '?'}</div>
           ) : (
             <input
               value={draft.nombre}
               onChange={(event) => onChange({ nombre: event.target.value })}
               className={inputClass}
-              placeholder="Ej: Colación especial"
+              placeholder="Ej: Colacion especial"
               type="text"
             />
           )}
         </div>
 
-        {/* Casino */}
         <div>
           <label className={labelClass}>Casino <span className="text-red-500">*</span></label>
           <select value={draft.idCasino} onChange={(event) => onChange({ idCasino: Number(event.target.value) })} className={inputClass}>
@@ -96,37 +99,49 @@ const ServicioForm = ({
           </select>
         </div>
 
-        {/* Tipo */}
         <div>
           <label className="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-3">
             Tipo de servicio <span className="text-red-500">*</span>
           </label>
-          <div className="grid grid-cols-1 gap-4">
-            {servicioCategorias.map((categoria) => {
-              const selected = draft.categoria === categoria;
-              return (
-                <label
-                  key={categoria}
-                  className={`flex items-start gap-3 rounded-2xl border px-5 py-4 transition cursor-pointer ${selected ? 'border-primary bg-primary/5 ring-2 ring-primary/10' : 'border-slate-200 bg-slate-50 hover:border-primary/40'}`}
-                >
-                  <input
-                    checked={selected}
-                    onChange={() => onChange({ categoria })}
-                    className="mt-1 border-slate-300 text-primary focus:ring-primary"
-                    name={`${title}-categoria`}
-                    type="radio"
-                  />
-                  <span>
-                    <span className="block text-base font-bold text-slate-700">{categoria}</span>
-                    <span className="block text-sm font-semibold text-slate-500">{getCategoriaDescription(categoria)}</span>
-                  </span>
-                </label>
-              );
-            })}
-          </div>
+          {categoriaFija ? (
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <span className="block text-base font-bold text-slate-700">{categoriaFija}</span>
+                  <span className="block text-sm font-semibold text-slate-500">{getCategoriaDescription(categoriaFija)}</span>
+                </div>
+                <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500">
+                  <span className="material-symbols-outlined text-[14px]">lock</span>fijo
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4">
+              {servicioCategorias.map((categoria) => {
+                const selected = draft.categoria === categoria;
+                return (
+                  <label
+                    key={categoria}
+                    className={`flex items-start gap-3 rounded-2xl border px-5 py-4 transition cursor-pointer ${selected ? 'border-primary bg-primary/5 ring-2 ring-primary/10' : 'border-slate-200 bg-slate-50 hover:border-primary/40'}`}
+                  >
+                    <input
+                      checked={selected}
+                      onChange={() => onChange({ categoria })}
+                      className="mt-1 border-slate-300 text-primary focus:ring-primary"
+                      name={`${title}-categoria`}
+                      type="radio"
+                    />
+                    <span>
+                      <span className="block text-base font-bold text-slate-700">{categoria}</span>
+                      <span className="block text-sm font-semibold text-slate-500">{getCategoriaDescription(categoria)}</span>
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          )}
         </div>
 
-        {/* Horario */}
         <div>
           <label className={labelClass}>
             Horario
@@ -155,25 +170,22 @@ const ServicioForm = ({
           )}
         </div>
 
-        {/* Aviso para servicios base */}
         {isBase && (
           <div className="flex items-start gap-3 rounded-2xl border border-primary/20 bg-primary/5 px-5 py-4">
             <span className="material-symbols-outlined text-primary shrink-0 mt-0.5">info</span>
             <p className="text-sm font-semibold text-primary/80">
-              El nombre y horario de los servicios base son fijos para garantizar la generación automática de vales por turno.
-              Solo puedes modificar el casino asignado.
+              El nombre del servicio queda fijo luego de crearlo. En los servicios base tambien queda fijo el horario para garantizar la generacion automatica de vales por turno. Solo puedes modificar el casino asignado.
             </p>
           </div>
         )}
 
-        {/* Turnos habilitados (solo servicios base) */}
         {isBase && turnos.length > 0 && onTurnosChange && (
           <div>
             <label className={labelClass}>
               Turnos habilitados <span className="text-red-500">*</span>
             </label>
             <p className="text-sm text-slate-500 mb-3 font-medium">
-              El sistema generará vales de este servicio para los funcionarios de los turnos seleccionados.
+              El sistema generara vales de este servicio para los funcionarios de los turnos seleccionados.
             </p>
             <div className="space-y-3">
               {turnos.map((turno) => {
@@ -205,7 +217,6 @@ const ServicioForm = ({
           </div>
         )}
 
-        {/* Acciones */}
         <div className="flex flex-col sm:flex-row gap-4 pt-2">
           <button
             type="button"

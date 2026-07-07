@@ -1,4 +1,4 @@
-export type ValeAdicional = {
+﻿export type ValeAdicional = {
   idVale: string;
   idFuncionario: number;
   idServicio: number;
@@ -25,7 +25,6 @@ export type ValeAdicionalPayload = {
   valor?: number | '';
   fechaUso: string;
   fechaExpiracion: string;
-  periodoUso?: 'dia' | 'semana' | 'mes';
   motivo: string;
   cantidadVales?: number;
 };
@@ -36,12 +35,17 @@ export type ValeAdicionalFilters = {
   estado: string;
 };
 
+const getTodayInput = () => {
+  const today = new Date();
+  const offset = today.getTimezoneOffset() * 60000;
+  return new Date(today.getTime() - offset).toISOString().slice(0, 10);
+};
+
 export const createEmptyValeAdicionalDraft = (): ValeAdicionalPayload => ({
   idFuncionario: '',
   idServicio: '',
-  fechaUso: new Date().toISOString().slice(0, 10),
-  fechaExpiracion: new Date().toISOString().slice(0, 10),
-  periodoUso: 'dia',
+  fechaUso: getTodayInput(),
+  fechaExpiracion: getTodayInput(),
   motivo: '',
   cantidadVales: 1
 });

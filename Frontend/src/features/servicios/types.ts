@@ -1,4 +1,4 @@
-﻿export type Turno = {
+export type Turno = {
   idTurno: number;
   nombre: string;
   horaInicio: string;
@@ -36,11 +36,11 @@ export type ServicioFilters = {
   categoria: string;
 };
 
-export const servicioCategorias = ['Base', 'Adicional'];
+export const servicioCategorias = ['Base', 'Adicional'] as const;
 
 export const createEmptyServicioDraft = (): ServicioPayload => ({
   nombre: '',
-  categoria: 'Base',
+  categoria: 'Adicional',
   horaInicio: '08:00',
   horaFin: '10:00',
   idCasino: ''

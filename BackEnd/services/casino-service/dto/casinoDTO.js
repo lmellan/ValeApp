@@ -1,4 +1,4 @@
-﻿const casinoResponseDTO = (row) => ({
+const casinoResponseDTO = (row) => ({
     idCasino: row.idCasino,
     nombre: row.nombre,
     direccion: row.direccion,
@@ -31,7 +31,7 @@ const crearServicioInputDTO = (body) => {
     }
     return {
         nombre: body.nombre,
-        categoria: body.categoria || null,
+        categoria: 'Adicional',
         horaInicio: body.horaInicio,
         horaFin: body.horaFin,
         idCasino: parseInt(body.idCasino),

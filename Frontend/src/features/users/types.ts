@@ -22,8 +22,8 @@ export type TurnOption = {
 
 export const turnOptions: TurnOption[] = [
   { label: 'Turno 1', value: '08:00 - 16:00', description: '08:00 a 16:00' },
-  { label: 'Turno 2', value: '16:00 - 24:00', description: '16:00 a 24:00' },
-  { label: 'Turno 3', value: '24:00 - 08:00', description: '24:00 a 08:00' }
+  { label: 'Turno 2', value: '16:00 - 23:59', description: '16:00 a 23:59' },
+  { label: 'Turno 3', value: '00:00 - 08:00', description: '00:00 a 08:00' }
 ];
 
 export const createEmptyUserDraft = (): UserDraft => ({

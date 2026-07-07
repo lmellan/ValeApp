@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+﻿import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { User } from '../../../shared/types/api';
 import { ServicioAlimentacion } from '../../servicios/types';
 import { TipoComensal } from '../../tiposComensal/types';
@@ -18,6 +18,7 @@ type ValeAdicionalFormProps = {
   onSubmit: () => void;
   onReset?: () => void;
   allowCantidad?: boolean;
+  error?: string | null;
 };
 
 const inputClass = 'w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 text-lg text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition';
@@ -46,7 +47,8 @@ const ValeAdicionalForm = ({
   onChange,
   onSubmit,
   onReset,
-  allowCantidad = true
+  allowCantidad = true,
+  error
 }: ValeAdicionalFormProps) => {
   const selectedUsuario = usuarios.find((usuario) => usuario.id === Number(draft.idFuncionario));
   const selectedServicio = servicios.find((servicio) => servicio.idServicio === Number(draft.idServicio));
@@ -54,10 +56,16 @@ const ValeAdicionalForm = ({
   const permiteMultiples = Boolean(selectedTipoComensal?.emisionMultiple);
   const [usuarioQuery, setUsuarioQuery] = useState('');
   const [showUserList, setShowUserList] = useState(false);
+  const errorRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setUsuarioQuery(selectedUsuario ? userLabel(selectedUsuario) : '');
   }, [selectedUsuario?.id]);
+
+  useEffect(() => {
+    if (!error) return;
+    errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [error]);
 
   const usuarioOptions = useMemo(
     () => usuarios.map((usuario) => ({
@@ -111,6 +119,12 @@ const ValeAdicionalForm = ({
       )}
 
       <div className="p-7 space-y-6">
+        {error && (
+          <div ref={errorRef} tabIndex={-1} className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-semibold text-red-700 flex items-start gap-3">
+            <span className="material-symbols-outlined text-[20px]">error</span>
+            <span>{error}</span>
+          </div>
+        )}
         <div className="relative">
           <label className={labelClass}>Usuario <span className="text-red-500">*</span></label>
           <div className="relative">
@@ -157,21 +171,9 @@ const ValeAdicionalForm = ({
             <input value={draft.fechaUso} onChange={(event) => onChange({ fechaUso: event.target.value })} className={inputClass} min={getTodayInput()} type="date" />
           </div>
 
-          {allowCantidad && (
-            <div>
-              <label className={labelClass}>Alcance <span className="text-red-500">*</span></label>
-              <select value={draft.periodoUso || 'dia'} onChange={(event) => onChange({ periodoUso: event.target.value as ValeAdicionalPayload['periodoUso'] })} className={inputClass}>
-                <option value="dia">Solo ese dia</option>
-                <option value="semana">Semana desde la fecha</option>
-                <option value="mes">Mes de la fecha</option>
-              </select>
-              {draft.fechaExpiracion && draft.fechaExpiracion !== draft.fechaUso && <p className="mt-2 text-sm font-semibold text-slate-500">Se generarán vales por días hábiles hasta el {draft.fechaExpiracion}.</p>}
-            </div>
-          )}
-
           {allowCantidad && selectedUsuario && (
             <div className="lg:col-span-2">
-              <label className={labelClass}>Cantidad de vales por dia <span className="text-red-500">*</span></label>
+              <label className={labelClass}>Cantidad de vales <span className="text-red-500">*</span></label>
               <input value={permiteMultiples ? draft.cantidadVales || 1 : 1} onChange={(event) => onChange({ cantidadVales: permiteMultiples ? Math.max(1, Number(event.target.value) || 1) : 1 })} className={inputClass} disabled={!permiteMultiples} min="1" step="1" type="number" />
               <p className="mt-2 text-sm font-semibold text-slate-500">{permiteMultiples ? 'Este usuario permite múltiples vales en el mismo horario.' : 'Este usuario solo permite 1 vale por horario.'}</p>
             </div>
@@ -196,3 +198,7 @@ const ValeAdicionalForm = ({
 };
 
 export default ValeAdicionalForm;
+
+
+
+

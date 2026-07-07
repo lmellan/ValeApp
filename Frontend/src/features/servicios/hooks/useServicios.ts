@@ -17,19 +17,18 @@ const initialFilters: ServicioFilters = {
   categoria: 'Todos'
 };
 
-const validate = (draft: ServicioPayload, turnosSeleccionados: number[]) => {
+const validate = (draft: ServicioPayload, turnosSeleccionados: number[], requireTurnos = false) => {
   if (!draft.nombre.trim()) return 'El nombre del servicio es obligatorio.';
   if (!draft.idCasino) return 'Selecciona el casino o sucursal del servicio.';
   if (!draft.horaInicio || !draft.horaFin) return 'Define el horario de vigencia del servicio.';
   if (draft.horaInicio >= draft.horaFin) return 'La hora de inicio debe ser anterior a la hora de fin.';
-  if (draft.categoria === 'Base' && turnosSeleccionados.length === 0)
-    return 'Un servicio base debe estar asociado a al menos un turno.';
+  if (requireTurnos && turnosSeleccionados.length === 0) return 'Selecciona al menos un turno habilitado.';
   return null;
 };
 
-const normalize = (draft: ServicioPayload) => ({
+const normalize = (draft: ServicioPayload, forceCategoria?: 'Base' | 'Adicional') => ({
   nombre: draft.nombre.trim(),
-  categoria: draft.categoria || 'Base',
+  categoria: forceCategoria || draft.categoria || 'Adicional',
   horaInicio: draft.horaInicio,
   horaFin: draft.horaFin,
   idCasino: Number(draft.idCasino),
@@ -38,13 +37,12 @@ const normalize = (draft: ServicioPayload) => ({
 
 const toDraft = (servicio: ServicioAlimentacion): ServicioPayload => ({
   nombre: servicio.nombre,
-  categoria: servicio.categoria || 'Base',
+  categoria: servicio.categoria || 'Adicional',
   horaInicio: servicio.horaInicio,
   horaFin: servicio.horaFin,
   idCasino: servicio.idCasino
 });
 
-// Returns which idTurnos currently contain a given idServicio
 const getTurnosActuales = (map: Record<number, number[]>, idServicio: number): number[] =>
   Object.entries(map)
     .filter(([, ids]) => ids.includes(idServicio))
@@ -54,7 +52,6 @@ export const useServicios = () => {
   const [servicios, setServicios] = useState<ServicioAlimentacion[]>([]);
   const [casinos, setCasinos] = useState<Casino[]>([]);
   const [turnos, setTurnos] = useState<Turno[]>([]);
-  // idTurno → array of idServicio currently associated
   const [turnoServiciosMap, setTurnoServiciosMap] = useState<Record<number, number[]>>({});
 
   const [createDraft, setCreateDraft] = useState<ServicioPayload>(createEmptyServicioDraft());
@@ -82,7 +79,6 @@ export const useServicios = () => {
         getTurnos(),
       ]);
 
-      // Build map: idTurno → [idServicio]
       const serviciosPorTurno = await Promise.all(turnosData.map((t) => getServiciosPorTurno(t.idTurno)));
       const map: Record<number, number[]> = {};
       turnosData.forEach((t, i) => { map[t.idTurno] = serviciosPorTurno[i]; });
@@ -108,7 +104,7 @@ export const useServicios = () => {
     return servicios.filter((servicio) => {
       const casino = casinos.find((item) => item.idCasino === servicio.idCasino);
       if (filters.casino !== 'Todos' && String(servicio.idCasino) !== filters.casino) return false;
-      if (filters.categoria !== 'Todos' && (servicio.categoria || 'Base') !== filters.categoria) return false;
+      if (filters.categoria !== 'Todos' && (servicio.categoria || 'Adicional') !== filters.categoria) return false;
       if (!query) return true;
       return (
         servicio.nombre.toLowerCase().includes(query) ||
@@ -146,11 +142,7 @@ export const useServicios = () => {
     setTurnosCreate([]);
   };
 
-  const syncTurnos = async (
-    idServicio: number,
-    turnosNuevos: number[],
-    map: Record<number, number[]>
-  ) => {
+  const syncTurnos = async (idServicio: number, turnosNuevos: number[], map: Record<number, number[]>) => {
     const actuales = getTurnosActuales(map, idServicio);
     const toAdd = turnosNuevos.filter((id) => !actuales.includes(id));
     const toRemove = actuales.filter((id) => !turnosNuevos.includes(id));
@@ -173,12 +165,12 @@ export const useServicios = () => {
   const createNewServicio = async () => {
     setError(null);
     setSuccess(null);
-    const validation = validate(createDraft, turnosCreate);
+    const validation = validate(createDraft, turnosCreate, false);
     if (validation) { setError(validation); return; }
 
     setSaving(true);
     try {
-      const idServicio = await createServicio(normalize(createDraft));
+      const idServicio = await createServicio(normalize(createDraft, 'Adicional'));
       await syncTurnos(idServicio, turnosCreate, turnoServiciosMap);
       resetCreate();
       setSuccess('Servicio creado correctamente.');
@@ -204,16 +196,14 @@ export const useServicios = () => {
     if (!editing) return;
     setError(null);
     setSuccess(null);
-    const validation = validate(editDraft, turnosEdit);
+    const validation = validate(editDraft, turnosEdit, editing.categoria === 'Base');
     if (validation) { setError(validation); return; }
 
     setSaving(true);
     try {
-      const updated = await updateServicio(editing.idServicio, normalize(editDraft));
+      const updated = await updateServicio(editing.idServicio, normalize(editDraft, editing.categoria === 'Base' ? 'Base' : 'Adicional'));
       await syncTurnos(editing.idServicio, turnosEdit, turnoServiciosMap);
-      setServicios((current) =>
-        current.map((s) => (s.idServicio === updated.idServicio ? updated : s))
-      );
+      setServicios((current) => current.map((s) => (s.idServicio === updated.idServicio ? updated : s)));
       setSuccess('Servicio actualizado correctamente.');
       setEditing(null);
     } catch (err: any) {

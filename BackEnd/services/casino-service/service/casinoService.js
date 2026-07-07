@@ -1,4 +1,4 @@
-﻿const db = require('../repository/database');
+const db = require('../repository/database');
 
 const mapCasino = (row) => row && ({
     idCasino: row.id_casino,
@@ -57,7 +57,7 @@ const listarServicios = async () => {
 
 const obtenerServicio = async (idServicio) => {
     const result = await db.query('SELECT * FROM servicios_alimentacion WHERE id_servicio = $1', [idServicio]);
-    if (!result.rows[0]) throw 'Servicio de alimentación no encontrado.';
+    if (!result.rows[0]) throw 'Servicio de alimentaci??n no encontrado.';
     return mapServicio(result.rows[0]);
 };
 
@@ -67,21 +67,21 @@ const crearServicio = async (datos) => {
             `INSERT INTO servicios_alimentacion (nombre, categoria, hora_inicio, hora_fin, id_casino, activo)
              VALUES ($1, $2, $3, $4, $5, $6)
              RETURNING id_servicio`,
-            [datos.nombre, datos.categoria || null, datos.horaInicio, datos.horaFin, datos.idCasino, datos.activo !== false]
+            [datos.nombre, 'Adicional', datos.horaInicio, datos.horaFin, datos.idCasino, datos.activo !== false]
         );
         return result.rows[0].id_servicio;
     } catch (err) {
-        throw 'Error al crear servicio de alimentación.';
+        throw 'Error al crear servicio de alimentaci??n.';
     }
 };
 
 const editarServicio = async (idServicio, datos) => {
     const current = await obtenerServicio(idServicio);
-    if (current.categoria === 'Base') {
-        if (datos.nombre !== current.nombre)
-            throw 'El nombre de un servicio base no puede modificarse.';
-        if (datos.horaInicio !== current.horaInicio || datos.horaFin !== current.horaFin)
-            throw 'El horario de un servicio base no puede modificarse.';
+    if (datos.nombre !== current.nombre) {
+        throw 'El nombre de un servicio no puede modificarse luego de creado.';
+    }
+    if (current.categoria === 'Base' && (datos.horaInicio !== current.horaInicio || datos.horaFin !== current.horaFin)) {
+        throw 'El horario de un servicio base no puede modificarse.';
     }
     try {
         const result = await db.query(
@@ -94,12 +94,12 @@ const editarServicio = async (idServicio, datos) => {
                  activo = $6
              WHERE id_servicio = $7
              RETURNING *`,
-            [datos.nombre, datos.categoria || null, datos.horaInicio, datos.horaFin, datos.idCasino, datos.activo !== false, idServicio]
+            [current.nombre, datos.categoria || null, datos.horaInicio, datos.horaFin, datos.idCasino, datos.activo !== false, idServicio]
         );
         return mapServicio(result.rows[0]);
     } catch (err) {
         if (typeof err === 'string') throw err;
-        throw 'Error al editar servicio de alimentación.';
+        throw 'Error al editar servicio de alimentaci??n.';
     }
 };
 

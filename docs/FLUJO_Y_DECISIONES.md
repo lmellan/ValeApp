@@ -1,160 +1,99 @@
-# Flujo, supuestos y decisiones de ValeApp
+﻿# Flujo, supuestos y decisiones de ValeApp
 
-Este documento describe el flujo funcional real de la aplicación tal como está implementada, los supuestos que se tomaron durante el desarrollo, las funcionalidades que **no** se implementaron (con su justificación) y cómo se habrían implementado si el alcance lo hubiera permitido.
+Este documento resume el flujo funcional implementado y las decisiones tomadas durante el desarrollo.
 
-Complementa a [`ARCHITECTURE.md`](ARCHITECTURE.md), que describe la estructura técnica (servicios, puertos, comunicación).
+## Flujo principal
 
----
-
-## 1. Flujo actual de la aplicación
-
-### 1.1 Visión general
-
-ValeApp digitaliza la emisión y control de vales de alimentación. Intervienen tres roles humanos (Administrador, Funcionario, Cajero) y un proceso automático del sistema.
-
-```
-Administrador configura el sistema
-        ↓
-Sistema genera vales base automáticamente (job mensual)
-        ↓
+```text
+Administrador configura usuarios, tipos, servicios y valorizaciones
+Sistema genera vales base mensuales según turno
 Funcionario consulta sus vales del día
-        ↓
-Funcionario imprime el comprobante
-        ↓
-Funcionario presenta el vale en el casino
-        ↓
-Cajero valida el vale
-        ↓
-Cajero registra la entrega (canje)
-        ↓
+Funcionario imprime un vale disponible
+Cajero valida el código y registra la entrega
 Sistema marca el vale como UTILIZADO
-        ↓
 Administrador consulta reportes
 ```
 
-### 1.2 Flujo del Administrador
+## Administrador
 
-El administrador entra a `/admin` y accede a seis módulos:
+El administrador trabaja sobre estas secciones:
 
-1. **Usuarios** — crea y edita usuarios. Al crear un funcionario puede asignarle un **tipo de comensal** y un **turno** (uno de los tres fijos).
-2. **Tipos de comensal** — define categorías (Obrero, Jefe, Gerente, Secretaria) con su cantidad de vales y si permiten emisión múltiple.
-3. **Servicios de alimentación** — gestiona los servicios. Los servicios **Base** tienen nombre y horario fijos (bloqueados en la UI) y se asocian a uno o más turnos mediante checkboxes; los servicios **Adicionales** permiten editar nombre y horario libremente.
-4. **Valorización de vales** — define el precio de cada combinación tipo de comensal × servicio.
-5. **Vales adicionales** — crea vales excepcionales (capacitación, reunión, evento) asignados manualmente a un funcionario, con motivo obligatorio.
-6. **Reportes** — consulta uso, emisión y auditoría con filtros por período (diario, semanal, mensual, anual).
+1. **Usuarios:** crea y edita usuarios. Si el usuario es funcionario, debe tener tipo de comensal y turno.
+2. **Tipos de comensal:** define categorías y modalidad de emisión: un vale por horario o múltiples vales por horario.
+3. **Servicios:** consulta servicios base y crea/edita servicios adicionales.
+4. **Valorización de vales:** define valor por tipo de comensal y servicio.
+5. **Vales adicionales:** asigna vales manuales a funcionarios para una fecha específica.
+6. **Reportes:** revisa vales emitidos, utilizados, no utilizados, expirados y adicionales.
 
-### 1.3 Flujo del Sistema (generación automática)
+## Sistema
 
-El `vale-service` corre un job al arrancar y cada 6 horas:
+El sistema genera vales base por mes para funcionarios activos. Cada funcionario recibe los servicios asociados a su turno:
 
-1. Detecta si hoy es el primer día hábil del mes.
-2. Consulta a `configuracion-service` la configuración de cada funcionario (turno vigente + tipo de comensal).
-3. Obtiene los servicios habilitados para ese turno.
-4. Genera un vale base (`tipoAsignacion = POR_TURNO`, `estadoUso = NO_UTILIZADO`) por cada combinación funcionario × servicio, evitando duplicados.
+| Turno | Horario | Servicios base |
+|---|---:|---|
+| Turno 1 | 08:00 a 16:00 | Desayuno, Almuerzo |
+| Turno 2 | 16:00 a 23:59 | Once, Cena 1 |
+| Turno 3 | 00:00 a 08:00 | Cena 2, Desayuno |
 
-### 1.4 Flujo del Funcionario
+Si se crea un funcionario a mitad de mes, se generan sus vales desde esa fecha hasta fin de mes. Si se cambia el turno, se eliminan vales base futuros no utilizados y se generan los nuevos según el turno vigente.
 
-1. Inicia sesión y llega a `/funcionario`.
-2. Ve únicamente **sus** vales del día, con estado calculado (disponible, utilizado, expirado).
-3. Puede imprimir un vale disponible: se abre la vista `/funcionario/impresion/:idVale`, que simula el comprobante y registra la fecha/hora de impresión (imprimir **no** equivale a canjear).
+## Funcionario
 
-### 1.5 Flujo del Cajero
+El funcionario ve solo vales del día. Un vale puede estar:
 
-1. Inicia sesión y llega a `/cajero`.
-2. Ingresa el código del vale y presiona **Validar** (o Enter).
-3. El backend verifica existencia, propiedad, estado de uso, expiración y horario. Si es válido, la UI muestra una tarjeta con el funcionario, servicio, horario límite y valor.
-4. El cajero presiona **Registrar Entrega**: el vale pasa a `UTILIZADO`, se guarda el id del cajero y la fecha/hora del canje.
-5. La operación queda en el **historial local** de la sesión del cajero y el formulario se limpia para el siguiente vale.
+- **Disponible:** corresponde al día actual, está dentro del horario del servicio, no expiró y no fue utilizado.
+- **Aún no disponible:** es del día actual, pero el horario del servicio aún no comienza.
+- **Expirado:** terminó la fecha/hora de uso.
+- **Utilizado:** ya fue canjeado por caja.
 
----
+La impresión no equivale a canje. El canje lo registra el cajero.
 
-## 2. Supuestos que se tomaron
+## Cajero
 
-Estos supuestos se adoptaron para acotar el alcance manteniendo coherencia con las reglas de negocio del documento `valeapp flujo`.
+El cajero ingresa el código del vale. El backend valida:
 
-| # | Supuesto | Razón |
+- existencia del vale;
+- permisos del cajero;
+- fecha actual;
+- horario del servicio;
+- estado de uso;
+- expiración;
+- reglas de emisión múltiple del tipo de comensal.
+
+Si todo es válido, registra la entrega y el vale pasa a `UTILIZADO`.
+
+## Supuestos
+
+| # | Supuesto | Decisión |
 |---|---|---|
-| S1 | **Los turnos son tres y fijos** (08:00–16:00, 16:00–24:00, 24:00–08:00). | El caso de negocio describe una empresa con jornadas fijas. No se construyó UI de creación de turnos; el administrador solo los **selecciona** al crear/editar un usuario. |
-| S2 | **El horario y nombre de los servicios Base no se modifican.** | Los servicios base deben coincidir con las ventanas de los turnos para que la generación automática de vales sea válida. Cambiarlos rompería la regla "vale por turno en función del servicio". Solo los servicios Adicionales son totalmente editables. |
-| S3 | **Un funcionario tiene un solo tipo de comensal y un solo turno vigente.** | Regla R15 y R18 del documento de negocio. Los cambios de turno se modelan cerrando la asignación anterior (`fecha_fin`) y creando una nueva. |
-| S4 | **La generación de vales base ocurre el primer día hábil del mes.** | Interpretación del proceso mensual descrito. Existe además un job de recuperación al arrancar el servicio por si estuvo caído ese día. |
-| S5 | **La disponibilidad del vale se calcula, no se almacena.** | Regla R29. El estado que se guarda es `estadoUso` + `expirado`; "disponible/expirado/utilizado" se deriva en cada consulta. |
-| S6 | **La sesión se maneja con el id de usuario en headers** (`x-usuario-id`, `x-funcionario-id`) y en `localStorage`. | Suficiente para un prototipo funcional demostrable sin infraestructura de auth. Ver sección 3. |
-| S7 | **El valor monetario vive en el vale, no en el servicio.** | Regla R24. El precio se resuelve al momento de generar el vale consultando la valorización (tipo de comensal × servicio). |
-| S8 | **Los datos de prueba (usuarios, casinos, servicios) se cargan por scripts SQL de inicialización.** | Permite levantar el sistema con datos coherentes sin capturas manuales. |
+| S1 | Los turnos son fijos. | No se implementa creación de turnos desde UI. |
+| S2 | Los servicios base pertenecen a la configuración del sistema. | No se crean desde UI; se cargan por seed. |
+| S3 | Los servicios nuevos del administrador son adicionales. | La UI crea servicios adicionales. |
+| S4 | El servicio define el horario de uso del vale. | El vale guarda `hora_inicio_validez` y `hora_fin_validez` desde el servicio. |
+| S5 | El valor vive en el vale. | Se calcula desde la valorización tipo de comensal + servicio. |
+| S6 | Los vales adicionales pueden tener cantidad mayor a 1 solo si el tipo de comensal permite emisión múltiple. | Si no permite múltiple, se fuerza cantidad 1. |
+| S7 | La expiración debe considerar Chile. | Se usa `America/Santiago` en la regla de expiración de `vale-service`. |
+| S8 | El motivo de vale adicional es opcional en la UI. | El flujo no lo exige como dato de negocio obligatorio. |
 
----
+## Datos iniciales
 
-## 3. Funcionalidades que NO se implementaron
+La BD se puebla desde `BackEnd/database/postgres/init/` con:
 
-### 3.1 Envío real de notificaciones por correo
+- usuarios base por rol;
+- tipos de comensal: Obrero, Jefe, Gerente, Secretaria;
+- casinos: Casino 1 y Casino 2;
+- servicios base: Desayuno, Almuerzo, Once, Cena 1, Cena 2;
+- servicios adicionales: Box lunch y Colación Visitas;
+- valorizaciones para todos los tipos de comensal y servicios iniciales;
+- asignaciones de turno para los funcionarios base.
 
-**Qué falta:** el `notificacion-service` construye el payload de la notificación (destinatario, asunto, cuerpo con el resumen de vales) pero **no envía** correos reales.
+`vale_db` no trae vales administrativos de demostración: los vales se generan desde la aplicación.
 
-**Por qué no se hizo:** se acordó dejar las notificaciones como funcionalidad **teórica**. Requiere un proveedor de correo (SMTP, SendGrid, etc.), credenciales y manejo de colas/reintentos, que exceden el alcance del prototipo y aportan poco a la demostración del flujo central de vales.
+## Fuera de alcance actual
 
-**Cómo se habría hecho:**
-- Integrar `nodemailer` con un transporte SMTP configurado por variables de entorno (`SMTP_HOST`, `SMTP_USER`, `SMTP_PASS`).
-- Convertir `generarPayloadNotificacion` en un `enviarNotificacion` que, tras construir el payload, llame a `transporter.sendMail(...)`.
-- Programar un job semanal (por ejemplo con `node-cron`) que recorra los funcionarios activos y dispare el envío.
-- Registrar cada envío en `audit-service` y manejar fallos con reintentos exponenciales.
-
-### 3.2 Contraseñas con hash y autenticación por token
-
-**Qué falta:** las contraseñas se guardan y comparan en **texto plano**. No hay JWT ni expiración de sesión del lado del servidor.
-
-**Por qué no se hizo:** el foco del proyecto era el flujo de negocio de los vales, no la seguridad de producción. Para una demostración local en un entorno controlado, la comparación directa es suficiente y evita complejidad de gestión de tokens.
-
-**Cómo se habría hecho:**
-- Al crear/editar usuario, hashear la contraseña con `bcrypt` (`bcrypt.hash(contrasena, 10)`) y guardar solo el hash.
-- En el login, validar con `bcrypt.compare(...)`.
-- Emitir un **JWT** firmado con un secreto de entorno, con expiración (por ejemplo 8 h), y enviarlo al frontend.
-- Sustituir los headers `x-usuario-id` por un `Authorization: Bearer <token>` y un middleware que valide el token y extraiga el id/rol.
-- Proteger cada endpoint según el rol contenido en el token (no confiar en el id enviado por el cliente).
-
-### 3.3 Tests automatizados
-
-**Estado actual:** el backend tiene un set de **pruebas unitarias sobre los DTOs** (validaciones de negocio puras) con el runner nativo `node:test`, ejecutable con `npm test` desde `BackEnd/` (sin dependencias adicionales). Cubren validación de vales adicionales, generación de vales base, configuración y casinos/servicios.
-
-**Qué falta:** tests de la capa `service`/`repository` (requieren mocks o una BD de prueba), tests de endpoints de extremo a extremo y tests del frontend.
-
-**Por qué se acotó así:** los DTOs concentran las reglas de validación de entrada y son lógica pura, por lo que dan la mejor relación cobertura/esfuerzo sin infraestructura. La capa de servicio depende de PostgreSQL y de llamadas HTTP entre servicios, cuyo testeo exige mocks o entorno levantado.
-
-**Cómo se completaría:**
-- **Backend (servicio/repositorio):** `Jest` + `supertest` por endpoint (casos felices y de error), con una BD de prueba en Docker o mocks del repositorio y de `axios`.
-- **Frontend:** `Vitest` + `React Testing Library` para componentes clave (formularios, validaciones, flujo del cajero) con mocks de `axios`. No es imprescindible para el prototipo, pero aportaría en los formularios con más lógica (servicios, vales adicionales).
-- **Integración:** un pipeline que levante los servicios y corra las colecciones Postman con `newman`.
-
-### 3.4 Resiliencia entre servicios (retry / circuit breaker)
-
-**Qué falta:** las llamadas HTTP entre servicios usan solo un timeout de 2 000 ms. No hay reintentos ni circuit breaker.
-
-**Por qué no se hizo:** en un entorno local con todos los servicios en la misma máquina, los fallos de red son improbables y añadir esta capa habría sido complejidad sin beneficio observable en la demostración. Se documentó explícitamente lo que **sí** existe (timeout) para no sobrevender la arquitectura.
-
-**Cómo se habría hecho:**
-- Envolver las llamadas `axios` con una librería como `axios-retry` (reintentos con backoff exponencial para errores transitorios).
-- Añadir un circuit breaker con `opossum`, de modo que si un servicio dependiente falla repetidamente, se corte el flujo y se devuelva una respuesta degradada en lugar de encolar peticiones.
-- Definir respuestas de *fallback* (por ejemplo, si `audit-service` no responde, registrar localmente y continuar, como ya se hace parcialmente en el canje).
- 
----
-
-## 4. Resumen del estado
-
-| Área | Estado |
+| Tema | Estado |
 |---|---|
-| Login y control de acceso por rol | ✅ Implementado |
-| Gestión de usuarios (con turno + tipo de comensal) | ✅ Implementado |
-| Tipos de comensal, servicios, valorización | ✅ Implementado |
-| Asociación turno ↔ servicio (con bloqueo de servicios base) | ✅ Implementado |
-| Vales adicionales | ✅ Implementado |
-| Generación automática de vales base | ✅ Implementado |
-| Consulta e impresión (funcionario) | ✅ Implementado |
-| Validación y canje (cajero) con historial | ✅ Implementado |
-| Reportes y auditoría | ✅ Implementado |
-| Envío real de correos | ⚪ Teórico (ver 3.1) |
-| Hash de contraseñas / JWT | ⚪ No implementado (ver 3.2) |
-| Tests unitarios de DTOs (backend) | ✅ Implementado (`npm test`, ver 3.3) |
-| Tests de servicio/repositorio y frontend | ⚪ No implementado (ver 3.3) |
-| Resiliencia (retry / circuit breaker) | ⚪ No implementado (ver 3.4) | 
-
-**Leyenda:** ✅ implementado y funcional · ⚪ fuera del alcance, documentado con su justificación y ruta de implementación.
+| Correos reales | `notificacion-service` no envía correos, solo construye payload. |
+| Seguridad productiva | No hay hash de contraseñas ni JWT. |
+| Tests frontend | Pendiente. |
+| Resiliencia avanzada | No hay retry, circuit breaker ni colas. |

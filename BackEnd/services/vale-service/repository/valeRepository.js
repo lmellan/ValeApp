@@ -1,4 +1,4 @@
-const pool = require('./database');
+﻿const pool = require('./database');
 
 const mapVale = (row) => row && ({
     idVale: row.id_vale,
@@ -100,6 +100,18 @@ const actualizarAdministrativo = async (idVale, vale) => {
     return mapVale(result.rows[0]);
 };
 
+const eliminarAdministrativo = async (idVale) => {
+    const result = await pool.query(
+        `DELETE FROM vales
+         WHERE id_vale = $1
+           AND tipo_asignacion = 'ADMINISTRATIVA'
+           AND estado_uso = 'NO_UTILIZADO'
+         RETURNING id_vale`,
+        [idVale]
+    );
+    return result.rows[0] ? result.rows[0].id_vale : null;
+};
+
 const marcarImpreso = async (idVale, fechaHoraImpresion) => {
     const result = await pool.query(
         'UPDATE vales SET fecha_hora_impresion = $1 WHERE id_vale = $2',
@@ -117,7 +129,7 @@ const marcarCanjeadoSiDisponible = async (idVale, idCajero, fechaHoraCanje) => {
          WHERE id_vale = $3
            AND estado_uso = 'NO_UTILIZADO'
            AND expirado = false
-           AND (fecha_expiracion::timestamp + time '23:59:59') >= now()`,
+           AND (fecha_expiracion::timestamp + hora_fin_validez) >= (now() AT TIME ZONE 'America/Santiago')`,
         [idCajero, fechaHoraCanje, idVale]
     );
     return { changes: result.rowCount };
@@ -126,11 +138,25 @@ const marcarCanjeadoSiDisponible = async (idVale, idCajero, fechaHoraCanje) => {
 const actualizarExpirados = async () => {
     const result = await pool.query(
         `UPDATE vales
-         SET expirado = true
+         SET expirado = (fecha_expiracion::timestamp + hora_fin_validez) < (now() AT TIME ZONE 'America/Santiago')
          WHERE estado_uso = 'NO_UTILIZADO'
-           AND (fecha_expiracion::timestamp + time '23:59:59') < now()`
+           AND expirado IS DISTINCT FROM ((fecha_expiracion::timestamp + hora_fin_validez) < (now() AT TIME ZONE 'America/Santiago'))`
     );
     return { changes: result.rowCount };
+};
+
+const actualizarHorariosPorServicio = async (idServicio, horaInicioValidez, horaFinValidez) => {
+    const result = await pool.query(
+        `UPDATE vales
+         SET hora_inicio_validez = $1,
+             hora_fin_validez = $2
+         WHERE id_servicio = $3
+           AND tipo_asignacion = 'ADMINISTRATIVA'
+           AND estado_uso = 'NO_UTILIZADO'
+         RETURNING id_vale`,
+        [horaInicioValidez, horaFinValidez, idServicio]
+    );
+    return result.rows.map((row) => row.id_vale);
 };
 
 const eliminarValesBaseFuturos = async (idFuncionario, desdeFecha) => {
@@ -213,13 +239,16 @@ module.exports = {
     listarPorFuncionario,
     insertar,
     actualizarAdministrativo,
+    eliminarAdministrativo,
     marcarImpreso,
     marcarCanjeadoSiDisponible,
     actualizarExpirados,
+    actualizarHorariosPorServicio,
     eliminarValesBaseFuturos,
     contarCoincidenciasUsadas,
     contarCoincidenciasImpresas,
     obtenerResumenPorFuncionario,
     obtenerResumenGeneral
 };
+
 

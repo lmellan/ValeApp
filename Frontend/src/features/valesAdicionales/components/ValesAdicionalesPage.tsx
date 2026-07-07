@@ -1,4 +1,4 @@
-import ValeAdicionalFiltersPanel from './ValeAdicionalFilters';
+﻿import ValeAdicionalFiltersPanel from './ValeAdicionalFilters';
 import ValeAdicionalForm from './ValeAdicionalForm';
 import ValesAdicionalesTable from './ValesAdicionalesTable';
 import { useValesAdicionales } from '../hooks/useValesAdicionales';
@@ -33,6 +33,7 @@ const ValesAdicionalesPage = () => {
     openEdit,
     closeEdit,
     saveEdit,
+    deleteEdit,
     resetCreate
   } = useValesAdicionales();
 
@@ -126,6 +127,7 @@ const ValesAdicionalesPage = () => {
               onChange={updateCreateDraft}
               onSubmit={createNewVale}
               onReset={resetCreate}
+              error={error}
             />
 
             <div className="px-8 pb-8">
@@ -179,16 +181,27 @@ const ValesAdicionalesPage = () => {
               onChange={updateEditDraft}
               onSubmit={saveEdit}
               allowCantidad={false}
+              error={error}
             />
 
             <div className="px-8 pb-8">
-              <button
-                type="button"
-                onClick={closeEdit}
-                className="w-full h-14 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-lg font-bold transition"
-              >
-                Cancelar
-              </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={deleteEdit}
+                  className="w-full h-14 rounded-2xl border border-red-200 bg-red-50 hover:bg-red-100 text-red-700 text-lg font-bold transition flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined">delete</span>
+                  Eliminar asignación
+                </button>
+                <button
+                  type="button"
+                  onClick={closeEdit}
+                  className="w-full h-14 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-lg font-bold transition"
+                >
+                  Cancelar
+                </button>
+              </div>
             </div>
             </div>
           </section>
@@ -199,6 +212,8 @@ const ValesAdicionalesPage = () => {
 };
 
 export default ValesAdicionalesPage;
+
+
 
 
 

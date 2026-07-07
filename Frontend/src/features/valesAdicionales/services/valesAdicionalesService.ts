@@ -15,3 +15,7 @@ export const updateValeAdicional = async (idVale: string, payload: ValeAdicional
   const response = await api.put<ValeAdicional>(`${VALE_API_URL}/administrador/vales/${idVale}`, payload);
   return response.data;
 };
+
+export const deleteValeAdicional = async (idVale: string): Promise<void> => {
+  await api.delete(`${VALE_API_URL}/administrador/vales/${idVale}`);
+};

@@ -41,6 +41,8 @@ app.get('/funcionarios/:idFuncionario/vales/resumen', valeController.obtenerResu
 app.get('/administrador/vales', valeController.listarValesAdicionales);
 app.post('/administrador/vales', valeController.crearValeAdicional);
 app.put('/administrador/vales/:idVale', valeController.actualizarValeAdicional);
+app.delete('/administrador/vales/:idVale', valeController.eliminarValeAdicional);
+app.put('/administrador/vales/servicio/:idServicio/horario', valeController.sincronizarHorariosValeAdicional);
 app.post('/sistema/vales-base/generar', valeController.generarValesBase);
 app.post('/sistema/funcionarios/:idFuncionario/vales-base/recalcular', valeController.recalcularValesBaseFuncionario);
 

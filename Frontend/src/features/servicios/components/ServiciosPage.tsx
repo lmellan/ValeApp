@@ -69,7 +69,7 @@ const ServiciosPage = () => {
             <div>
               <h1 className="text-4xl font-extrabold text-primary mb-2">Servicios</h1>
               <p className="text-lg text-slate-600">
-                Administra los servicios de alimentación disponibles en el sistema, incluyendo servicios base y servicios adicionales.
+                Administra los servicios de alimentacion disponibles en el sistema, incluyendo servicios base y servicios adicionales.
               </p>
             </div>
 
@@ -86,20 +86,22 @@ const ServiciosPage = () => {
         </div>
 
         <aside className="xl:col-span-4">
-          <div className="min-h-0 flex-1 overflow-y-auto"><ServicioForm
-            title="Crear servicio"
-            description="Registra un servicio y define su casino, tipo y horario de vigencia."
-            draft={createDraft}
-            casinos={casinos}
-            saving={saving}
-            submitLabel="Crear"
-            turnos={turnos}
-            turnosSeleccionados={turnosCreate}
-            onChange={updateCreateDraft}
-            onTurnosChange={setTurnosCreate}
-            onSubmit={createNewServicio}
-            onReset={resetCreate}
-          />
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <ServicioForm
+              title="Crear servicio"
+              description="Registra un servicio adicional y define su casino y horario de vigencia."
+              draft={createDraft}
+              casinos={casinos}
+              saving={saving}
+              submitLabel="Crear"
+              forceCategoria="Adicional"
+              turnos={turnos}
+              turnosSeleccionados={turnosCreate}
+              onChange={updateCreateDraft}
+              onTurnosChange={setTurnosCreate}
+              onSubmit={createNewServicio}
+              onReset={resetCreate}
+            />
           </div>
         </aside>
       </div>
@@ -117,7 +119,7 @@ const ServiciosPage = () => {
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
                   <p className="text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-1">Servicio seleccionado</p>
                   <p className="text-2xl font-extrabold text-primary">{editing.nombre}</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-500">{editingCasino?.nombre || 'Sin casino'} · {editing.horaInicio} a {editing.horaFin}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-500">{editingCasino?.nombre || 'Sin casino'} - {editing.horaInicio} a {editing.horaFin}</p>
                 </div>
                 <button
                   type="button"
@@ -130,30 +132,32 @@ const ServiciosPage = () => {
               </div>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto"><ServicioForm
-              title="Editar servicio"
-              description="Modifica el servicio seleccionado."
-              draft={editDraft}
-              casinos={casinos}
-              saving={saving}
-              submitLabel="Guardar cambios"
-              showHeader={false}
-              turnos={turnos}
-              turnosSeleccionados={turnosEdit}
-              onChange={updateEditDraft}
-              onTurnosChange={setTurnosEdit}
-              onSubmit={saveEdit}
-            />
+            <div className="min-h-0 flex-1 overflow-y-auto">
+              <ServicioForm
+                title="Editar servicio"
+                description="Modifica el servicio seleccionado. El nombre queda bloqueado al editar."
+                draft={editDraft}
+                casinos={casinos}
+                saving={saving}
+                submitLabel="Guardar cambios"
+                showHeader={false}
+                lockName
+                turnos={turnos}
+                turnosSeleccionados={turnosEdit}
+                onChange={updateEditDraft}
+                onTurnosChange={setTurnosEdit}
+                onSubmit={saveEdit}
+              />
 
-            <div className="px-8 pb-8">
-              <button
-                type="button"
-                onClick={closeEdit}
-                className="w-full h-14 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-lg font-bold transition"
-              >
-                Cancelar
-              </button>
-            </div>
+              <div className="px-8 pb-8">
+                <button
+                  type="button"
+                  onClick={closeEdit}
+                  className="w-full h-14 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-lg font-bold transition"
+                >
+                  Cancelar
+                </button>
+              </div>
             </div>
           </section>
         </div>
@@ -163,6 +167,3 @@ const ServiciosPage = () => {
 };
 
 export default ServiciosPage;
-
-
-

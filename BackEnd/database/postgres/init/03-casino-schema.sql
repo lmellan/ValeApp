@@ -33,7 +33,8 @@ INSERT INTO servicios_alimentacion (id_servicio, nombre, categoria, hora_inicio,
     (3, 'Once', 'Base', '16:00', '18:00', 2, true),
     (4, 'Cena 1', 'Base', '20:00', '23:00', 2, true),
     (5, 'Cena 2', 'Base', '00:00', '03:00', 2, true),
-    (6, 'Box lunch', 'Adicional', '09:00', '18:00', 2, true)
+    (6, 'Box lunch', 'Adicional', '09:00', '18:00', 2, true),
+    (7, 'Colación Visitas', 'Adicional', '08:00', '23:59', 1, true)
 ON CONFLICT (id_servicio) DO UPDATE
     SET nombre = EXCLUDED.nombre,
         categoria = EXCLUDED.categoria,
@@ -50,3 +51,5 @@ SELECT setval('servicios_alimentacion_id_servicio_seq', GREATEST((SELECT MAX(id_
 
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO casino_user;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO casino_user;
+
+

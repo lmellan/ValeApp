@@ -105,6 +105,28 @@ const actualizarValeAdicional = async (req, res) => {
     }
 };
 
+const sincronizarHorariosValeAdicional = async (req, res) => {
+    try {
+        const actualizados = await valeService.sincronizarHorariosValeAdicional(
+            req.params.idServicio,
+            req.body.horaInicioValidez,
+            req.body.horaFinValidez
+        );
+        res.status(200).json({ mensaje: 'Horarios sincronizados.', valesActualizados: actualizados });
+    } catch (error) {
+        res.status(statusFromError(error) === 500 ? 400 : statusFromError(error)).json({ error: messageFromError(error) });
+    }
+};
+
+const eliminarValeAdicional = async (req, res) => {
+    try {
+        const resultado = await valeService.eliminarValeAdicional(req.params.idVale);
+        res.status(200).json(resultado);
+    } catch (error) {
+        res.status(statusFromError(error) === 500 ? 400 : statusFromError(error)).json({ error: messageFromError(error) });
+    }
+};
+
 const imprimirVale = async (req, res) => {
     const idFuncionario = req.headers['x-funcionario-id'] || req.body.idFuncionario;
     if (!idFuncionario) return res.status(401).json({ error: 'idFuncionario requerido en header x-funcionario-id o body.' });
@@ -176,6 +198,8 @@ module.exports = {
     obtenerResumenGenerico,
     crearValeAdicional,
     actualizarValeAdicional,
+    eliminarValeAdicional,
+    sincronizarHorariosValeAdicional,
     imprimirVale,
     generarValesBase,
     recalcularValesBaseFuncionario,

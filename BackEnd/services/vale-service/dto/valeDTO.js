@@ -56,7 +56,7 @@ const validarDatosValeAdicional = (body, requiereId = true) => {
         tipoAsignacion: 'ADMINISTRATIVA',
         valor: body.valor === undefined || body.valor === null || body.valor === '' ? null : parseInt(body.valor),
         fechaUso: body.fechaUso,
-        fechaExpiracion: body.fechaExpiracion || body.fechaUso,
+        fechaExpiracion: body.fechaUso,
         motivo: body.motivo || null,
         cantidadVales: Math.max(1, parseInt(body.cantidadVales || 1))
     };

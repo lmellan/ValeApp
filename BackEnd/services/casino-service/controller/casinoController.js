@@ -1,6 +1,8 @@
 ﻿const service = require('../service/casinoService');
 const dto = require('../dto/casinoDTO');
 
+const VALE_SERVICE_URL = process.env.VALE_SERVICE_URL || 'http://localhost:3000';
+
 const errorMessage = (err) => err.message || err.detail || err.toString();
 
 const listarCasinos = async (req, res) => {
@@ -72,6 +74,16 @@ const editarServicio = async (req, res) => {
     try {
         const datos = dto.crearServicioInputDTO(req.body);
         const row = await service.editarServicio(req.params.idServicio, datos);
+        if (datos.categoria === 'Adicional') {
+            await fetch(`${VALE_SERVICE_URL}/administrador/vales/servicio/${req.params.idServicio}/horario`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    horaInicioValidez: row.horaInicio,
+                    horaFinValidez: row.horaFin
+                })
+            });
+        }
         res.status(200).json(dto.servicioResponseDTO(row));
     } catch (err) {
         const message = errorMessage(err);

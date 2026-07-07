@@ -1,4 +1,4 @@
-const repository = require('../repository/usuarioRepository');
+﻿const repository = require('../repository/usuarioRepository');
 
 const CONFIGURACION_SERVICE_URL = process.env.CONFIGURACION_SERVICE_URL || 'http://localhost:3003';
 const VALE_SERVICE_URL = process.env.VALE_SERVICE_URL || 'http://localhost:3000';
@@ -33,7 +33,7 @@ const getTodayInput = () => {
     return new Date(today.getTime() - offset).toISOString().slice(0, 10);
 };
 
-const normalizarTurno = (turno) => String(turno || '').replace('24:00', '00:00').replace(/\s/g, '');
+const normalizarTurno = (turno) => String(turno || '').replace('24:00', '23:59').replace(/\s/g, '');
 
 const obtenerIdTurnoDesdeTexto = async (turnoTexto) => {
     const response = await fetch(`${CONFIGURACION_SERVICE_URL}/turnos`);
@@ -81,21 +81,19 @@ const obtenerUsuario = async (idUsuario) => {
     return usuario;
 };
 
-const generarCodigoParaRol = (rol) => {
+const generarCodigoParaRol = async (rol) => {
     const prefijos = {
         Funcionario: 'FUN',
         Cajero: 'CAJ',
         Administrador: 'ADM'
     };
     const prefijo = prefijos[rol] || 'USR';
-    const numero = crypto.randomInt(1000, 10000);
-    return `${prefijo}${numero}`;
+    const ultimo = Number(await repository.obtenerUltimoNumeroCodigo(prefijo)) || 0;
+    return prefijo + String(ultimo + 1).padStart(3, '0');
 };
 
 const loginUsuario = async (identificador, contrasena) => {
     const usuario = await repository.obtenerPorCorreoOCodigo(identificador);
-    console.log('[loginUsuario] identificador=', identificador, 'provided=', contrasena);
-    console.log('[loginUsuario] usuarioStoreContrasena=', usuario && usuario.contrasena);
     if (!usuario || usuario.contrasena !== contrasena) {
         throw new Error('Código, correo o contraseña incorrectos');
     }
@@ -168,3 +166,4 @@ const editarUsuario = async (idUsuario, datos) => {
 };
 
 module.exports = { listarUsuarios, obtenerUsuario, loginUsuario, crearUsuario, editarUsuario };
+

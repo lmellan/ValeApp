@@ -32,9 +32,9 @@ ON CONFLICT (id_rol) DO NOTHING;
 
 INSERT INTO usuarios (id_usuario, nombre, correo, codigo, contrasena, id_tipo_comensal, tipo_comensal, turno, id_rol, activo) VALUES
     (1, 'Lorna Mella', 'lmella@valeapp.cl', '123456', 'vale123', 1, 'Obrero', '08:00 - 16:00', 1, true),
-    (2, 'Rock Dabre', 'rdabre@valeapp.cl', '234567', 'vale123', 2, 'Jefe', '16:00 - 24:00', 1, true),
+    (2, 'Rock Dabre', 'rdabre@valeapp.cl', '234567', 'vale123', 2, 'Jefe', '16:00 - 23:59', 1, true),
     (3, 'María Soto', 'msoto@valeapp.cl', '345678', 'vale123', 3, 'Gerente', '08:00 - 16:00', 1, true),
-    (4, 'Ana González', 'agonzalez@valeapp.cl', '456789', 'vale123', 4, 'Secretaria', '16:00 - 24:00', 1, true),
+    (4, 'Ana González', 'agonzalez@valeapp.cl', '456789', 'vale123', 4, 'Secretaria', '16:00 - 23:59', 1, true),
     (5, 'Carlos Pérez', 'cperez@valeapp.cl', 'CAJ002', 'cajero123', NULL, NULL, NULL, 2, true),
     (6, 'Joaquín Navarro', 'jnavarro@valeapp.cl', 'CAJ001', 'cajero123', NULL, NULL, NULL, 2, true),
     (7, 'Benjamín Vilches', 'bvilches@valeapp.cl', 'ADM001', 'admin123', NULL, NULL, NULL, 3, true),
@@ -54,3 +54,4 @@ SELECT setval('usuarios_id_usuario_seq', GREATEST((SELECT MAX(id_usuario) FROM u
 
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO usuario_user;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO usuario_user;
+

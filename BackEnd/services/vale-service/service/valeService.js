@@ -1,4 +1,4 @@
-const axios = require('axios');
+﻿const axios = require('axios');
 const valeRepository = require('../repository/valeRepository');
 const Vale = require('../model/vale');
 
@@ -18,6 +18,26 @@ const toDateOnly = (value) => {
 };
 
 const toHourMinute = (value, fallback) => (value ? String(value).slice(0, 5) : fallback);
+const toMinutes = (time) => {
+    const [hours, minutes] = String(time || '00:00').slice(0, 5).split(':').map(Number);
+    return (hours * 60) + minutes;
+};
+
+const expandirIntervalo = (inicio, fin) => {
+    const a = toMinutes(inicio);
+    const b = toMinutes(fin);
+    if (b >= a) {
+        return [[a, b]];
+    }
+    return [[a, 24 * 60 - 1], [0, b]];
+};
+
+const intervalosSeCruzan = (inicioA, finA, inicioB, finB) => {
+    const segmentosA = expandirIntervalo(inicioA, finA);
+    const segmentosB = expandirIntervalo(inicioB, finB);
+
+    return segmentosA.some(([aInicio, aFin]) => segmentosB.some(([bInicio, bFin]) => aInicio <= bFin && aFin >= bInicio));
+};
 const fechaBaseVale = (vale) => toDateOnly(vale.fechaUso || vale.fechaExpiracion);
 const fechaExpiracionVale = (vale) => toDateOnly(vale.fechaExpiracion || vale.fechaUso);
 const fechaFinValidez = (vale) => new Date(`${fechaExpiracionVale(vale)}T${toHourMinute(vale.horaFinValidez, '23:59')}:59`);
@@ -51,13 +71,30 @@ const obtenerConfiguracionFuncionario = async (idFuncionario) => {
 
 const prepararValeConValorizacion = async (valeData) => {
     const config = await obtenerConfiguracionFuncionario(valeData.idFuncionario);
+    if (!config.turno) {
+        const error = new Error('El funcionario no tiene turno configurado.');
+        error.status = 400;
+        throw error;
+    }
     if (!config.tipoComensal) {
         const error = new Error('El funcionario no tiene tipo de comensal configurado.');
         error.status = 400;
         throw error;
     }
     const servicio = await obtenerServicioAlimentacion(valeData.idServicio);
-    const valor = await obtenerValorConfigurado(config.tipoComensal.idTipoComensal, valeData.idServicio);
+    if (!intervalosSeCruzan(servicio.horaInicio, servicio.horaFin, config.turno.horaInicio, config.turno.horaFin)) {
+        const error = new Error(`El servicio ${servicio.nombre} no coincide con el horario del turno del funcionario.`);
+        error.status = 400;
+        throw error;
+    }
+    let valor;
+    try {
+        valor = await obtenerValorConfigurado(config.tipoComensal.idTipoComensal, valeData.idServicio);
+    } catch (err) {
+        const error = new Error(`No existe una valorización activa para el tipo de comensal "${config.tipoComensal.nombre}" y el servicio "${servicio.nombre}".`);
+        error.status = 400;
+        throw error;
+    }
 
     return {
         ...valeData,
@@ -75,7 +112,7 @@ const obtenerRolUsuario = async (idUsuario) => {
 const validarPermisoCajero = async (idUsuario) => {
     const rol = await obtenerRolUsuario(idUsuario);
     if (rol !== 'Cajero' && rol !== 'Administrador') {
-        const error = new Error('No tienes permisos para realizar esta acción.');
+        const error = new Error('No tienes permisos para realizar esta acciÃ³n.');
         error.status = 403;
         throw error;
     }
@@ -96,7 +133,7 @@ const validarReglasVale = async (idVale) => {
         throw error;
     }
     if (calcularExpirado(vale)) {
-        const error = new Error('Regla R31: El vale está expirado y no puede usarse.');
+        const error = new Error('Regla R31: El vale estÃ¡ expirado y no puede usarse.');
         error.status = 400;
         throw error;
     }
@@ -109,7 +146,7 @@ const validarReglasVale = async (idVale) => {
         }
     }
     if (!estaDentroDeRango(vale)) {
-        const error = new Error('El vale está fuera de su rango horario de validez.');
+        const error = new Error('El vale estÃ¡ fuera de su rango horario de validez.');
         error.status = 400;
         throw error;
     }
@@ -130,7 +167,7 @@ const validarReglasVale = async (idVale) => {
 const validarVale = async (idVale, idUsuario) => {
     await validarPermisoCajero(idUsuario);
     const vale = await validarReglasVale(idVale);
-    return { mensaje: 'Vale válido para canje.', vale };
+    return { mensaje: 'Vale vÃ¡lido para canje.', vale };
 };
 
 const registrarCanjeVale = async (idVale, idCajero) => {
@@ -139,12 +176,12 @@ const registrarCanjeVale = async (idVale, idCajero) => {
     const resultado = await valeRepository.marcarCanjeadoSiDisponible(idVale, idCajero, fechaHoraCanje);
 
     if (resultado.changes === 0) {
-        const error = new Error('El vale no pudo canjearse porque ya fue usado o expiró.');
+        const error = new Error('El vale no pudo canjearse porque ya fue usado o expirÃ³.');
         error.status = 409;
         throw error;
     }
 
-    return 'Vale validado y canjeado con éxito';
+    return 'Vale validado y canjeado con Ã©xito';
 };
 
 const obtenerValesFuncionario = async (idFuncionario) => {
@@ -172,53 +209,37 @@ const obtenerResumenGenerico = async () => {
     return valeRepository.obtenerResumenGeneral();
 };
 
-const obtenerFechasHabilesEntre = (fechaInicio, fechaFin) => {
-    const inicio = new Date(`${fechaInicio}T00:00:00`);
-    const fin = new Date(`${fechaFin || fechaInicio}T00:00:00`);
-    if (Number.isNaN(inicio.getTime()) || Number.isNaN(fin.getTime()) || fin < inicio) return [fechaInicio];
-
-    const fechas = [];
-    const cursor = new Date(inicio);
-    while (cursor <= fin) {
-        const day = cursor.getDay();
-        if (day !== 0 && day !== 6) fechas.push(toInputDate(cursor));
-        cursor.setDate(cursor.getDate() + 1);
-    }
-    return fechas.length ? fechas : [fechaInicio];
-};
 
 const registrarValeAdicional = async (nuevoValeData) => {
     const config = await obtenerConfiguracionFuncionario(nuevoValeData.idFuncionario);
     const cantidadVales = config.tipoComensal?.emisionMultiple ? Math.max(1, Number(nuevoValeData.cantidadVales || 1)) : 1;
-    const fechasUso = obtenerFechasHabilesEntre(nuevoValeData.fechaUso, nuevoValeData.fechaExpiracion || nuevoValeData.fechaUso);
     const creados = [];
 
-    for (const fechaUso of fechasUso) {
-        for (let copia = 1; copia <= cantidadVales; copia += 1) {
-            const necesitaSufijo = fechasUso.length > 1 || cantidadVales > 1;
-            const idVale = necesitaSufijo ? `${nuevoValeData.idVale}-${fechaUso}-${copia}` : nuevoValeData.idVale;
-            try {
-                const valeValorizado = await prepararValeConValorizacion({
-                    ...nuevoValeData,
-                    idVale,
-                    fechaUso,
-                    fechaExpiracion: fechaUso
-                });
-                await valeRepository.insertar(new Vale(valeValorizado));
-                creados.push(idVale);
-            } catch (err) {
-                if (err.code === '23505' || err.message.includes('UNIQUE constraint failed')) {
-                    const error = new Error('El ID de vale ya existe en el sistema.');
-                    error.status = 400;
-                    throw error;
-                }
-                if (err.status) throw err;
-                throw new Error(err.response?.data?.error || 'Error al insertar el vale adicional en la base de datos.');
+    const fechaUso = nuevoValeData.fechaUso;
+
+    for (let copia = 1; copia <= cantidadVales; copia += 1) {
+        const idVale = cantidadVales > 1 ? `${nuevoValeData.idVale}-${copia}` : nuevoValeData.idVale;
+        try {
+            const valeValorizado = await prepararValeConValorizacion({
+                ...nuevoValeData,
+                idVale,
+                fechaUso,
+                fechaExpiracion: fechaUso
+            });
+            await valeRepository.insertar(new Vale(valeValorizado));
+            creados.push(idVale);
+        } catch (err) {
+            if (err.code === '23505' || err.message.includes('UNIQUE constraint failed')) {
+                const error = new Error('El ID de vale ya existe en el sistema.');
+                error.status = 400;
+                throw error;
             }
+            if (err.status) throw err;
+            throw new Error(err.response?.data?.error || 'Error al insertar el vale adicional en la base de datos.');
         }
     }
 
-    return { mensaje: 'Vale adicional creado y asignado con éxito.', creados };
+    return { mensaje: 'Vale adicional creado y asignado con Ã©xito.', creados };
 };const listarValesAdicionales = async () => {
     await valeRepository.actualizarExpirados();
     return valeRepository.listarAdministrativos();
@@ -251,6 +272,31 @@ const actualizarValeAdicional = async (idVale, valeData) => {
     return actualizado;
 };
 
+const sincronizarHorariosValeAdicional = async (idServicio, horaInicioValidez, horaFinValidez) => {
+    return valeRepository.actualizarHorariosPorServicio(idServicio, horaInicioValidez, horaFinValidez);
+};
+
+const eliminarValeAdicional = async (idVale) => {
+    const existente = await valeRepository.obtenerPorId(idVale);
+    if (!existente || existente.tipoAsignacion !== 'ADMINISTRATIVA') {
+        const error = new Error('Vale adicional no encontrado.');
+        error.status = 404;
+        throw error;
+    }
+    if (existente.estadoUso !== 'NO_UTILIZADO') {
+        const error = new Error('No se puede eliminar un vale adicional que ya fue utilizado.');
+        error.status = 409;
+        throw error;
+    }
+    const eliminado = await valeRepository.eliminarAdministrativo(idVale);
+    if (!eliminado) {
+        const error = new Error('No se pudo eliminar el vale adicional.');
+        error.status = 409;
+        throw error;
+    }
+    return { mensaje: 'Vale adicional eliminado correctamente.', idVale: eliminado };
+};
+
 const imprimirVale = async (idVale, idFuncionario) => {
     await valeRepository.actualizarExpirados();
     const vale = await valeRepository.obtenerPorId(idVale);
@@ -265,7 +311,7 @@ const imprimirVale = async (idVale, idFuncionario) => {
         throw error;
     }
     if (!esValeDeHoy(vale)) {
-        const error = new Error('Solo se pueden imprimir vales del día actual.');
+        const error = new Error('Solo se pueden imprimir vales del dÃ­a actual.');
         error.status = 400;
         throw error;
     }
@@ -275,7 +321,7 @@ const imprimirVale = async (idVale, idFuncionario) => {
         throw error;
     }
     if (calcularExpirado(vale)) {
-        const error = new Error('El vale está expirado y no puede imprimirse.');
+        const error = new Error('El vale estÃ¡ expirado y no puede imprimirse.');
         error.status = 400;
         throw error;
     }
@@ -361,11 +407,11 @@ const generarValesBaseParaFecha = async ({ fechaUso, funcionarios }) => {
                     }));
                     creados.push(idVale);
                 } catch (err) {
-                    omitidos.push({ fechaUso, idVale, motivo: err.response?.data?.error || 'Duplicado, sin valorización o no insertable.' });
+                    omitidos.push({ fechaUso, idVale, motivo: err.response?.data?.error || 'Duplicado, sin valorizaciÃ³n o no insertable.' });
                 }
             }
         } catch (err) {
-            omitidos.push({ fechaUso, idFuncionario: funcionario.id, motivo: err.response?.data?.error || 'No se pudo obtener configuración.' });
+            omitidos.push({ fechaUso, idFuncionario: funcionario.id, motivo: err.response?.data?.error || 'No se pudo obtener configuraciÃ³n.' });
         }
     }
 
@@ -439,11 +485,15 @@ module.exports = {
     registrarValeAdicional,
     listarValesAdicionales,
     actualizarValeAdicional,
+    eliminarValeAdicional,
+    sincronizarHorariosValeAdicional,
     imprimirVale,
     generarValesBase,
     recalcularValesBaseFuncionario,
     obtenerTodosLosVales
 };
+
+
 
 
 
