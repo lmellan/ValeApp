@@ -43,7 +43,7 @@ const UsersPage = () => {
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
           <div>
             <h2 className="text-3xl font-extrabold text-primary mb-2">Listado de usuarios</h2>
-            <p className="text-lg text-slate-600">Busca por nombre o codigo y filtra segun el tipo de usuario o tipo de comensal.</p>
+            <p className="text-lg text-slate-600">Busca por nombre o código y filtra según el tipo de usuario o tipo de comensal.</p>
           </div>
 
           <button

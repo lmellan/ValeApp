@@ -9,8 +9,11 @@ const ServiciosPage = () => {
     filteredServicios,
     currentServicios,
     casinos,
+    turnos,
     createDraft,
+    turnosCreate,
     editDraft,
+    turnosEdit,
     editing,
     filters,
     page,
@@ -24,6 +27,8 @@ const ServiciosPage = () => {
     updatePageSize,
     updateCreateDraft,
     updateEditDraft,
+    setTurnosCreate,
+    setTurnosEdit,
     updateFilters,
     createNewServicio,
     openEdit,
@@ -64,7 +69,7 @@ const ServiciosPage = () => {
             <div>
               <h1 className="text-4xl font-extrabold text-primary mb-2">Servicios</h1>
               <p className="text-lg text-slate-600">
-                Administra los servicios de alimentacion disponibles en el sistema, incluyendo servicios base y servicios adicionales.
+                Administra los servicios de alimentación disponibles en el sistema, incluyendo servicios base y servicios adicionales.
               </p>
             </div>
 
@@ -88,7 +93,10 @@ const ServiciosPage = () => {
             casinos={casinos}
             saving={saving}
             submitLabel="Crear"
+            turnos={turnos}
+            turnosSeleccionados={turnosCreate}
             onChange={updateCreateDraft}
+            onTurnosChange={setTurnosCreate}
             onSubmit={createNewServicio}
             onReset={resetCreate}
           />
@@ -130,7 +138,10 @@ const ServiciosPage = () => {
               saving={saving}
               submitLabel="Guardar cambios"
               showHeader={false}
+              turnos={turnos}
+              turnosSeleccionados={turnosEdit}
               onChange={updateEditDraft}
+              onTurnosChange={setTurnosEdit}
               onSubmit={saveEdit}
             />
 

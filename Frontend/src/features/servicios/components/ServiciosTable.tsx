@@ -62,7 +62,7 @@ const ServiciosTable = ({ servicios, casinos, page, pageSize, totalPages, onEdit
     </div>
     <div className="flex flex-col gap-4 border-t border-slate-200 bg-slate-50 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
       <p className="text-sm font-semibold text-slate-500">
-        Pagina {page} de {totalPages}
+        Página {page} de {totalPages}
       </p>
       <div className="flex flex-wrap items-center gap-2">
         <select

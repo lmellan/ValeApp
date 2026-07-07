@@ -68,12 +68,12 @@ export const TipoComensalForm = ({
       </div>
 
       <div>
-        <label className={labelClass}>Descripcion <span className="normal-case tracking-normal text-slate-400">(opcional)</span></label>
+        <label className={labelClass}>Descripción <span className="normal-case tracking-normal text-slate-400">(opcional)</span></label>
         <textarea
           value={draft.descripcion || ''}
           onChange={(event) => onChange({ descripcion: event.target.value })}
           className={`${inputClass} min-h-[120px] resize-none`}
-          placeholder="Describe cuando se utiliza este tipo de comensal."
+          placeholder="Describe cuándo se utiliza este tipo de comensal."
         />
       </div>
 
@@ -83,7 +83,7 @@ export const TipoComensalForm = ({
           <span className="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm ring-1 ring-slate-200" style={{ backgroundColor: normalizeHexColor(draft.color) }} />
           <span className="flex-1">
             <span className="block text-base font-extrabold text-slate-700">Seleccionar color</span>
-            <span className="mt-1 block text-sm font-semibold text-slate-500">El color se aplicara a las etiquetas del tipo.</span>
+            <span className="mt-1 block text-sm font-semibold text-slate-500">El color se aplicará a las etiquetas del tipo.</span>
           </span>
           <span className="material-symbols-outlined text-slate-400">palette</span>
           <input value={normalizeHexColor(draft.color)} onChange={(event) => onChange({ color: event.target.value })} className="absolute inset-0 h-full w-full cursor-pointer opacity-0" type="color" aria-label="Seleccionar color" />
@@ -91,11 +91,11 @@ export const TipoComensalForm = ({
       </div>
 
       <div>
-        <label className="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-3">Modalidad de emision <span className="text-red-500">*</span></label>
+        <label className="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-3">Modalidad de emisión <span className="text-red-500">*</span></label>
         <div className="grid grid-cols-1 gap-4">
           {[
             { label: 'Un vale por horario', value: false },
-            { label: 'Multiples vales por horario', value: true }
+            { label: 'Múltiples vales por horario', value: true }
           ].map((option) => {
             const selected = draft.emisionMultiple === option.value;
             return (
@@ -144,9 +144,9 @@ export const TiposComensalTable = ({ tipos, page, pageSize, totalPages, onEdit, 
   <section className="bg-surface-light rounded-3xl border border-slate-200 shadow-card overflow-hidden">
     <div className="grid grid-cols-12 bg-slate-50 px-6 py-4 border-b border-slate-200">
       <div className="col-span-3 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Tipo</div>
-      <div className="col-span-4 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Descripcion</div>
-      <div className="col-span-3 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Modalidad de emision</div>
-      <div className="col-span-2 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant text-right">Accion</div>
+      <div className="col-span-4 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Descripción</div>
+      <div className="col-span-3 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Modalidad de emisión</div>
+      <div className="col-span-2 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant text-right">Acción</div>
     </div>
 
     <div className="divide-y divide-slate-200">
@@ -161,11 +161,11 @@ export const TiposComensalTable = ({ tipos, page, pageSize, totalPages, onEdit, 
               </span>
             </div>
             <div className="col-span-4">
-              <p className="text-sm text-slate-600">{tipo.descripcion || 'Sin descripcion'}</p>
+              <p className="text-sm text-slate-600">{tipo.descripcion || 'Sin descripción'}</p>
             </div>
             <div className="col-span-3">
               <p className={`text-sm font-semibold ${tipo.emisionMultiple ? 'text-secondary' : 'text-slate-700'}`}>
-                {tipo.emisionMultiple ? 'Permite multiples por horario' : '1 vale por horario'}
+                {tipo.emisionMultiple ? 'Permite múltiples por horario' : '1 vale por horario'}
               </p>
             </div>
             <div className="col-span-2 flex justify-end">
@@ -178,7 +178,7 @@ export const TiposComensalTable = ({ tipos, page, pageSize, totalPages, onEdit, 
       )}
     </div>
     <div className="flex flex-col gap-4 border-t border-slate-200 bg-slate-50 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-      <p className="text-sm font-semibold text-slate-500">Pagina {page} de {totalPages}</p>
+      <p className="text-sm font-semibold text-slate-500">Página {page} de {totalPages}</p>
       <div className="flex flex-wrap items-center gap-2">
         <select value={pageSize} onChange={(event) => onPageSizeChange(Number(event.target.value))} className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-600 outline-none transition focus:border-primary">
           {[5, 10, 20].map((option) => <option key={option} value={option}>{option} filas</option>)}

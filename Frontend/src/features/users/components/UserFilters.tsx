@@ -16,7 +16,7 @@ const UserFiltersPanel = ({ filters, tiposComensal, onChange }: UserFiltersProps
     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-5 mt-8">
       <div className="xl:col-span-2">
         <label className="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">
-          Buscar por nombre o codigo
+          Buscar por nombre o código
         </label>
         <div className="relative">
           <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>

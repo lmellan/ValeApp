@@ -68,7 +68,7 @@ const ValesAdicionalesPage = () => {
           <div>
             <h1 className="text-4xl font-extrabold text-primary mb-2">Vales adicionales</h1>
             <p className="max-w-3xl text-lg text-slate-600">
-              Administra asignaciones excepcionales para funcionarios. La cantidad se define al crear la asignacion solo si el tipo de comensal permite emision multiple.
+              Administra asignaciones excepcionales para funcionarios. La cantidad se define al crear la asignación solo si el tipo de comensal permite emisión múltiple.
             </p>
           </div>
 
@@ -78,7 +78,7 @@ const ValesAdicionalesPage = () => {
             className="h-14 rounded-2xl bg-primary px-6 text-white text-base font-extrabold hover:bg-blue-800 transition flex items-center justify-center gap-3"
           >
             <span className="material-symbols-outlined text-[20px]">add_card</span>
-            Crear asignacion
+            Crear asignación
           </button>
         </div>
 
@@ -102,8 +102,8 @@ const ValesAdicionalesPage = () => {
           <section className="flex max-h-[calc(100vh-4rem)] w-full max-w-5xl flex-col bg-surface-light rounded-3xl border border-slate-200 shadow-strong overflow-hidden">
             <div className="shrink-0 p-8 border-b border-slate-200 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5">
               <div>
-                <h1 className="text-4xl font-extrabold text-primary mb-2">Crear asignacion</h1>
-                <p className="text-lg text-slate-600">Selecciona funcionario, servicio adicional, fecha o periodo de uso y motivo.</p>
+                <h1 className="text-4xl font-extrabold text-primary mb-2">Crear asignación</h1>
+                <p className="text-lg text-slate-600">Selecciona funcionario, servicio adicional, fecha o período de uso y motivo.</p>
               </div>
               <button
                 type="button"
@@ -121,7 +121,7 @@ const ValesAdicionalesPage = () => {
               tiposComensal={tiposComensal}
               servicios={serviciosAdicionales}
               saving={saving}
-              submitLabel="Guardar asignacion"
+              submitLabel="Guardar asignación"
               showHeader={false}
               onChange={updateCreateDraft}
               onSubmit={createNewVale}
@@ -147,13 +147,13 @@ const ValesAdicionalesPage = () => {
           <section className="flex max-h-[calc(100vh-4rem)] w-full max-w-5xl flex-col bg-surface-light rounded-3xl border border-slate-200 shadow-strong overflow-hidden">
             <div className="shrink-0 p-8 border-b border-slate-200 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5">
               <div>
-                <h1 className="text-4xl font-extrabold text-primary mb-2">Editar asignacion</h1>
+                <h1 className="text-4xl font-extrabold text-primary mb-2">Editar asignación</h1>
                 <p className="text-lg text-slate-600">Modifica la fecha, el servicio adicional o el motivo. El horario lo define el servicio.</p>
               </div>
 
               <div className="flex items-start gap-3">
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
-                  <p className="text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-1">Asignacion seleccionada</p>
+                  <p className="text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-1">Asignación seleccionada</p>
                   <p className="text-2xl font-extrabold text-primary">{selectedUsuario?.nombre || editing.idFuncionario}</p>
                   <p className="mt-1 text-sm font-semibold text-slate-500">{selectedServicio?.nombre || editing.idServicio} - {editing.fechaUso}</p>
                 </div>

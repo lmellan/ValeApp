@@ -6,7 +6,7 @@ const rolesValidos = ['Funcionario', 'Administrador', 'Cajero'];
 
 const validarRol = (rol) => {
     if (!rolesValidos.includes(rol)) {
-        throw new Error('Rol invalido. Debe ser Funcionario, Administrador o Cajero.');
+        throw new Error('Rol inválido. Debe ser Funcionario, Administrador o Cajero.');
     }
 };
 
@@ -97,7 +97,7 @@ const loginUsuario = async (identificador, contrasena) => {
     console.log('[loginUsuario] identificador=', identificador, 'provided=', contrasena);
     console.log('[loginUsuario] usuarioStoreContrasena=', usuario && usuario.contrasena);
     if (!usuario || usuario.contrasena !== contrasena) {
-        throw new Error('Codigo, correo o contrasena incorrectos');
+        throw new Error('Código, correo o contraseña incorrectos');
     }
     return usuario;
 };

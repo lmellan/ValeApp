@@ -95,6 +95,15 @@ const agregarServicioATurno = async (req, res) => {
     }
 };
 
+const quitarServicioDeTurno = async (req, res) => {
+    try {
+        await service.quitarServicioDeTurno(req.params.idTurno, req.params.idServicio);
+        res.status(200).json({ mensaje: 'Servicio removido del turno.' });
+    } catch (err) {
+        res.status(400).json({ error: err.message || err });
+    }
+};
+
 // --- Asignaciones de turno ---
 
 const crearAsignacionTurno = async (req, res) => {
@@ -194,6 +203,7 @@ module.exports = {
     crearTurno,
     obtenerServiciosPorTurno,
     agregarServicioATurno,
+    quitarServicioDeTurno,
     crearAsignacionTurno,
     obtenerConfiguracionFuncionario,
     asignarTipoComensalAFuncionario,

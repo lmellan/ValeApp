@@ -1,0 +1,8 @@
+{
+  "name": "valeapp-backend",
+  "version": "1.0.0",
+  "description": "Tests de los microservicios de ValeApp (runner nativo de Node, sin dependencias).",
+  "scripts": {
+    "test": "node --test \"tests/*.test.js\""
+  }
+}

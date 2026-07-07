@@ -29,7 +29,7 @@ const Header = ({ title }: { title?: string }) => {
                 }}
                 className="h-10 px-4 rounded-2xl border border-slate-200 bg-white text-slate-600 text-sm font-bold hover:bg-slate-50 transition"
               >
-                Cerrar sesion
+                Cerrar sesión
               </button>
             </div>
           )}

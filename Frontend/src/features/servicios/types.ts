@@ -1,4 +1,11 @@
-﻿export type Casino = {
+﻿export type Turno = {
+  idTurno: number;
+  nombre: string;
+  horaInicio: string;
+  horaFin: string;
+};
+
+export type Casino = {
   idCasino: number;
   nombre: string;
   direccion?: string | null;

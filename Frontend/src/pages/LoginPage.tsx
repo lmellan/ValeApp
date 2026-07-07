@@ -14,13 +14,13 @@ const LoginPage = () => {
   const handleLogin = async () => {
     setError('');
     if (!identificador || !password) {
-      setError('Ingresa codigo o correo y contraseña.');
+      setError('Ingresa código o correo y contraseña.');
       return;
     }
 
     const usuario = await login(identificador, password);
     if (!usuario) {
-      setError('Correo o contraseña invalidos. Verifica tus credenciales.');
+      setError('Correo o contraseña inválidos. Verifica tus credenciales.');
       return;
     }
 
@@ -35,13 +35,13 @@ const LoginPage = () => {
             <div className="flex justify-center mb-5">
               <img alt="Logo ValeApp" className="h-16 w-auto object-contain" src="/logo_valeapp.png" />
             </div>
-            <h1 className="text-3xl font-extrabold text-primary mb-2">Inicio de sesion</h1>
-            <p className="text-base text-slate-600">Ingresa con tu codigo o correo y contraseña.</p>
+            <h1 className="text-3xl font-extrabold text-primary mb-2">Inicio de sesión</h1>
+            <p className="text-base text-slate-600">Ingresa con tu código o correo y contraseña.</p>
           </div>
 
           <div className="p-8 space-y-6">
             <div>
-              <label className="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">Codigo o correo <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant mb-2">Código o correo <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 value={identificador}

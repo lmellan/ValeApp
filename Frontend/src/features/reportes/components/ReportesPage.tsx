@@ -90,7 +90,7 @@ const getServiceReportTitle = (type: ReportType) => {
 };
 
 const getSuffix = (type: ReportType) => {
-  if (type === 'diario') return 'del dia';
+  if (type === 'diario') return 'del día';
   if (type === 'semanal') return 'semanal a la fecha';
   if (type === 'anual') return 'anual a la fecha';
   return 'mensual a la fecha';
@@ -212,9 +212,9 @@ const ReportesPage = () => {
       <section className="rounded-3xl border border-slate-200 bg-surface-light p-7 shadow-card">
         <div className="grid grid-cols-1 gap-5 xl:grid-cols-12 xl:items-end">
           <div className="xl:col-span-6">
-            <h1 className="text-4xl font-extrabold text-primary mb-2">Reportes y auditoria</h1>
+            <h1 className="text-4xl font-extrabold text-primary mb-2">Reportes y auditoría</h1>
             <p className="text-base text-slate-600">
-              Consulta la asignacion, uso y control de vales segun el periodo seleccionado.
+              Consulta la asignación, uso y control de vales según el período seleccionado.
             </p>
           </div>
 
@@ -233,7 +233,7 @@ const ReportesPage = () => {
           </label>
 
           <label className="xl:col-span-3">
-            <span className="mb-2 block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant">Anio</span>
+            <span className="mb-2 block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant">Año</span>
             <select
               value={selectedYear}
               onChange={(event) => setSelectedYear(Number(event.target.value))}
@@ -245,7 +245,7 @@ const ReportesPage = () => {
         </div>
         <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-3">
           <p className="text-sm text-slate-600">
-            <span className="font-bold text-slate-700">Periodo considerado: </span>
+            <span className="font-bold text-slate-700">Período considerado: </span>
             {getPeriodLabel(reportType, periodStart, cutDate)}
           </p>
         </div>
@@ -342,7 +342,7 @@ const VoucherToolbar = ({ filters, services, total, onChange, onClear }: { filte
           <input
             value={filters.query}
             onChange={(event) => onChange({ query: event.target.value })}
-            placeholder="Usuario, codigo, vale o cajero"
+            placeholder="Usuario, código, vale o cajero"
             className="w-full rounded-2xl border border-slate-300 bg-white py-4 pl-14 pr-5 text-base text-slate-700 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
           />
         </span>
@@ -387,7 +387,7 @@ const ServiceTable = ({ rows }: { rows: GroupedMetric[] }) => (
       <span className="col-span-2">Monto total</span>
     </div>
     <div className="divide-y divide-slate-200">
-      {rows.length === 0 ? <EmptyMessage text="No hay servicios para el periodo seleccionado." /> : rows.map((row) => (
+      {rows.length === 0 ? <EmptyMessage text="No hay servicios para el período seleccionado." /> : rows.map((row) => (
         <div key={row.name} className="grid grid-cols-1 gap-3 px-6 py-5 text-sm text-slate-600 lg:grid-cols-12 lg:gap-4">
           <span className="font-semibold text-slate-700 lg:col-span-4">{row.name}</span>
           <MetricCell label="Emitidos" value={row.emitidos.toString()} className="lg:col-span-2" />
@@ -455,7 +455,7 @@ const ValeTable = ({ rows }: { rows: ReporteValeRow[] }) => {
 
 const Pagination = ({ page, totalPages, pageSize, onPageChange, onPageSizeChange }: { page: number; totalPages: number; pageSize: number; onPageChange: (page: number) => void; onPageSizeChange: (size: number) => void }) => (
   <div className="flex flex-col gap-4 border-t border-slate-200 bg-slate-50 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-    <p className="text-sm font-semibold text-slate-500">Pagina {page} de {totalPages}</p>
+    <p className="text-sm font-semibold text-slate-500">Página {page} de {totalPages}</p>
     <div className="flex flex-wrap items-center gap-2">
       <select
         value={pageSize}

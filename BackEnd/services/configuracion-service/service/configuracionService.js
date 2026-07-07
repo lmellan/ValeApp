@@ -145,7 +145,7 @@ const crearAsignacionTurno = async (datos) => {
         return result.rows[0].id_asignacion;
     } catch (err) {
         await client.query('ROLLBACK');
-        throw 'Error al crear asignacion de turno.';
+        throw 'Error al crear asignación de turno.';
     } finally {
         client.release();
     }
@@ -154,6 +154,10 @@ const crearAsignacionTurno = async (datos) => {
 const obtenerServiciosPorTurno = async (idTurno) => {
     const result = await db.query('SELECT id_servicio FROM turno_servicios WHERE id_turno = $1 ORDER BY id_servicio', [idTurno]);
     return result.rows.map(r => r.id_servicio);
+};
+
+const quitarServicioDeTurno = async (idTurno, idServicio) => {
+    await db.query('DELETE FROM turno_servicios WHERE id_turno = $1 AND id_servicio = $2', [idTurno, idServicio]);
 };
 
 const agregarServicioATurno = async (idTurno, idServicio) => {
@@ -178,7 +182,7 @@ const agregarServicioATurno = async (idTurno, idServicio) => {
         );
         return result.rows[0].id_turno_servicio;
     } catch (err) {
-        if (err.code === '23505') throw 'El servicio ya esta asociado a ese turno.';
+        if (err.code === '23505') throw 'El servicio ya está asociado a ese turno.';
         throw 'Error al asociar servicio al turno.';
     }
 };
@@ -238,7 +242,7 @@ const obtenerValorVale = async (idTipoComensal, idServicio) => {
            AND activo = true`,
         [idTipoComensal, idServicio]
     );
-    if (!result.rows[0]) throw 'No existe una valorizacion activa para este tipo de comensal y servicio.';
+    if (!result.rows[0]) throw 'No existe una valorización activa para este tipo de comensal y servicio.';
     return mapValorizacion(result.rows[0]);
 };
 
@@ -254,6 +258,7 @@ module.exports = {
     crearAsignacionTurno,
     obtenerServiciosPorTurno,
     agregarServicioATurno,
+    quitarServicioDeTurno,
     obtenerTipoComensalPorFuncionario,
     asignarTipoComensalAFuncionario,
     quitarTipoComensalAFuncionario,

@@ -48,7 +48,7 @@ const UsersTable = ({ users, tiposComensal, page, totalPages, pageSize, onEdit, 
           <div>Comensal</div>
           <div>Turno</div>
           <div>Estado</div>
-          <div className="text-right">Accion</div>
+          <div className="text-right">Acción</div>
         </div>
 
         <div className="divide-y divide-slate-200">
@@ -104,7 +104,7 @@ const UsersTable = ({ users, tiposComensal, page, totalPages, pageSize, onEdit, 
 
     <div className="flex items-center justify-between gap-4 border-t border-slate-200 bg-slate-50 px-6 py-4">
       <p className="text-sm font-semibold text-slate-500">
-        Pagina {page} de {totalPages}
+        Página {page} de {totalPages}
       </p>
       <div className="flex flex-wrap items-center gap-2">
         <select

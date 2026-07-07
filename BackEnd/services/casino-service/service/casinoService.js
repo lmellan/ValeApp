@@ -76,7 +76,13 @@ const crearServicio = async (datos) => {
 };
 
 const editarServicio = async (idServicio, datos) => {
-    await obtenerServicio(idServicio);
+    const current = await obtenerServicio(idServicio);
+    if (current.categoria === 'Base') {
+        if (datos.nombre !== current.nombre)
+            throw 'El nombre de un servicio base no puede modificarse.';
+        if (datos.horaInicio !== current.horaInicio || datos.horaFin !== current.horaFin)
+            throw 'El horario de un servicio base no puede modificarse.';
+    }
     try {
         const result = await db.query(
             `UPDATE servicios_alimentacion
@@ -92,6 +98,7 @@ const editarServicio = async (idServicio, datos) => {
         );
         return mapServicio(result.rows[0]);
     } catch (err) {
+        if (typeof err === 'string') throw err;
         throw 'Error al editar servicio de alimentación.';
     }
 };

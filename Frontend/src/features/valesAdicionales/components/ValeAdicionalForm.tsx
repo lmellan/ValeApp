@@ -34,8 +34,8 @@ const getTodayInput = () => {
 };
 
 const ValeAdicionalForm = ({
-  title = 'Crear asignacion',
-  description = 'Busca un usuario y asigna un vale adicional para una fecha especifica.',
+  title = 'Crear asignación',
+  description = 'Busca un usuario y asigna un vale adicional para una fecha específica.',
   draft,
   usuarios,
   tiposComensal,
@@ -115,7 +115,7 @@ const ValeAdicionalForm = ({
           <label className={labelClass}>Usuario <span className="text-red-500">*</span></label>
           <div className="relative">
             <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
-            <input value={usuarioQuery} onChange={(event) => handleUsuarioInput(event.target.value)} onFocus={() => setShowUserList(true)} onBlur={handleUsuarioBlur} className={`${inputClass} pl-12`} placeholder="Escribe nombre, codigo o correo" type="text" />
+            <input value={usuarioQuery} onChange={(event) => handleUsuarioInput(event.target.value)} onFocus={() => setShowUserList(true)} onBlur={handleUsuarioBlur} className={`${inputClass} pl-12`} placeholder="Escribe nombre, código o correo" type="text" />
           </div>
 
           {showUserList && (
@@ -149,7 +149,7 @@ const ValeAdicionalForm = ({
               {servicios.map((servicio) => <option key={servicio.idServicio} value={servicio.idServicio}>{servicio.nombre}</option>)}
             </select>
             {selectedServicio && <div className="mt-3 rounded-2xl border border-blue-100 bg-blue-50 px-5 py-4 text-sm font-bold text-primary">Horario definido por el servicio: {formatTime(selectedServicio.horaInicio)} a {formatTime(selectedServicio.horaFin)}</div>}
-            {servicios.length === 0 && <p className="mt-2 text-sm font-semibold text-amber-700">Primero crea un servicio de tipo Adicional en la seccion Servicios.</p>}
+            {servicios.length === 0 && <p className="mt-2 text-sm font-semibold text-amber-700">Primero crea un servicio de tipo Adicional en la sección Servicios.</p>}
           </div>
 
           <div>
@@ -165,7 +165,7 @@ const ValeAdicionalForm = ({
                 <option value="semana">Semana desde la fecha</option>
                 <option value="mes">Mes de la fecha</option>
               </select>
-              {draft.fechaExpiracion && draft.fechaExpiracion !== draft.fechaUso && <p className="mt-2 text-sm font-semibold text-slate-500">Se generaran vales por dias habiles hasta el {draft.fechaExpiracion}.</p>}
+              {draft.fechaExpiracion && draft.fechaExpiracion !== draft.fechaUso && <p className="mt-2 text-sm font-semibold text-slate-500">Se generarán vales por días hábiles hasta el {draft.fechaExpiracion}.</p>}
             </div>
           )}
 
@@ -173,14 +173,14 @@ const ValeAdicionalForm = ({
             <div className="lg:col-span-2">
               <label className={labelClass}>Cantidad de vales por dia <span className="text-red-500">*</span></label>
               <input value={permiteMultiples ? draft.cantidadVales || 1 : 1} onChange={(event) => onChange({ cantidadVales: permiteMultiples ? Math.max(1, Number(event.target.value) || 1) : 1 })} className={inputClass} disabled={!permiteMultiples} min="1" step="1" type="number" />
-              <p className="mt-2 text-sm font-semibold text-slate-500">{permiteMultiples ? 'Este usuario permite multiples vales en el mismo horario.' : 'Este usuario solo permite 1 vale por horario.'}</p>
+              <p className="mt-2 text-sm font-semibold text-slate-500">{permiteMultiples ? 'Este usuario permite múltiples vales en el mismo horario.' : 'Este usuario solo permite 1 vale por horario.'}</p>
             </div>
           )}
         </div>
 
         <div>
           <label className={labelClass}>Motivo <span className="normal-case tracking-normal text-slate-400">(opcional)</span></label>
-          <textarea value={draft.motivo} onChange={(event) => onChange({ motivo: event.target.value })} className={`${inputClass} min-h-[120px] resize-none`} placeholder="Opcional: describe brevemente el contexto de esta asignacion." />
+          <textarea value={draft.motivo} onChange={(event) => onChange({ motivo: event.target.value })} className={`${inputClass} min-h-[120px] resize-none`} placeholder="Opcional: describe brevemente el contexto de esta asignación." />
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 pt-2">

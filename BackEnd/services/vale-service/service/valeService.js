@@ -75,7 +75,7 @@ const obtenerRolUsuario = async (idUsuario) => {
 const validarPermisoCajero = async (idUsuario) => {
     const rol = await obtenerRolUsuario(idUsuario);
     if (rol !== 'Cajero' && rol !== 'Administrador') {
-        const error = new Error('No tienes permisos para realizar esta accion.');
+        const error = new Error('No tienes permisos para realizar esta acción.');
         error.status = 403;
         throw error;
     }
@@ -96,7 +96,7 @@ const validarReglasVale = async (idVale) => {
         throw error;
     }
     if (calcularExpirado(vale)) {
-        const error = new Error('Regla R31: El vale esta expirado y no puede usarse.');
+        const error = new Error('Regla R31: El vale está expirado y no puede usarse.');
         error.status = 400;
         throw error;
     }
@@ -109,7 +109,7 @@ const validarReglasVale = async (idVale) => {
         }
     }
     if (!estaDentroDeRango(vale)) {
-        const error = new Error('El vale esta fuera de su rango horario de validez.');
+        const error = new Error('El vale está fuera de su rango horario de validez.');
         error.status = 400;
         throw error;
     }
@@ -130,7 +130,7 @@ const validarReglasVale = async (idVale) => {
 const validarVale = async (idVale, idUsuario) => {
     await validarPermisoCajero(idUsuario);
     const vale = await validarReglasVale(idVale);
-    return { mensaje: 'Vale valido para canje.', vale };
+    return { mensaje: 'Vale válido para canje.', vale };
 };
 
 const registrarCanjeVale = async (idVale, idCajero) => {
@@ -139,12 +139,12 @@ const registrarCanjeVale = async (idVale, idCajero) => {
     const resultado = await valeRepository.marcarCanjeadoSiDisponible(idVale, idCajero, fechaHoraCanje);
 
     if (resultado.changes === 0) {
-        const error = new Error('El vale no pudo canjearse porque ya fue usado o expiro.');
+        const error = new Error('El vale no pudo canjearse porque ya fue usado o expiró.');
         error.status = 409;
         throw error;
     }
 
-    return 'Vale validado y canjeado con exito';
+    return 'Vale validado y canjeado con éxito';
 };
 
 const obtenerValesFuncionario = async (idFuncionario) => {
@@ -218,7 +218,7 @@ const registrarValeAdicional = async (nuevoValeData) => {
         }
     }
 
-    return { mensaje: 'Vale adicional creado y asignado con exito.', creados };
+    return { mensaje: 'Vale adicional creado y asignado con éxito.', creados };
 };const listarValesAdicionales = async () => {
     await valeRepository.actualizarExpirados();
     return valeRepository.listarAdministrativos();
@@ -265,13 +265,8 @@ const imprimirVale = async (idVale, idFuncionario) => {
         throw error;
     }
     if (!esValeDeHoy(vale)) {
-        const error = new Error('Solo se pueden imprimir vales del dia actual.');
+        const error = new Error('Solo se pueden imprimir vales del día actual.');
         error.status = 400;
-        throw error;
-    }
-    if (vale.fechaHoraImpresion) {
-        const error = new Error('El vale ya fue impreso y no puede imprimirse nuevamente.');
-        error.status = 409;
         throw error;
     }
     if (!esNoUtilizado(vale)) {
@@ -280,7 +275,7 @@ const imprimirVale = async (idVale, idFuncionario) => {
         throw error;
     }
     if (calcularExpirado(vale)) {
-        const error = new Error('El vale esta expirado y no puede imprimirse.');
+        const error = new Error('El vale está expirado y no puede imprimirse.');
         error.status = 400;
         throw error;
     }
@@ -366,11 +361,11 @@ const generarValesBaseParaFecha = async ({ fechaUso, funcionarios }) => {
                     }));
                     creados.push(idVale);
                 } catch (err) {
-                    omitidos.push({ fechaUso, idVale, motivo: err.response?.data?.error || 'Duplicado, sin valorizacion o no insertable.' });
+                    omitidos.push({ fechaUso, idVale, motivo: err.response?.data?.error || 'Duplicado, sin valorización o no insertable.' });
                 }
             }
         } catch (err) {
-            omitidos.push({ fechaUso, idFuncionario: funcionario.id, motivo: err.response?.data?.error || 'No se pudo obtener configuracion.' });
+            omitidos.push({ fechaUso, idFuncionario: funcionario.id, motivo: err.response?.data?.error || 'No se pudo obtener configuración.' });
         }
     }
 

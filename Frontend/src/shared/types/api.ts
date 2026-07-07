@@ -33,6 +33,6 @@ export interface ValeDisponible {
 
 export interface ValeValidationResult {
   mensaje: string;
-  valido: boolean;
+  vale?: ValeDisponible;
 }
 

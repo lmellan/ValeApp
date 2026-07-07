@@ -17,8 +17,21 @@ export const getValeById = async (idVale: string): Promise<ValeDisponible> => {
   return response.data;
 };
 
-export const validateVale = async (idVale: string): Promise<ValeValidationResult> => {
-  const response = await api.post<{ mensaje: string; valido: boolean }>(`${VALE_API_URL}/vales/${idVale}/validar`);
+export const validateVale = async (idVale: string, cajeroId: number): Promise<ValeValidationResult> => {
+  const response = await api.post<ValeValidationResult>(
+    `${VALE_API_URL}/vales/${idVale}/validar`,
+    {},
+    { headers: { 'x-usuario-id': String(cajeroId) } }
+  );
+  return response.data;
+};
+
+export const canjearVale = async (idVale: string, cajeroId: number): Promise<{ mensaje: string }> => {
+  const response = await api.post<{ mensaje: string }>(
+    `${VALE_API_URL}/vales/${idVale}/canjear`,
+    {},
+    { headers: { 'x-usuario-id': String(cajeroId) } }
+  );
   return response.data;
 };
 

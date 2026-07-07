@@ -35,13 +35,13 @@ const validarDatosValeAdicional = (body, requiereId = true) => {
         throw new Error('Faltan campos obligatorios: idFuncionario, idServicio y fechaUso.');
     }
     if (!isValidDateInput(body.fechaUso)) {
-        throw new Error('La fecha de uso no es valida.');
+        throw new Error('La fecha de uso no es válida.');
     }
     if (body.fechaUso < getTodayInput()) {
         throw new Error('La fecha de uso no puede ser anterior a hoy.');
     }
     if (body.fechaExpiracion && !isValidDateInput(body.fechaExpiracion)) {
-        throw new Error('La fecha final de uso no es valida.');
+        throw new Error('La fecha final de uso no es válida.');
     }
     if (body.fechaExpiracion && body.fechaExpiracion < body.fechaUso) {
         throw new Error('La fecha final no puede ser anterior a la fecha de uso.');

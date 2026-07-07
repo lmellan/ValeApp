@@ -13,6 +13,7 @@ app.use(express.json());
 
 app.get('/usuarios', usuarioController.listarUsuarios);
 app.get('/usuarios/:idUsuario/rol', usuarioController.obtenerRolUsuario);
+app.get('/usuarios/:idUsuario/correo', usuarioController.obtenerCorreoUsuario);
 app.get('/usuarios/:idUsuario', usuarioController.obtenerDatosUsuario);
 app.post('/usuarios', usuarioController.crearUsuario);
 app.post('/usuarios/login', usuarioController.loginUsuario);

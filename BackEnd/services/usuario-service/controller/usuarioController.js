@@ -30,6 +30,15 @@ const obtenerDatosUsuario = async (req, res) => {
     }
 };
 
+const obtenerCorreoUsuario = async (req, res) => {
+    try {
+        const usuario = await usuarioService.obtenerUsuario(req.params.idUsuario);
+        res.json({ id: usuario.id, correo: usuario.correo });
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+};
+
 const crearUsuario = async (req, res) => {
     try {
         const usuario = await usuarioService.crearUsuario(crearUsuarioInputDTO(req.body));
@@ -41,22 +50,14 @@ const crearUsuario = async (req, res) => {
 
 const loginUsuario = async (req, res) => {
     try {
-        console.log('[controller.loginUsuario] body=', req.body);
         const identificador = req.body.identificador || req.body.correo;
         const { contrasena } = req.body;
         if (!identificador || !contrasena) {
             return res.status(400).json({ error: 'Código o correo y contraseña son obligatorios.' });
         }
-        // Direct repository check to avoid unexpected service-layer behaviour
         const usuario = await repository.obtenerPorCorreoOCodigo(identificador);
-        const fs = require('fs');
-        try {
-            fs.appendFileSync('login-debug.log', JSON.stringify({ time: new Date().toISOString(), body: req.body, usuario }) + '\n');
-        } catch (e) {
-            // ignore logging errors
-        }
         if (!usuario || String(usuario.contrasena).trim() !== String(contrasena || '').trim()) {
-            return res.status(401).json({ error: 'Código, correo o contraseña incorrectos' });
+            return res.status(401).json({ error: 'Código, correo o contraseña incorrectos.' });
         }
         res.json(usuarioResponseDTO(usuario));
     } catch (error) {
@@ -77,6 +78,7 @@ module.exports = {
     listarUsuarios,
     obtenerRolUsuario,
     obtenerDatosUsuario,
+    obtenerCorreoUsuario,
     crearUsuario,
     loginUsuario,
     editarUsuario

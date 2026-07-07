@@ -2,7 +2,7 @@ const repository = require('../repository/notificacionRepository');
 const Notificacion = require('../model/notificacion');
 
 const generarPayloadNotificacion = async (idFuncionario) => {
-    const usuario = await repository.obtenerUsuario(idFuncionario);
+    const usuario = await repository.obtenerCorreoUsuario(idFuncionario);
     const resumen = await repository.obtenerResumenValesFuncionario(idFuncionario);
 
     return new Notificacion({

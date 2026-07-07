@@ -53,7 +53,7 @@ const UserFormPanel = ({ user, saving, tiposComensal, onCancel, onSave }: UserFo
             <div>
               <h1 className="text-4xl font-extrabold text-primary mb-2">{isEditing ? 'Editar usuario' : 'Crear usuario'}</h1>
               <p className="text-lg text-slate-600">
-                {isEditing ? 'Modifica la informacion del usuario seleccionado.' : 'Registra una cuenta y asigna su rol dentro de ValeApp.'}
+                {isEditing ? 'Modifica la información del usuario seleccionado.' : 'Registra una cuenta y asigna su rol dentro de ValeApp.'}
               </p>
             </div>
 
@@ -89,7 +89,7 @@ const UserFormPanel = ({ user, saving, tiposComensal, onCancel, onSave }: UserFo
               </div>
 
               <div>
-                <label className={labelClass}>Correo electronico <span className="text-red-500">*</span></label>
+                <label className={labelClass}>Correo electrónico <span className="text-red-500">*</span></label>
                 <input
                   value={draft.correo || ''}
                   onChange={(event) => updateDraft({ correo: event.target.value })}
@@ -103,7 +103,7 @@ const UserFormPanel = ({ user, saving, tiposComensal, onCancel, onSave }: UserFo
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div>
                 <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <label className="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant">Codigo de acceso</label>
+                  <label className="block text-sm font-bold uppercase tracking-[0.16em] text-on-surface-variant">Código de acceso</label>
                   {!isEditing && (
                     <label className="inline-flex items-center gap-2 text-sm font-bold text-primary">
                       <input
@@ -112,7 +112,7 @@ const UserFormPanel = ({ user, saving, tiposComensal, onCancel, onSave }: UserFo
                         className="rounded border-slate-300 text-primary focus:ring-primary"
                         type="checkbox"
                       />
-                      Generar automatico
+                      Generar automático
                     </label>
                   )}
                 </div>
@@ -130,7 +130,7 @@ const UserFormPanel = ({ user, saving, tiposComensal, onCancel, onSave }: UserFo
                   )}
                 </div>
                 <p className="mt-2 text-sm text-slate-500">
-                  {isAutoCode ? `El sistema asignara el siguiente codigo ${codePrefix}.` : 'Puedes escribir un codigo manual si necesitas mantener uno existente.'}
+                  {isAutoCode ? `El sistema asignará el siguiente código ${codePrefix}.` : 'Puedes escribir un código manual si necesitas mantener uno existente.'}
                 </p>
               </div>
 
@@ -168,7 +168,7 @@ const UserFormPanel = ({ user, saving, tiposComensal, onCancel, onSave }: UserFo
                         </option>
                       ))}
                     </select>
-                    <p className="mt-2 text-sm text-slate-500">Este campo se alimenta desde la configuracion de tipos de comensal.</p>
+                    <p className="mt-2 text-sm text-slate-500">Este campo se alimenta desde la configuración de tipos de comensal.</p>
                   </div>
                 </div>
 
@@ -232,20 +232,20 @@ const UserFormPanel = ({ user, saving, tiposComensal, onCancel, onSave }: UserFo
 
             {!isEditing && (
               <div>
-                <label className={labelClass}>Contrasena inicial <span className="text-red-500">*</span></label>
+                <label className={labelClass}>Contraseña inicial <span className="text-red-500">*</span></label>
                 <div className="relative">
                   <input
                     value={draft.contrasena || ''}
                     onChange={(event) => updateDraft({ contrasena: event.target.value })}
                     className={`${inputClass} pr-16`}
-                    placeholder="Define una contrasena inicial"
+                    placeholder="Define una contraseña inicial"
                     type={showPassword ? 'text' : 'password'}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((current) => !current)}
                     className="absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100 hover:text-primary"
-                    aria-label={showPassword ? 'Ocultar contrasena' : 'Mostrar contrasena'}
+                    aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   >
                     <span className="material-symbols-outlined">{showPassword ? 'visibility_off' : 'visibility'}</span>
                   </button>
@@ -259,11 +259,11 @@ const UserFormPanel = ({ user, saving, tiposComensal, onCancel, onSave }: UserFo
                   <span className="material-symbols-outlined text-secondary text-2xl">mail</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-extrabold text-primary mb-2">Notificacion al usuario</h3>
+                  <h3 className="text-xl font-extrabold text-primary mb-2">Notificación al usuario</h3>
                   <p className="text-lg text-slate-600 leading-relaxed">
                     {isEditing
-                      ? 'Si los cambios se guardan, el sistema puede notificar al usuario en el correo registrado sobre la actualizacion de sus datos.'
-                      : 'Una vez creado el usuario, se puede enviar una notificacion al correo registrado informando la creacion de su cuenta.'}
+                      ? 'Si los cambios se guardan, el sistema puede notificar al usuario en el correo registrado sobre la actualización de sus datos.'
+                      : 'Una vez creado el usuario, se puede enviar una notificación al correo registrado informando la creación de su cuenta.'}
                   </p>
                 </div>
               </div>

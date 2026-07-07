@@ -6,10 +6,10 @@ const enviarResumenSemanal = async (req, res) => {
 
     try {
         const payloadCorreo = await notificacionService.generarPayloadNotificacion(idFuncionario);
-        console.log('Simulando envio de correo:', payloadCorreo);
-        res.status(200).json({ mensaje: 'Notificacion enviada', detalle: notificacionResponseDTO(payloadCorreo) });
+        console.log('Simulando envío de correo:', payloadCorreo);
+        res.status(200).json({ mensaje: 'Notificación enviada', detalle: notificacionResponseDTO(payloadCorreo) });
     } catch (error) {
-        res.status(500).json({ error: 'Fallo al generar la notificacion' });
+        res.status(500).json({ error: 'Fallo al generar la notificación' });
     }
 };
 

@@ -43,9 +43,8 @@ const getVoucherState = (vale: ValeDisponible, now = new Date()) => {
   const end = voucherDateTime(vale, vale.horaFinValidez, '23:59');
 
   if (isUsed(vale)) return { label: 'Utilizado', detail: 'Este vale ya fue canjeado.', className: 'bg-emerald-50 text-emerald-700 border-emerald-200', cardClassName: 'border-emerald-200', printable: false };
-  if (isPrinted(vale)) return { label: 'Impreso', detail: 'Ya fue impreso y no puede repetirse.', className: 'bg-indigo-50 text-indigo-700 border-indigo-200', cardClassName: 'border-indigo-200', printable: false };
-  if (vale.expirado || now > end) return { label: 'Expirado', detail: 'El horario de uso ya termino.', className: 'bg-slate-100 text-slate-600 border-slate-200', cardClassName: 'border-slate-300 opacity-80', printable: false };
-  if (now < start) return { label: 'Aun no disponible', detail: `Disponible desde ${formatTime(vale.horaInicioValidez)}.`, className: 'bg-amber-50 text-amber-700 border-amber-200', cardClassName: 'border-amber-200', printable: false };
+  if (vale.expirado || now > end) return { label: 'Expirado', detail: 'El horario de uso ya terminó.', className: 'bg-slate-100 text-slate-600 border-slate-200', cardClassName: 'border-slate-300 opacity-80', printable: false };
+  if (now < start) return { label: 'Aún no disponible', detail: `Disponible desde ${formatTime(vale.horaInicioValidez)}.`, className: 'bg-amber-50 text-amber-700 border-amber-200', cardClassName: 'border-amber-200', printable: false };
   return { label: 'Disponible', detail: '', className: 'bg-green-50 text-green-700 border-green-200', cardClassName: 'border-green-300 ring-2 ring-green-100', printable: true };
 };
 
@@ -99,11 +98,11 @@ const FuncionarioDashboardPage = () => {
       <Header title="Panel funcionario" />
       <main className="mx-auto max-w-[560px] px-4 py-6 sm:px-6">
         <section className="mb-5 rounded-3xl border border-slate-200 bg-surface-light p-6 shadow-card">
-          <p className="mb-2 text-sm font-bold uppercase tracking-[0.18em] text-secondary">Mis vales de colacion</p>
+          <p className="mb-2 text-sm font-bold uppercase tracking-[0.18em] text-secondary">Mis vales de colación</p>
           <h1 className="text-4xl font-extrabold leading-tight text-primary">Hola, {user?.nombre ?? 'Funcionario'}</h1>
-          <p className="mt-3 text-base leading-relaxed text-slate-600">Solo se muestran los vales de hoy. La impresion se habilita dentro del horario del vale.</p>
+          <p className="mt-3 text-base leading-relaxed text-slate-600">Solo se muestran los vales de hoy. La impresión se habilita dentro del horario del vale.</p>
           <div className="mt-5 grid grid-cols-2 gap-3">
-            <InfoTile icon="badge" label="Codigo" value={user?.codigo || String(user?.id || '')} />
+            <InfoTile icon="badge" label="Código" value={user?.codigo || String(user?.id || '')} />
             <InfoTile icon="schedule" label="Turno" value={user?.turno || 'No asignado'} />
             <InfoTile icon="restaurant" label="Comensal" value={user?.tipo_comensal || 'No aplica'} />
             <InfoTile icon="event" label="Hoy" value={formatDate(today)} />
@@ -163,6 +162,7 @@ const KpiCard = ({ icon, label, value, detail }: { icon: string; label: string; 
 const VoucherCard = ({ vale, service, casinoName, onPrint }: { vale: ValeDisponible; service?: ServicioAlimentacion; casinoName: string; onPrint: () => void }) => {
   const state = getVoucherState(vale);
   const additional = vale.tipoAsignacion === 'ADMINISTRATIVA';
+  const printed = isPrinted(vale);
 
   return (
     <article className={`overflow-hidden rounded-3xl border bg-surface-light shadow-card ${state.cardClassName}`}>
@@ -172,6 +172,10 @@ const VoucherCard = ({ vale, service, casinoName, onPrint }: { vale: ValeDisponi
             <span className={`mb-2 inline-flex rounded-full px-3 py-1 text-sm font-bold ${additional ? 'bg-tertiary/15 text-tertiary' : 'bg-primary/10 text-primary'}`}>{getVoucherTypeLabel(vale)}</span>
             <h3 className="truncate text-3xl font-extrabold text-primary">{service?.nombre || `Servicio ${vale.idServicio ?? 'N/A'}`}</h3>
             <p className="mt-1 text-sm font-semibold text-slate-500">{casinoName}</p>
+            <div className="mt-2 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5">
+              <span className="material-symbols-outlined text-[16px] text-slate-400">qr_code_2</span>
+              <span className="font-mono text-sm font-bold tracking-wider text-slate-700">{vale.idVale}</span>
+            </div>
           </div>
           <div className="shrink-0 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-right">
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant">Valor</p>
@@ -186,6 +190,13 @@ const VoucherCard = ({ vale, service, casinoName, onPrint }: { vale: ValeDisponi
 
         {state.detail && <div className={`mb-4 rounded-2xl border px-4 py-3 text-sm font-bold ${state.className}`}>{state.detail}</div>}
 
+        {state.printable && printed && (
+          <p className="mb-4 flex items-center gap-2 rounded-2xl bg-indigo-50 px-4 py-3 text-sm font-semibold text-indigo-700">
+            <span className="material-symbols-outlined text-[18px]">print</span>
+            Ya lo imprimiste, pero puedes volver a imprimirlo mientras esté disponible.
+          </p>
+        )}
+
         {vale.motivo && <p className="mb-4 rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-600">Motivo: {vale.motivo}</p>}
 
         <button
@@ -195,7 +206,7 @@ const VoucherCard = ({ vale, service, casinoName, onPrint }: { vale: ValeDisponi
           className={`flex h-16 w-full items-center justify-center gap-3 rounded-2xl text-lg font-extrabold transition ${state.printable ? 'bg-primary text-white hover:bg-blue-800' : 'cursor-not-allowed bg-slate-100 text-slate-500'}`}
         >
           <span className="material-symbols-outlined">{state.printable ? 'print' : 'block'}</span>
-          {state.printable ? 'Ver impresion' : 'No imprimible'}
+          {state.printable ? (printed ? 'Reimprimir vale' : 'Ver impresión') : 'No imprimible'}
         </button>
       </div>
     </article>

@@ -100,7 +100,7 @@ const ValorizacionValesPage = () => {
   if (loading) {
     return (
       <div className="rounded-3xl border border-slate-200 bg-white p-10 text-center text-lg text-slate-700 shadow-sm">
-        Cargando valorizacion de vales...
+        Cargando valorización de vales...
       </div>
     );
   }
@@ -125,9 +125,9 @@ const ValorizacionValesPage = () => {
         <div className="xl:col-span-8 space-y-8">
           <section className="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-8">
             <div>
-              <h1 className="text-4xl font-extrabold text-primary mb-2">Valorizacion de vales</h1>
+              <h1 className="text-4xl font-extrabold text-primary mb-2">Valorización de vales</h1>
               <p className="max-w-3xl text-lg text-slate-600">
-                Define el monto de cada vale segun el tipo de comensal y el servicio de alimentacion. Esta matriz se usa para vales base y adicionales.
+                Define el monto de cada vale según el tipo de comensal y el servicio de alimentación. Esta matriz se usa para vales base y adicionales.
               </p>
             </div>
 
@@ -162,9 +162,9 @@ const ValorizacionValesPage = () => {
             <div className="grid grid-cols-12 bg-slate-50 px-6 py-4 border-b border-slate-200 gap-4">
               <div className="col-span-3 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Tipo</div>
               <div className="col-span-3 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Servicio</div>
-              <div className="col-span-2 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Categoria</div>
+              <div className="col-span-2 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Categoría</div>
               <div className="col-span-2 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant">Valor</div>
-              <div className="col-span-2 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant text-right">Accion</div>
+              <div className="col-span-2 text-sm font-bold uppercase tracking-[0.14em] text-on-surface-variant text-right">Acción</div>
             </div>
 
             <div className="divide-y divide-slate-200">
@@ -193,7 +193,7 @@ const ValorizacionValesPage = () => {
             </div>
 
             <div className="flex flex-col gap-4 border-t border-slate-200 bg-slate-50 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm font-semibold text-slate-500">Pagina {page} de {totalPages}</p>
+              <p className="text-sm font-semibold text-slate-500">Página {page} de {totalPages}</p>
               <div className="flex flex-wrap items-center gap-2">
                 <select value={pageSize} onChange={(event) => updatePageSize(Number(event.target.value))} className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-600 outline-none transition focus:border-primary">
                   {[5, 10, 20].map((option) => <option key={option} value={option}>{option} filas</option>)}
@@ -207,8 +207,8 @@ const ValorizacionValesPage = () => {
 
         <aside className="xl:col-span-4">
           <ValorizacionForm
-            title="Crear valorizacion"
-            description="Registra un valor para una combinacion de tipo de comensal y servicio."
+            title="Crear valorización"
+            description="Registra un valor para una combinación de tipo de comensal y servicio."
             draft={createDraft}
             tiposComensal={tiposComensal}
             servicios={servicios}

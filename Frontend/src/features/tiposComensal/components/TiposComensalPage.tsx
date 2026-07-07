@@ -56,7 +56,7 @@ const TiposComensalPage = () => {
           <section className="bg-surface-light rounded-3xl border border-slate-200 shadow-card p-8">
             <h1 className="text-4xl font-extrabold text-primary mb-2">Tipos de comensal</h1>
             <p className="text-lg text-slate-600">
-              Administra las categorias de comensal y define si su modalidad permite un vale por horario o multiples vales por horario.
+              Administra las categorías de comensal y define si su modalidad permite un vale por horario o múltiples vales por horario.
             </p>
 
             <div className="mt-8 max-w-xl">
@@ -88,7 +88,7 @@ const TiposComensalPage = () => {
         <aside className="xl:col-span-4">
           <TipoComensalForm
             title="Crear tipo de comensal"
-            description="Registra una nueva categoria y define sus reglas de emision."
+            description="Registra una nueva categoría y define sus reglas de emisión."
             draft={createDraft}
             saving={saving}
             submitLabel="Crear"
@@ -105,7 +105,7 @@ const TiposComensalPage = () => {
             <div className="shrink-0 p-8 border-b border-slate-200 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5">
               <div>
                 <h1 className="text-4xl font-extrabold text-primary mb-2">Editar tipo de comensal</h1>
-                <p className="text-lg text-slate-600">Modifica la categoria seleccionada y sus reglas de emision.</p>
+                <p className="text-lg text-slate-600">Modifica la categoría seleccionada y sus reglas de emisión.</p>
               </div>
 
               <div className="flex items-start gap-3">
@@ -129,7 +129,7 @@ const TiposComensalPage = () => {
             <div className="min-h-0 flex-1 overflow-y-auto">
               <TipoComensalForm
                 title="Editar tipo de comensal"
-                description="Modifica la categoria seleccionada y sus reglas de emision."
+                description="Modifica la categoría seleccionada y sus reglas de emisión."
                 draft={editDraft}
                 saving={saving}
                 submitLabel="Guardar cambios"

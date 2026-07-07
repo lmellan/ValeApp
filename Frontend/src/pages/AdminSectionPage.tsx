@@ -15,19 +15,19 @@ const moduleData: Record<string, { title: string; description: string }> = {
   },
   'tipos-comensal': {
     title: 'Tipos de comensal',
-    description: 'Gestiona las categorias de comensal y su modalidad de emision.'
+    description: 'Gestiona las categorías de comensal y su modalidad de emisión.'
   },
   servicios: {
     title: 'Servicios',
-    description: 'Configura los servicios de alimentacion y sus horarios disponibles.'
+    description: 'Configura los servicios de alimentación y sus horarios disponibles.'
   },
   'valorizacion-vales': {
-    title: 'Valorizacion de vales',
-    description: 'Configura el valor del vale segun tipo de comensal y servicio.'
+    title: 'Valorización de vales',
+    description: 'Configura el valor del vale según tipo de comensal y servicio.'
   },
   'reglas-vales': {
-    title: 'Valorizacion de vales',
-    description: 'Configura el valor del vale segun tipo de comensal y servicio.'
+    title: 'Valorización de vales',
+    description: 'Configura el valor del vale según tipo de comensal y servicio.'
   },
   'vales-adicionales': {
     title: 'Vales adicionales',
@@ -35,7 +35,7 @@ const moduleData: Record<string, { title: string; description: string }> = {
   },
   reportes: {
     title: 'Reportes',
-    description: 'Consulta auditorias de uso y metricas del sistema.'
+    description: 'Consulta auditorías de uso y métricas del sistema.'
   }
 };
 
@@ -48,7 +48,7 @@ const AdminSectionPage = () => {
     return (
       <div className="min-h-screen bg-background-light text-text-light flex items-center justify-center px-6 py-10">
         <div className="max-w-2xl bg-surface-light rounded-3xl border border-slate-200 shadow-strong p-10 text-center">
-          <h1 className="text-4xl font-extrabold text-primary mb-4">Seccion no encontrada</h1>
+          <h1 className="text-4xl font-extrabold text-primary mb-4">Sección no encontrada</h1>
           <p className="text-lg text-slate-600 mb-8">La ruta solicitada no existe. Regresa al panel administrativo.</p>
           <Link
             to="/admin"
@@ -103,19 +103,19 @@ const PlaceholderSection = ({ section }: { section: { title: string; description
     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
       <article className="rounded-3xl border border-slate-200 bg-surface-light p-6 shadow-card">
         <h3 className="text-xl font-bold text-slate-900 mb-2">Estado actual</h3>
-        <p className="text-slate-600">Resumen del modulo y acceso a acciones de administracion.</p>
+        <p className="text-slate-600">Resumen del módulo y acceso a acciones de administración.</p>
       </article>
       <article className="rounded-3xl border border-slate-200 bg-surface-light p-6 shadow-card">
-        <h3 className="text-xl font-bold text-slate-900 mb-2">Proximos pasos</h3>
+        <h3 className="text-xl font-bold text-slate-900 mb-2">Próximos pasos</h3>
         <p className="text-slate-600">Agregar, editar o desactivar elementos desde este panel.</p>
       </article>
       <article className="rounded-3xl border border-slate-200 bg-surface-light p-6 shadow-card">
-        <h3 className="text-xl font-bold text-slate-900 mb-2">Metricas</h3>
+        <h3 className="text-xl font-bold text-slate-900 mb-2">Métricas</h3>
         <p className="text-slate-600">Monitorea el estado de tus usuarios y roles.</p>
       </article>
       <article className="rounded-3xl border border-slate-200 bg-surface-light p-6 shadow-card">
         <h3 className="text-xl font-bold text-slate-900 mb-2">Soporte</h3>
-        <p className="text-slate-600">Revisa datos de configuracion y consulta reportes cuando sea necesario.</p>
+        <p className="text-slate-600">Revisa datos de configuración y consulta reportes cuando sea necesario.</p>
       </article>
     </div>
   </div>

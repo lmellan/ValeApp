@@ -15,7 +15,7 @@ const auditar = async (evento, detalle) => {
             timestamp: new Date().toISOString()
         }, { timeout: 2000 });
     } catch (err) {
-        console.error('Auditoria no registrada:', err.message);
+        console.error('Auditoría no registrada:', err.message);
     }
 };
 
@@ -31,11 +31,11 @@ const consultarVale = async (req, res) => {
 
 const validarVale = async (req, res) => {
     const idUsuario = req.headers['x-usuario-id'] ? req.headers['x-usuario-id'].trim() : null;
-    if (!idUsuario) return res.status(401).json({ error: 'Identificacion de usuario requerida en headers.' });
+    if (!idUsuario) return res.status(401).json({ error: 'Identificación de usuario requerida en headers.' });
 
     try {
         const resultado = await valeService.validarVale(req.params.idVale, idUsuario);
-        await auditar('VALIDACION_VALE_EXITOSA', `Usuario ${idUsuario} valido el vale ${req.params.idVale}`);
+        await auditar('VALIDACION_VALE_EXITOSA', `Usuario ${idUsuario} validó el vale ${req.params.idVale}`);
         res.status(200).json({
             mensaje: resultado.mensaje,
             vale: infoValeResponseDTO(resultado.vale)
@@ -47,11 +47,11 @@ const validarVale = async (req, res) => {
 
 const canjearVale = async (req, res) => {
     const idUsuario = req.headers['x-usuario-id'] ? req.headers['x-usuario-id'].trim() : null;
-    if (!idUsuario) return res.status(401).json({ error: 'Identificacion de usuario requerida en headers.' });
+    if (!idUsuario) return res.status(401).json({ error: 'Identificación de usuario requerida en headers.' });
 
     try {
         const mensaje = await valeService.registrarCanjeVale(req.params.idVale, idUsuario);
-        await auditar('CANJE_VALE_EXITOSO', `Usuario ${idUsuario} canjeo el vale ${req.params.idVale}`);
+        await auditar('CANJE_VALE_EXITOSO', `Usuario ${idUsuario} canjeó el vale ${req.params.idVale}`);
         res.status(200).json({ mensaje });
     } catch (error) {
         res.status(statusFromError(error)).json({ error: messageFromError(error) });

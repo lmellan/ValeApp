@@ -16,7 +16,7 @@ const adminCards: AdminCard[] = [
     href: '/admin/usuarios',
     icon: 'manage_accounts',
     title: 'Usuarios',
-    description: 'Crea usuarios del sistema, edita sus datos y asignales un perfil.',
+    description: 'Crea usuarios del sistema, edita sus datos y asígnales un perfil.',
     iconBg: 'bg-primary/10',
     iconColor: 'text-primary'
   },
@@ -24,7 +24,7 @@ const adminCards: AdminCard[] = [
     href: '/admin/tipos-comensal',
     icon: 'group',
     title: 'Tipos de comensal',
-    description: 'Define categorias como obrero, jefe o secretaria y su modalidad de emision.',
+    description: 'Define categorías como obrero, jefe o secretaria y su modalidad de emisión.',
     iconBg: 'bg-secondary/15',
     iconColor: 'text-secondary'
   },
@@ -32,15 +32,15 @@ const adminCards: AdminCard[] = [
     href: '/admin/servicios',
     icon: 'restaurant_menu',
     title: 'Servicios',
-    description: 'Mantiene los servicios de alimentacion, su categoria y sus horarios.',
+    description: 'Mantiene los servicios de alimentación, su categoría y sus horarios.',
     iconBg: 'bg-tertiary/15',
     iconColor: 'text-tertiary'
   },
   {
     href: '/admin/valorizacion-vales',
     icon: 'payments',
-    title: 'Valorizacion de vales',
-    description: 'Define el valor de cada vale segun el tipo de comensal y el servicio.',
+    title: 'Valorización de vales',
+    description: 'Define el valor de cada vale según el tipo de comensal y el servicio.',
     iconBg: 'bg-primary/10',
     iconColor: 'text-primary'
   },
@@ -56,7 +56,7 @@ const adminCards: AdminCard[] = [
     href: '/admin/reportes',
     icon: 'assessment',
     title: 'Reportes',
-    description: 'Consulta auditoria de vales emitidos, utilizados, disponibles y expirados.',
+    description: 'Consulta auditoría de vales emitidos, utilizados, disponibles y expirados.',
     iconBg: 'bg-tertiary/15',
     iconColor: 'text-tertiary'
   }
@@ -78,8 +78,8 @@ const AdminDashboardPage = () => {
         </section>
 
         <section className="mb-6">
-          <h2 className="text-3xl font-extrabold text-slate-600 mb-2">Modulos de administracion</h2>
-          <p className="text-lg text-slate-500">Accede rapidamente a las configuraciones principales del sistema.</p>
+          <h2 className="text-3xl font-extrabold text-slate-600 mb-2">Módulos de administración</h2>
+          <p className="text-lg text-slate-500">Accede rápidamente a las configuraciones principales del sistema.</p>
         </section>
 
         <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mb-12">
